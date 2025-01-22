@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/Users/prabesh/Documents/SketchFlow/build",
+  "command": "/usr/bin/clang++  -isystem /opt/homebrew/Cellar/sdl2/2.30.11/include/SDL2 -g -std=gnu++11 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk -mmacosx-version-min=14.6 -o CMakeFiles/SketchFlow.dir/src/main.cpp.o -c /Users/prabesh/Documents/SketchFlow/src/main.cpp",
+  "file": "/Users/prabesh/Documents/SketchFlow/src/main.cpp",
+  "output": "CMakeFiles/SketchFlow.dir/src/main.cpp.o"
+}
+]
