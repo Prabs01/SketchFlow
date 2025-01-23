@@ -1,6 +1,16 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/SketchFlow.dir/src/main.cpp.o"
-  "CMakeFiles/SketchFlow.dir/src/main.cpp.o.d"
+  "CMakeFiles/SketchFlow.dir/test/App.cpp.o"
+  "CMakeFiles/SketchFlow.dir/test/App.cpp.o.d"
+  "CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o"
+  "CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o.d"
+  "CMakeFiles/SketchFlow.dir/test/Controller.cpp.o"
+  "CMakeFiles/SketchFlow.dir/test/Controller.cpp.o.d"
+  "CMakeFiles/SketchFlow.dir/test/Shape.cpp.o"
+  "CMakeFiles/SketchFlow.dir/test/Shape.cpp.o.d"
+  "CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o"
+  "CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o.d"
+  "CMakeFiles/SketchFlow.dir/test/main.cpp.o"
+  "CMakeFiles/SketchFlow.dir/test/main.cpp.o.d"
   "SketchFlow"
   "SketchFlow.pdb"
 )

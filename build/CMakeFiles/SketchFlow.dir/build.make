@@ -69,32 +69,112 @@ include CMakeFiles/SketchFlow.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/SketchFlow.dir/flags.make
 
-CMakeFiles/SketchFlow.dir/src/main.cpp.o: CMakeFiles/SketchFlow.dir/flags.make
-CMakeFiles/SketchFlow.dir/src/main.cpp.o: /Users/prabesh/Documents/SketchFlow/src/main.cpp
-CMakeFiles/SketchFlow.dir/src/main.cpp.o: CMakeFiles/SketchFlow.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/prabesh/Documents/SketchFlow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/SketchFlow.dir/src/main.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SketchFlow.dir/src/main.cpp.o -MF CMakeFiles/SketchFlow.dir/src/main.cpp.o.d -o CMakeFiles/SketchFlow.dir/src/main.cpp.o -c /Users/prabesh/Documents/SketchFlow/src/main.cpp
+CMakeFiles/SketchFlow.dir/test/main.cpp.o: CMakeFiles/SketchFlow.dir/flags.make
+CMakeFiles/SketchFlow.dir/test/main.cpp.o: /Users/prabesh/Documents/SketchFlow/test/main.cpp
+CMakeFiles/SketchFlow.dir/test/main.cpp.o: CMakeFiles/SketchFlow.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/prabesh/Documents/SketchFlow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/SketchFlow.dir/test/main.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SketchFlow.dir/test/main.cpp.o -MF CMakeFiles/SketchFlow.dir/test/main.cpp.o.d -o CMakeFiles/SketchFlow.dir/test/main.cpp.o -c /Users/prabesh/Documents/SketchFlow/test/main.cpp
 
-CMakeFiles/SketchFlow.dir/src/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SketchFlow.dir/src/main.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/prabesh/Documents/SketchFlow/src/main.cpp > CMakeFiles/SketchFlow.dir/src/main.cpp.i
+CMakeFiles/SketchFlow.dir/test/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SketchFlow.dir/test/main.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/prabesh/Documents/SketchFlow/test/main.cpp > CMakeFiles/SketchFlow.dir/test/main.cpp.i
 
-CMakeFiles/SketchFlow.dir/src/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SketchFlow.dir/src/main.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/prabesh/Documents/SketchFlow/src/main.cpp -o CMakeFiles/SketchFlow.dir/src/main.cpp.s
+CMakeFiles/SketchFlow.dir/test/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SketchFlow.dir/test/main.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/prabesh/Documents/SketchFlow/test/main.cpp -o CMakeFiles/SketchFlow.dir/test/main.cpp.s
+
+CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o: CMakeFiles/SketchFlow.dir/flags.make
+CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o: /Users/prabesh/Documents/SketchFlow/test/Canvas.cpp
+CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o: CMakeFiles/SketchFlow.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/prabesh/Documents/SketchFlow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o -MF CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o.d -o CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o -c /Users/prabesh/Documents/SketchFlow/test/Canvas.cpp
+
+CMakeFiles/SketchFlow.dir/test/Canvas.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SketchFlow.dir/test/Canvas.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/prabesh/Documents/SketchFlow/test/Canvas.cpp > CMakeFiles/SketchFlow.dir/test/Canvas.cpp.i
+
+CMakeFiles/SketchFlow.dir/test/Canvas.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SketchFlow.dir/test/Canvas.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/prabesh/Documents/SketchFlow/test/Canvas.cpp -o CMakeFiles/SketchFlow.dir/test/Canvas.cpp.s
+
+CMakeFiles/SketchFlow.dir/test/Controller.cpp.o: CMakeFiles/SketchFlow.dir/flags.make
+CMakeFiles/SketchFlow.dir/test/Controller.cpp.o: /Users/prabesh/Documents/SketchFlow/test/Controller.cpp
+CMakeFiles/SketchFlow.dir/test/Controller.cpp.o: CMakeFiles/SketchFlow.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/prabesh/Documents/SketchFlow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/SketchFlow.dir/test/Controller.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SketchFlow.dir/test/Controller.cpp.o -MF CMakeFiles/SketchFlow.dir/test/Controller.cpp.o.d -o CMakeFiles/SketchFlow.dir/test/Controller.cpp.o -c /Users/prabesh/Documents/SketchFlow/test/Controller.cpp
+
+CMakeFiles/SketchFlow.dir/test/Controller.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SketchFlow.dir/test/Controller.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/prabesh/Documents/SketchFlow/test/Controller.cpp > CMakeFiles/SketchFlow.dir/test/Controller.cpp.i
+
+CMakeFiles/SketchFlow.dir/test/Controller.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SketchFlow.dir/test/Controller.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/prabesh/Documents/SketchFlow/test/Controller.cpp -o CMakeFiles/SketchFlow.dir/test/Controller.cpp.s
+
+CMakeFiles/SketchFlow.dir/test/App.cpp.o: CMakeFiles/SketchFlow.dir/flags.make
+CMakeFiles/SketchFlow.dir/test/App.cpp.o: /Users/prabesh/Documents/SketchFlow/test/App.cpp
+CMakeFiles/SketchFlow.dir/test/App.cpp.o: CMakeFiles/SketchFlow.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/prabesh/Documents/SketchFlow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/SketchFlow.dir/test/App.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SketchFlow.dir/test/App.cpp.o -MF CMakeFiles/SketchFlow.dir/test/App.cpp.o.d -o CMakeFiles/SketchFlow.dir/test/App.cpp.o -c /Users/prabesh/Documents/SketchFlow/test/App.cpp
+
+CMakeFiles/SketchFlow.dir/test/App.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SketchFlow.dir/test/App.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/prabesh/Documents/SketchFlow/test/App.cpp > CMakeFiles/SketchFlow.dir/test/App.cpp.i
+
+CMakeFiles/SketchFlow.dir/test/App.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SketchFlow.dir/test/App.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/prabesh/Documents/SketchFlow/test/App.cpp -o CMakeFiles/SketchFlow.dir/test/App.cpp.s
+
+CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o: CMakeFiles/SketchFlow.dir/flags.make
+CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o: /Users/prabesh/Documents/SketchFlow/test/ToolBar.cpp
+CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o: CMakeFiles/SketchFlow.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/prabesh/Documents/SketchFlow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o -MF CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o.d -o CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o -c /Users/prabesh/Documents/SketchFlow/test/ToolBar.cpp
+
+CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/prabesh/Documents/SketchFlow/test/ToolBar.cpp > CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.i
+
+CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/prabesh/Documents/SketchFlow/test/ToolBar.cpp -o CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.s
+
+CMakeFiles/SketchFlow.dir/test/Shape.cpp.o: CMakeFiles/SketchFlow.dir/flags.make
+CMakeFiles/SketchFlow.dir/test/Shape.cpp.o: /Users/prabesh/Documents/SketchFlow/test/Shape.cpp
+CMakeFiles/SketchFlow.dir/test/Shape.cpp.o: CMakeFiles/SketchFlow.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/prabesh/Documents/SketchFlow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/SketchFlow.dir/test/Shape.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SketchFlow.dir/test/Shape.cpp.o -MF CMakeFiles/SketchFlow.dir/test/Shape.cpp.o.d -o CMakeFiles/SketchFlow.dir/test/Shape.cpp.o -c /Users/prabesh/Documents/SketchFlow/test/Shape.cpp
+
+CMakeFiles/SketchFlow.dir/test/Shape.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SketchFlow.dir/test/Shape.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/prabesh/Documents/SketchFlow/test/Shape.cpp > CMakeFiles/SketchFlow.dir/test/Shape.cpp.i
+
+CMakeFiles/SketchFlow.dir/test/Shape.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SketchFlow.dir/test/Shape.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/prabesh/Documents/SketchFlow/test/Shape.cpp -o CMakeFiles/SketchFlow.dir/test/Shape.cpp.s
 
 # Object files for target SketchFlow
 SketchFlow_OBJECTS = \
-"CMakeFiles/SketchFlow.dir/src/main.cpp.o"
+"CMakeFiles/SketchFlow.dir/test/main.cpp.o" \
+"CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o" \
+"CMakeFiles/SketchFlow.dir/test/Controller.cpp.o" \
+"CMakeFiles/SketchFlow.dir/test/App.cpp.o" \
+"CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o" \
+"CMakeFiles/SketchFlow.dir/test/Shape.cpp.o"
 
 # External object files for target SketchFlow
 SketchFlow_EXTERNAL_OBJECTS =
 
-SketchFlow: CMakeFiles/SketchFlow.dir/src/main.cpp.o
+SketchFlow: CMakeFiles/SketchFlow.dir/test/main.cpp.o
+SketchFlow: CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o
+SketchFlow: CMakeFiles/SketchFlow.dir/test/Controller.cpp.o
+SketchFlow: CMakeFiles/SketchFlow.dir/test/App.cpp.o
+SketchFlow: CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o
+SketchFlow: CMakeFiles/SketchFlow.dir/test/Shape.cpp.o
 SketchFlow: CMakeFiles/SketchFlow.dir/build.make
 SketchFlow: /opt/homebrew/Cellar/sdl2/2.30.11/lib/libSDL2.dylib
 SketchFlow: CMakeFiles/SketchFlow.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/prabesh/Documents/SketchFlow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable SketchFlow"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/prabesh/Documents/SketchFlow/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable SketchFlow"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/SketchFlow.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -129,29 +129,149 @@ SketchFlow/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/build
 .PHONY : SketchFlow/fast
 
-src/main.o: src/main.cpp.o
-.PHONY : src/main.o
+test/App.o: test/App.cpp.o
+.PHONY : test/App.o
 
 # target to build an object file
-src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/src/main.cpp.o
-.PHONY : src/main.cpp.o
+test/App.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/App.cpp.o
+.PHONY : test/App.cpp.o
 
-src/main.i: src/main.cpp.i
-.PHONY : src/main.i
+test/App.i: test/App.cpp.i
+.PHONY : test/App.i
 
 # target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
+test/App.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/App.cpp.i
+.PHONY : test/App.cpp.i
 
-src/main.s: src/main.cpp.s
-.PHONY : src/main.s
+test/App.s: test/App.cpp.s
+.PHONY : test/App.s
 
 # target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
+test/App.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/App.cpp.s
+.PHONY : test/App.cpp.s
+
+test/Canvas.o: test/Canvas.cpp.o
+.PHONY : test/Canvas.o
+
+# target to build an object file
+test/Canvas.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/Canvas.cpp.o
+.PHONY : test/Canvas.cpp.o
+
+test/Canvas.i: test/Canvas.cpp.i
+.PHONY : test/Canvas.i
+
+# target to preprocess a source file
+test/Canvas.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/Canvas.cpp.i
+.PHONY : test/Canvas.cpp.i
+
+test/Canvas.s: test/Canvas.cpp.s
+.PHONY : test/Canvas.s
+
+# target to generate assembly for a file
+test/Canvas.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/Canvas.cpp.s
+.PHONY : test/Canvas.cpp.s
+
+test/Controller.o: test/Controller.cpp.o
+.PHONY : test/Controller.o
+
+# target to build an object file
+test/Controller.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/Controller.cpp.o
+.PHONY : test/Controller.cpp.o
+
+test/Controller.i: test/Controller.cpp.i
+.PHONY : test/Controller.i
+
+# target to preprocess a source file
+test/Controller.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/Controller.cpp.i
+.PHONY : test/Controller.cpp.i
+
+test/Controller.s: test/Controller.cpp.s
+.PHONY : test/Controller.s
+
+# target to generate assembly for a file
+test/Controller.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/Controller.cpp.s
+.PHONY : test/Controller.cpp.s
+
+test/Shape.o: test/Shape.cpp.o
+.PHONY : test/Shape.o
+
+# target to build an object file
+test/Shape.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/Shape.cpp.o
+.PHONY : test/Shape.cpp.o
+
+test/Shape.i: test/Shape.cpp.i
+.PHONY : test/Shape.i
+
+# target to preprocess a source file
+test/Shape.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/Shape.cpp.i
+.PHONY : test/Shape.cpp.i
+
+test/Shape.s: test/Shape.cpp.s
+.PHONY : test/Shape.s
+
+# target to generate assembly for a file
+test/Shape.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/Shape.cpp.s
+.PHONY : test/Shape.cpp.s
+
+test/ToolBar.o: test/ToolBar.cpp.o
+.PHONY : test/ToolBar.o
+
+# target to build an object file
+test/ToolBar.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.o
+.PHONY : test/ToolBar.cpp.o
+
+test/ToolBar.i: test/ToolBar.cpp.i
+.PHONY : test/ToolBar.i
+
+# target to preprocess a source file
+test/ToolBar.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.i
+.PHONY : test/ToolBar.cpp.i
+
+test/ToolBar.s: test/ToolBar.cpp.s
+.PHONY : test/ToolBar.s
+
+# target to generate assembly for a file
+test/ToolBar.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/ToolBar.cpp.s
+.PHONY : test/ToolBar.cpp.s
+
+test/main.o: test/main.cpp.o
+.PHONY : test/main.o
+
+# target to build an object file
+test/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/main.cpp.o
+.PHONY : test/main.cpp.o
+
+test/main.i: test/main.cpp.i
+.PHONY : test/main.i
+
+# target to preprocess a source file
+test/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/main.cpp.i
+.PHONY : test/main.cpp.i
+
+test/main.s: test/main.cpp.s
+.PHONY : test/main.s
+
+# target to generate assembly for a file
+test/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SketchFlow.dir/build.make CMakeFiles/SketchFlow.dir/test/main.cpp.s
+.PHONY : test/main.cpp.s
 
 # Help Target
 help:
@@ -162,9 +282,24 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... SketchFlow"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
+	@echo "... test/App.o"
+	@echo "... test/App.i"
+	@echo "... test/App.s"
+	@echo "... test/Canvas.o"
+	@echo "... test/Canvas.i"
+	@echo "... test/Canvas.s"
+	@echo "... test/Controller.o"
+	@echo "... test/Controller.i"
+	@echo "... test/Controller.s"
+	@echo "... test/Shape.o"
+	@echo "... test/Shape.i"
+	@echo "... test/Shape.s"
+	@echo "... test/ToolBar.o"
+	@echo "... test/ToolBar.i"
+	@echo "... test/ToolBar.s"
+	@echo "... test/main.o"
+	@echo "... test/main.i"
+	@echo "... test/main.s"
 .PHONY : help
 
 
