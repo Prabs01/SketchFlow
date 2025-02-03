@@ -1,3 +1,0 @@
-/Users/prabesh/Documents/SketchFlow/build/CMakeFiles/SketchFlow.dir
-/Users/prabesh/Documents/SketchFlow/build/CMakeFiles/edit_cache.dir
-/Users/prabesh/Documents/SketchFlow/build/CMakeFiles/rebuild_cache.dir
