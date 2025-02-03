@@ -1,72 +1,126 @@
-#include <SDL.h>
-#include <iostream>
 
-int main(int argc, char* argv[]) {
-    // Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
-        return -1;
-    }
+#include<SDL.h>
+#include<iostream>
+#include<SDL2/SDL_image.h>
+
+#include"Canvas.h"
+#include"ToolBar.h"
+#include"Shape.h"
+
+using namespace std;
+
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
 
 
-    SDL_Rect displayBounds;
-    if (SDL_GetDisplayBounds(0, &displayBounds) != 0) {
-        std::cerr << "Failed to get display bounds: " << SDL_GetError() << std::endl;
-        SDL_Quit();
-        return -1;
-    }
 
-    // Create an SDL window
-    SDL_Window* window = SDL_CreateWindow(
-        "Hello SDL",                    // Window title
-        SDL_WINDOWPOS_UNDEFINED,        // Initial X position
-        SDL_WINDOWPOS_UNDEFINED,        // Initial Y position
-        displayBounds.w,                            // Width
-        displayBounds.h,                            // Height
-        SDL_WINDOW_SHOWN                // Flags
-    );
+int main(int argc, char* argv[]){
 
-    if (window == nullptr) {
-        std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-        SDL_Quit();
-        return -1;
-    }
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(IMG_INIT_PNG);
 
-    // Create a renderer to draw on the window
+    SDL_Window* window = SDL_CreateWindow("SDL2 Pixel Drawing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,SCREEN_HEIGHT,0);
+
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (renderer == nullptr) {
-        std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return -1;
-    }
 
-    // Event loop to keep the window open
-    bool running = true;
+    Canvas canvas;
+    ToolBar toolBar;
+
+    canvas.init(renderer);
+    toolBar.setRenderer(renderer);
+    toolBar.setToolCanvas(&canvas);
+
+
+    // //temp
+    // Line line = Line(100,100,400,600);
+    // line.setCanvas(&canvas);
+    // line.draw();
+
+
+
+    bool quit = false;
     SDL_Event event;
 
-    // Main loop
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running = false;
-            } else if (event.type == SDL_WINDOWEVENT) {
-                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    int newWidth = event.window.data1;
-                    int newHeight = event.window.data2;
-                    std::cout << "Window resized to " << newWidth << "x" << newHeight << std::endl;
 
-                    // You can use the new size to update your rendering viewport if needed
-                    SDL_RenderSetLogicalSize(renderer, newWidth, newHeight);
+    SDL_Init(SDL_INIT_VIDEO);
+
+    bool leftMouseButtonDown = false;
+
+    int PIXEL_SIZE = 1;
+    int lastMouseX = -1, lastMouseY = -1; // Track the last mouse position
+
+    while (!quit) {
+        //SDL_UpdateTexture(texture, NULL, pixels, SCREEN_WIDTH * sizeof(Uint32));
+        canvas.updatePixels();
+
+        SDL_WaitEvent(&event);
+
+        toolBar.handleEvent(event);
+
+        switch (event.type) {
+            case SDL_QUIT:
+                quit = true;
+                break;
+
+            case SDL_KEYDOWN:
+                if(event.key.keysym.sym == SDLK_c)
+                    canvas.clear();
+
+                //temp
+                if(event.key.keysym.sym == SDLK_UP)
+                    // line.move(0,-5);
+
+                if(event.key.keysym.sym == SDLK_LEFT)
+                    // line.move(-5,0);
+
+                if(event.key.keysym.sym == SDLK_RIGHT)
+                    // line.move(5,0);
+
+                if(event.key.keysym.sym == SDLK_DOWN)
+                    // line.move(0,5);
+
+
+            case SDL_MOUSEBUTTONUP:
+                if (event.button.button == SDL_BUTTON_LEFT)
+                    leftMouseButtonDown = false;
+                lastMouseX = lastMouseY = -1; // Reset last position
+                break;
+
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT){
+                    leftMouseButtonDown = true;
+                    toolBar.mouseClicked(event);
                 }
-            }
-    }
-    }
+                break;
 
-    // Clean up and quit SDL
+            case SDL_MOUSEMOTION:
+                
+                break;
+        }
+
+       //canvas.drawLine(100,100,400,500);
+        
+        SDL_RenderClear(renderer);
+        // SDL_RenderDrawRect(renderer, &pencil_rect);
+        //SDL_RenderCopy(renderer, texture, NULL, NULL);
+        toolBar.render();
+        canvas.render();
+        // SDL_RenderCopy(renderer, pencil_tex, NULL ,&pencil_rect);
+        SDL_RenderPresent(renderer);
+        // SDL_RenderClear(renderer);
+        // SDL_RenderCopy(renderer, texture, NULL, NULL);
+        // SDL_RenderPresent(renderer);
+    }      
+
+
+
+    // delete[] pixels;
+    // SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+
+
 
     return 0;
 }
