@@ -13,6 +13,7 @@ set(SDL2_IMAGE_LIB_DIR "/opt/homebrew/Cellar/sdl2_image/2.8.4/lib")
 
 # Find required SDL2 packages
 find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
 # Define the main source directory

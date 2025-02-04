@@ -10,6 +10,9 @@ char ERASER_IMAGE_URL[] = "../resources/eraser.png";
 SDL_Rect FILLER_RECT = {0,200,100,100};
 char FILLER_IMAGE_URL[] = "../resources/paint.jpg";
 
+SDL_Rect LINE_DRAWER_RECT = {0,300,50,50};
+char LINE_DRAWER_IMAGE_URL[] = "../resources/line.png";
+
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;
 }
@@ -269,23 +272,48 @@ bool Filler::isMouseOver(){
 }
 
 
-void Filler::fill(int x, int y){
-    Uint32 pixelColor = canvas -> getPixelColor(x, y);
+void Filler::fill(int EP1, int EP2){
+    // Uint32 pixelColor = canvas -> getPixelColor(x, y);
 
-    if(!canvas ->isInside(x,y)){
-        return;
-    }
+    // if(!canvas ->isInside(x,y)){
+    //     return;
+    // }
 
-    if(pixelColor != fill_color && pixelColor == current_color){
-            canvas -> setPixel(x,y, fill_color);
-            fill(x-1, y);
-            fill(x+1,y);
-            fill(x,y-1);
-            fill(x,y+1);
+    // if(pixelColor != fill_color && pixelColor == current_color){
+    //         canvas -> setPixel(x,y, fill_color);
+    //         fill(x-1, y);
+    //         fill(x+1,y);
+    //         fill(x,y-1);
+    //         fill(x,y+1);
+    // }
+    // else{
+    //     return;
+    // }
+    if (!canvas->isInside(EP1,EP2)) return;
+    if (fill_color == current_color) return;
+    if (canvas->getPixelColor(EP1, EP2) == fill_color) return;
+
+    vector<int> xp,yp;
+    xp.push_back(EP1);
+    yp.push_back(EP2);
+
+    while (!xp.empty()) {
+
+        int x = xp.back();xp.pop_back();
+        int y = yp.back();yp.pop_back();
+
+        if (!canvas->isInside(x,y)) continue;
+        if (canvas->getPixelColor(x, y) != current_color) continue;
+
+        canvas->setPixel(x, y, fill_color);
+
+        xp.push_back(x - 1);yp.push_back(y);
+        xp.push_back(x + 1);yp.push_back(y);
+        xp.push_back(x);yp.push_back(y-1);
+        xp.push_back(x );yp.push_back(y+1);
+
     }
-    else{
-        return;
-    }
+    
 }
 
 void Filler::setColor(Uint32 color){
@@ -294,4 +322,76 @@ void Filler::setColor(Uint32 color){
 
 void Filler::setBoundaryColor(Uint32 color){
     boundary_color = color;
+}
+
+
+
+
+LineDrawer::LineDrawer(){
+    startingPixel = {-100,-100};
+    endingPixel = {-100,-100};
+    width = 5;
+    color = 0x00000000;
+    drawing = false;
+    bound_box = LINE_DRAWER_RECT;
+}
+
+void LineDrawer::makeTexture(SDL_Renderer* renderer_){
+    renderer = renderer_;
+    imgTexture = IMG_LoadTexture(renderer,LINE_DRAWER_IMAGE_URL);
+    if(!imgTexture){
+        printf("failes to load the pencil image texture %s \n",SDL_GetError());
+    }
+}
+
+void LineDrawer::render(){
+    SDL_RenderDrawRect(renderer, &bound_box);
+    SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
+}
+
+void LineDrawer::onMouseDown(SDL_Event& event){
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    if(!drawing){
+        startingPixel.x = x;
+        startingPixel.y  = y;
+        endingPixel.x = x;
+        endingPixel.y = y;
+        drawing = true;
+    }
+}
+
+void LineDrawer::onMouseMove(SDL_Event& event){
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    
+    if(drawing){
+        canvas->clearLine(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
+        endingPixel.x = x;
+        endingPixel.y = y;
+        canvas->drawLine(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
+    }
+    
+
+}
+
+void LineDrawer::onMouseUp(SDL_Event& event){
+    if(drawing){
+        drawing = false;
+    }
+}
+
+bool LineDrawer::isMouseOver(){
+    int mouseX, mouseY;
+    Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+    if(mouseX >= bound_box.x && mouseX <=(bound_box.x + bound_box.w) && mouseY>=bound_box.y && mouseY<=(bound_box.y+bound_box.h)){
+        // printf(" Eraser selected ");
+        // fflush(stdout);
+        return true;
+        
+    }else{
+        return false;
+    }
 }

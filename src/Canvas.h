@@ -1,6 +1,9 @@
 #pragma once
 
 #include<SDL.h>
+#include<iostream>
+
+using namespace std;
 
 //to be changed for responsiveness
 extern SDL_Rect CANVAS_RECT;

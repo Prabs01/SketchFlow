@@ -17,6 +17,9 @@ extern char ERASER_IMAGE_URL[];
 extern SDL_Rect FILLER_RECT;
 extern char FILLER_IMAGE_URL[];
 
+extern SDL_Rect LINE_DRAWER_RECT;
+extern char LINE_DRAWER_IMAGE_URL[];
+
 class Tools
 {
 protected:
@@ -106,7 +109,7 @@ class Filler:public Tools{
     public:
         Filler();
 
-         void makeTexture(SDL_Renderer* renderer)override;
+        void makeTexture(SDL_Renderer* renderer)override;
 
         void render() override;
         void onMouseDown(SDL_Event& event) override;
@@ -121,5 +124,26 @@ class Filler:public Tools{
 
 class Select:public Tools{
 
+};
+
+class LineDrawer:public Tools{
+    private:
+        SDL_Point startingPixel;
+        SDL_Point endingPixel;
+        int width;
+        Uint32 color;
+        bool drawing;
+
+    public:
+        LineDrawer();
+        void makeTexture(SDL_Renderer* renderer)override;
+
+        void render() override;
+        void onMouseDown(SDL_Event& event) override;
+        void onMouseUp(SDL_Event& event) override;
+        void onMouseMove(SDL_Event& event) override;
+        bool isMouseOver() override;
+
+        void setColor(Uint32 color);
 };
 

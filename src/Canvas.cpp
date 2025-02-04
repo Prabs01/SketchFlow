@@ -73,47 +73,85 @@ Canvas::~Canvas(){
 
 
 void Canvas::drawLine(int x1, int y1, int x2, int y2){
-    int dx = x2-x1;
-    int dy = y2-y1;
+    int dx = abs(x2-x1);
+    int dy = abs(y2-y1);
+
+    int ix = (x1<x2)?1:-1;
+    int iy = (y1<y2)?1:-1;
 
     int x = x1;
     int y = y1;
 
-    int p = 2*dy + dx;
-
-    for(int i = 0; i < dx; i++){
-        setPixel(x,y, 0); 
-        if(p<0){
-            x = x+1;
-            p = p + 2*dy;
+    if(dx>dy){
+        int p = 2*dy - dx;
+        for(int i = 0; i < dx; i++){
+            setPixel(x,y, 0X00000000); 
+            if(p<0){
+                x = x+ix;
+                p = p + 2*dy;
+            }
+            else if(p>=0){
+                x = x+ix;
+                y = y+iy;
+                p = p + 2*dy -2*dx;
+            }
         }
-        else if(p>=0){
-            x = x+1;
-            y = y+1;
-            p = p + 2*dy -2*dx;
+    }
+    else if(dy>dx){
+        int p = 2*dx - dy;
+        for(int i = 0; i < dy; i++){
+            setPixel(x,y, 0X00000000); 
+            if(p<0){
+                y = y+iy;
+                p = p + 2*dx;
+            }
+            else if(p>=0){
+                y = y+iy;
+                x = x+ix;
+                p = p + 2*dx -2*dy;
+            }
         }
     }
 }
 
 void Canvas::clearLine(int x1, int y1, int x2, int y2){
-    int dx = x2-x1;
-    int dy = y2-y1;
+    int dx = abs(x2-x1);
+    int dy = abs(y2-y1);
+
+    int ix = (x1<x2)?1:-1;
+    int iy = (y1<y2)?1:-1;
 
     int x = x1;
     int y = y1;
 
-    int p = 2*dy + dx;
-
-    for(int i = 0; i < dx; i++){
-        setPixel(x,y, 0XFFFFFFFF); 
-        if(p<0){
-            x = x+1;
-            p = p + 2*dy;
+    if(dx>dy){
+        int p = 2*dy - dx;
+        for(int i = 0; i < dx; i++){
+            setPixel(x,y, 0XFFFFFFFF); 
+            if(p<0){
+                x = x+ix;
+                p = p + 2*dy;
+            }
+            else if(p>=0){
+                x = x+ix;
+                y = y+iy;
+                p = p + 2*dy -2*dx;
+            }
         }
-        else if(p>=0){
-            x = x+1;
-            y = y+1;
-            p = p + 2*dy -2*dx;
+    }
+    else if(dy>dx){
+        int p = 2*dx - dy;
+        for(int i = 0; i < dy; i++){
+            setPixel(x,y, 0XFFFFFFFF); 
+            if(p<0){
+                y = y+iy;
+                p = p + 2*dx;
+            }
+            else if(p>=0){
+                y = y+iy;
+                x = x+ix;
+                p = p + 2*dx -2*dy;
+            }
         }
     }
 }

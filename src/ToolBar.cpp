@@ -8,6 +8,7 @@ ToolBar::ToolBar(){
     tools.push_back(new Pencil);
     tools.push_back(new Eraser);
     tools.push_back(new Filler);
+    tools.push_back(new LineDrawer);
 }
 
 void ToolBar::setRenderer(SDL_Renderer* renderer_){
