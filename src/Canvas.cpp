@@ -5,7 +5,7 @@ Canvas::Canvas(){
     area = CANVAS_RECT;
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];
-    showBuffer = false;
+    showBuffer = true;
     clear();
     clearBuffer();
 }
@@ -16,6 +16,7 @@ void Canvas::init(SDL_Renderer* renderer_){
     canvaTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC, area.w, area.h);
 
     bufferTexture = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC, area.w, area.h);
+    SDL_SetTextureBlendMode(bufferTexture, SDL_BLENDMODE_BLEND);
 }
 void Canvas::updatePixels(){
     SDL_UpdateTexture(canvaTexture, NULL, pixels,area.w * sizeof(Uint32));
@@ -100,7 +101,7 @@ void Canvas::clearBuffer(){
             if(i %10 == 0 && j%10 ==0){
                 printf("(%d, %d)",x,y);
             }
-            setPixelBuffer(x,y,0x00FFFFFF);
+            setPixelBuffer(x,y,0X00123456);
         }
     }
 }
@@ -167,7 +168,7 @@ void Canvas::drawLineBuffer(int x1, int y1, int x2, int y2){
     if(dx>dy){
         int p = 2*dy - dx;
         for(int i = 0; i < dx; i++){
-            setPixelBuffer(x,y, 0X00000000); 
+            setPixelBuffer(x,y, 0XFF000000); 
             if(p<0){
                 x = x+ix;
                 p = p + 2*dy;
@@ -182,7 +183,7 @@ void Canvas::drawLineBuffer(int x1, int y1, int x2, int y2){
     else if(dy>dx){
         int p = 2*dx - dy;
         for(int i = 0; i < dy; i++){
-            setPixelBuffer(x,y, 0X00000000); 
+            setPixelBuffer(x,y, 0XFF000000); 
             if(p<0){
                 y = y+iy;
                 p = p + 2*dx;
@@ -252,7 +253,7 @@ void Canvas::clearLineBuffer(int x1, int y1, int x2, int y2){
     if(dx>dy){
         int p = 2*dy - dx;
         for(int i = 0; i < dx; i++){
-            setPixelBuffer(x,y, 0XFFFFFFFF); 
+            setPixelBuffer(x,y, 0X00123456); 
             if(p<0){
                 x = x+ix;
                 p = p + 2*dy;
@@ -267,7 +268,7 @@ void Canvas::clearLineBuffer(int x1, int y1, int x2, int y2){
     else if(dy>dx){
         int p = 2*dx - dy;
         for(int i = 0; i < dy; i++){
-            setPixelBuffer(x,y, 0XFFFFFFFF); 
+            setPixelBuffer(x,y, 0X00123456); 
             if(p<0){
                 y = y+iy;
                 p = p + 2*dx;
@@ -283,12 +284,12 @@ void Canvas::clearLineBuffer(int x1, int y1, int x2, int y2){
 
 void Canvas::viewBuffer(){
     showBuffer = true;
-    copyToBuffer();
+    //clearBuffer();
 }
 
 void Canvas::removeBuffer(){
     showBuffer = false;
-    clearBuffer();
+    //clearBuffer();
 }
 
 void Canvas::copyToBuffer(){

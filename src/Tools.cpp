@@ -359,7 +359,6 @@ void LineDrawer::onMouseDown(SDL_Event& event){
         endingPixel.x = x;
         endingPixel.y = y;
         drawing = true;
-        canvas->viewBuffer();
     }
 }
 
@@ -380,10 +379,11 @@ void LineDrawer::onMouseMove(SDL_Event& event){
 
 void LineDrawer::onMouseUp(SDL_Event& event){
     if(drawing){
-        canvas->removeBuffer();
         canvas->drawLine(startingPixel.x,startingPixel.y,endingPixel.x,endingPixel.y);
         drawing = false;
+        canvas->clearBuffer();
     }
+    
 }
 
 bool LineDrawer::isMouseOver(){
