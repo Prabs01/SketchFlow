@@ -52,6 +52,7 @@ int main(int argc, char* argv[]){
     while (!quit) {
         //SDL_UpdateTexture(texture, NULL, pixels, SCREEN_WIDTH * sizeof(Uint32));
         canvas.updatePixels();
+        canvas.updateBuffer();
 
         SDL_WaitEvent(&event);
 
