@@ -32,6 +32,11 @@ void ToolBar::render(){
     for(int i = 0; i<tools.size();i++){
         tools[i]->render();
     }
+
+    if(activeTool){
+        activeTool->drawCursor();
+    }
+    
 }
 
 bool ToolBar::mouseClicked(SDL_Event& event){

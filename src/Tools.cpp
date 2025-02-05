@@ -111,6 +111,10 @@ void Pencil::setColor(Uint32 color){
     toolColor = color;
 }
 
+void Pencil::drawCursor(){
+
+}
+
 
 
 
@@ -136,13 +140,24 @@ void Eraser::makeTexture(SDL_Renderer* renderer_){
 void Eraser::render(){
     SDL_RenderDrawRect(renderer, &bound_box);
     SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
-    int mouseX, mouseY;
-    Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-    // eraserRect.x = mouseX;
-    // eraserRect.y = mouseY;
-    // eraserRect.w = eraserSize;
-    // eraserRect.h = eraserSize;
-    // canvas->drawLine(eraserRect.x,eraserRect.y,eraserRect.x+eraserRect.w,eraserRect.y);
+    
+    
+}
+
+void Eraser::drawCursor(){
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    if(canvas->isInside(x,y)){
+        SDL_ShowCursor(SDL_DISABLE);
+        canvas->clearBuffer();
+        canvas->drawLineBuffer(x,y,x+eraserSize,y);
+        canvas->drawLineBuffer(x,y,x,y+eraserSize);
+        canvas->drawLineBuffer(x+eraserSize,y,x+eraserSize,y+eraserSize);
+        canvas->drawLineBuffer(x,y+eraserSize,x+eraserSize,y+eraserSize);
+    }else{
+        SDL_ShowCursor(SDL_ENABLE);
+        canvas->clearBuffer();
+    }
 }
 
 void Eraser::onMouseDown(SDL_Event& event){
@@ -324,6 +339,9 @@ void Filler::setBoundaryColor(Uint32 color){
     boundary_color = color;
 }
 
+void Filler::drawCursor(){
+    
+}
 
 
 
@@ -397,5 +415,9 @@ bool LineDrawer::isMouseOver(){
     }else{
         return false;
     }
+}
+
+void LineDrawer::drawCursor(){
+    
 }
 

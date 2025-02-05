@@ -98,9 +98,6 @@ void Canvas::clearBuffer(){
         for(int j = 0; j<area.h;j++){
             int x = i, y = j;
             fitCanvas(&x,&y);
-            if(i %10 == 0 && j%10 ==0){
-                printf("(%d, %d)",x,y);
-            }
             setPixelBuffer(x,y,0X00123456);
         }
     }

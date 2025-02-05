@@ -42,6 +42,8 @@ public:
 
     virtual bool isMouseOver()=0;
 
+    virtual void drawCursor()=0;
+
 
     void setCanvas(Canvas* canvas_);
 
@@ -64,6 +66,8 @@ class Pencil:public Tools{
         void onMouseUp(SDL_Event& event) override;
         void onMouseMove(SDL_Event& event) override;
         bool isMouseOver() override;
+
+        void drawCursor() override;
 
         void setColor(Uint32 color);
 
@@ -95,6 +99,8 @@ class Eraser:public Tools{
 
         void setEraserSize(int EraserSize_);
 
+        void drawCursor() override;
+
 
 };
 
@@ -116,6 +122,7 @@ class Filler:public Tools{
         void onMouseUp(SDL_Event& event) override;
         void onMouseMove(SDL_Event& event) override;
         bool isMouseOver() override;
+        void drawCursor() override;
 
         void setColor(Uint32 color);
         void setBoundaryColor(Uint32 color);
@@ -143,6 +150,7 @@ class LineDrawer:public Tools{
         void onMouseUp(SDL_Event& event) override;
         void onMouseMove(SDL_Event& event) override;
         bool isMouseOver() override;
+        void drawCursor() override;
 
         void setColor(Uint32 color);
 };
