@@ -73,6 +73,8 @@ void ToolBar::handleEvent(SDL_Event& event){
             activeTool -> onMouseDown(event);
         }else if(event.type == SDL_MOUSEMOTION){
             activeTool -> onMouseMove(event);
+        }else if(event.type == SDL_KEYDOWN){
+            activeTool -> keyboardInput(event);
         }
     }
 }

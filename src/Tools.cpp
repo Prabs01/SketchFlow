@@ -91,6 +91,14 @@ void Pencil::onMouseMove(SDL_Event& event){
     
 }
 
+void Pencil::keyboardInput(SDL_Event& event){
+    if(event.key.keysym.sym == SDLK_EQUALS){
+        pixelSize += 1;
+    }else if(event.key.keysym.sym == SDLK_MINUS && pixelSize >1){
+        pixelSize -= 1;
+    }
+}
+
 bool Pencil::isMouseOver(){
     int mouseX, mouseY;
     Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
@@ -222,6 +230,14 @@ bool Eraser::isMouseOver(){
     }
 }
 
+void Eraser::keyboardInput(SDL_Event& event){
+    if(event.key.keysym.sym == SDLK_EQUALS){
+        eraserSize += 1;
+    }else if(event.key.keysym.sym == SDLK_MINUS && eraserSize >5){
+        eraserSize -= 1;
+    }
+}
+
 void Eraser::setEraserSize(int eraserSize_){
     eraserSize = eraserSize_;
 }
@@ -286,6 +302,13 @@ bool Filler::isMouseOver(){
     }
 }
 
+void Filler::keyboardInput(SDL_Event& event){
+    if(event.key.keysym.sym == SDLK_EQUALS){
+
+    }else if(event.key.keysym.sym == SDLK_MINUS){
+
+    }
+}
 
 void Filler::fill(int EP1, int EP2){
     // Uint32 pixelColor = canvas -> getPixelColor(x, y);
@@ -414,6 +437,14 @@ bool LineDrawer::isMouseOver(){
         
     }else{
         return false;
+    }
+}
+
+void LineDrawer::keyboardInput(SDL_Event& event){
+    if(event.key.keysym.sym == SDLK_EQUALS){
+        width += 1;
+    }else if(event.key.keysym.sym == SDLK_MINUS){
+        width -= 1;
     }
 }
 

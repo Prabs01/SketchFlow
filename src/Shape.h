@@ -32,3 +32,4 @@ class Line:public Shape{
         void clear() override;
         void move(int dx, int dy);
 };
+
