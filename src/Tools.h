@@ -5,6 +5,7 @@
 #include<iostream>
 #include"Canvas.h"
 #include"Shape.h"
+#include"Color.h"
 
 using namespace std;
 
@@ -53,7 +54,7 @@ public:
 
 class Pencil:public Tools{
     private:
-        Uint32  toolColor = 0;
+        Color  toolColor;
         int pixelSize;
         bool isDrawing;
         SDL_Point lastPos;
@@ -73,7 +74,7 @@ class Pencil:public Tools{
 
         void drawCursor() override;
 
-        void setColor(Uint32 color);
+        void setColor(Color color);
 
         void setPixelSize(int pixelSize_);
 
@@ -81,7 +82,7 @@ class Pencil:public Tools{
 
 class Eraser:public Tools{
     private:
-        Uint32  toolColor;
+        Color  toolColor;
         int eraserSize;
         bool isDrawing;
         SDL_Point lastPos;
@@ -101,7 +102,7 @@ class Eraser:public Tools{
 
         void keyboardInput(SDL_Event& event) override;
 
-        void setColor(Uint32 color);
+        void setColor(Color color);
 
         void setEraserSize(int EraserSize_);
 
@@ -113,9 +114,9 @@ class Eraser:public Tools{
 
 class Filler:public Tools{
     private:
-        Uint32 fill_color;
-        Uint32 boundary_color;
-        Uint32 current_color;
+        Color fill_color;
+        Color boundary_color;
+        Color current_color;
         bool pixelSelected;
         
     public:
@@ -132,8 +133,8 @@ class Filler:public Tools{
 
         void keyboardInput(SDL_Event& event) override;
 
-        void setColor(Uint32 color);
-        void setBoundaryColor(Uint32 color);
+        void setColor(Color color);
+        void setBoundaryColor(Color color);
         void fill(int x, int y);
 };
 
@@ -146,7 +147,7 @@ class LineDrawer:public Tools{
         SDL_Point startingPixel;
         SDL_Point endingPixel;
         int width;
-        Uint32 color;
+        Color color;
         bool drawing;
 
     public:
@@ -162,6 +163,6 @@ class LineDrawer:public Tools{
 
         void keyboardInput(SDL_Event& event) override;
 
-        void setColor(Uint32 color);
+        void setColor(Color color);
 };
 

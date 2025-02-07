@@ -1,11 +1,13 @@
 #include"Canvas.h"
 
 SDL_Rect CANVAS_RECT = {100,10,700,500};
+
 Canvas::Canvas(){
     area = CANVAS_RECT;
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];
     showBuffer = true;
+    bgColor = white;
     clear();
     clearBuffer();
 }
@@ -14,6 +16,7 @@ void Canvas::init(SDL_Renderer* renderer_){
     renderer = renderer_;
 
     canvaTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC, area.w, area.h);
+    SDL_SetTextureBlendMode(canvaTexture, SDL_BLENDMODE_BLEND);
 
     bufferTexture = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC, area.w, area.h);
     SDL_SetTextureBlendMode(bufferTexture, SDL_BLENDMODE_BLEND);
@@ -62,32 +65,51 @@ void Canvas::fitCanvas(int* x, int* y){
     *y =*y + area.y;
 }
 
-void Canvas::setPixel(int x, int y, Uint32 color){
+void Canvas::setPixel(int x, int y, Color color){
     if(x >= area.x && x<=area.w + area.x && y>=area.y && y<=area.h+area.y){
         x = x-area.x;
         y = y-area.y;
-        pixels[y*area.w + x] = color;
+        pixels[y*area.w + x] = color.toUint32();
     }
 }
 
-void Canvas::setPixelBuffer(int x, int y, Uint32 color){
+void Canvas::setPixelBuffer(int x, int y, Color color){
     if(x >= area.x && x<=area.w + area.x && y>=area.y && y<=area.h+area.y){
         x = x-area.x;
         y = y-area.y;
-        bufferPixels[y*area.w + x] = color;
+        bufferPixels[y*area.w + x] = color.toUint32();
     }
 }
 
-Uint32 Canvas::getPixelColor(int x, int y){
-    x = x-area.x;
-    y = y-area.y;
-    return pixels[y*area.w +x];
+Color Canvas::getPixelColor(int x, int y){
+   x = x - area.x;
+    y = y - area.y;
+    
+    Uint32 pixel = pixels[y * area.w + x];
+
+    Uint8 r = (pixel >> 16) & 0xFF;  // Extract red (8 bits)
+    Uint8 g = (pixel >> 8) & 0xFF;   // Extract green (8 bits)
+    Uint8 b = pixel & 0xFF;          // Extract blue (8 bits)
+    Uint8 a = (pixel >> 24) & 0xFF;  // Extract alpha (8 bits)
+
+    // Return the Color object with extracted RGBA values
+    return Color(r, g, b, a);
 }
 
-Uint32 Canvas::getPixelColorBuffer(int x, int y){
-    x = x-area.x;
-    y = y-area.y;
-    return bufferPixels[y*area.w +x];
+Color Canvas::getPixelColorBuffer(int x, int y){
+    x = x - area.x;
+    y = y - area.y;
+    
+    Uint32 pixel = bufferPixels[y * area.w + x];
+
+    // Extract the individual RGBA components from the pixel value
+    Uint8 r = (pixel >> 16) & 0xFF;  // Extract red (8 bits)
+    Uint8 g = (pixel >> 8) & 0xFF;   // Extract green (8 bits)
+    Uint8 b = pixel & 0xFF;          // Extract blue (8 bits)
+    Uint8 a = (pixel >> 24) & 0xFF;  // Extract alpha (8 bits)
+
+    // Return the Color object with extracted RGBA values
+    return Color(r, g, b, a);
 }
 
 void Canvas::clear(){
@@ -98,7 +120,7 @@ void Canvas::clearBuffer(){
         for(int j = 0; j<area.h;j++){
             int x = i, y = j;
             fitCanvas(&x,&y);
-            setPixelBuffer(x,y,0X00123456);
+            setPixelBuffer(x,y,transparent);
         }
     }
 }
@@ -110,7 +132,7 @@ Canvas::~Canvas(){
 }
 
 
-void Canvas::drawLine(int x1, int y1, int x2, int y2){
+void Canvas::drawLine(int x1, int y1, int x2, int y2,Color color){
     int dx = abs(x2-x1);
     int dy = abs(y2-y1);
 
@@ -123,7 +145,7 @@ void Canvas::drawLine(int x1, int y1, int x2, int y2){
     if(dx>dy){
         int p = 2*dy - dx;
         for(int i = 0; i < dx; i++){
-            setPixel(x,y, 0X00000000); 
+            setPixel(x,y, color); 
             if(p<0){
                 x = x+ix;
                 p = p + 2*dy;
@@ -138,7 +160,7 @@ void Canvas::drawLine(int x1, int y1, int x2, int y2){
     else if(dy>dx){
         int p = 2*dx - dy;
         for(int i = 0; i < dy; i++){
-            setPixel(x,y, 0X00000000); 
+            setPixel(x,y, color); 
             if(p<0){
                 y = y+iy;
                 p = p + 2*dx;
@@ -152,7 +174,7 @@ void Canvas::drawLine(int x1, int y1, int x2, int y2){
     }
 }
 
-void Canvas::drawLineBuffer(int x1, int y1, int x2, int y2){
+void Canvas::drawLineBuffer(int x1, int y1, int x2, int y2, Color color){
     int dx = abs(x2-x1);
     int dy = abs(y2-y1);
 
@@ -165,7 +187,7 @@ void Canvas::drawLineBuffer(int x1, int y1, int x2, int y2){
     if(dx>dy){
         int p = 2*dy - dx;
         for(int i = 0; i < dx; i++){
-            setPixelBuffer(x,y, 0XFF000000); 
+            setPixelBuffer(x,y, color); 
             if(p<0){
                 x = x+ix;
                 p = p + 2*dy;
@@ -180,7 +202,7 @@ void Canvas::drawLineBuffer(int x1, int y1, int x2, int y2){
     else if(dy>dx){
         int p = 2*dx - dy;
         for(int i = 0; i < dy; i++){
-            setPixelBuffer(x,y, 0XFF000000); 
+            setPixelBuffer(x,y, color); 
             if(p<0){
                 y = y+iy;
                 p = p + 2*dx;
@@ -208,7 +230,7 @@ void Canvas::clearLine(int x1, int y1, int x2, int y2){
     if(dx>dy){
         int p = 2*dy - dx;
         for(int i = 0; i < dx; i++){
-            setPixel(x,y, 0XFFFFFFFF); 
+            setPixel(x,y, bgColor); 
             if(p<0){
                 x = x+ix;
                 p = p + 2*dy;
@@ -223,7 +245,7 @@ void Canvas::clearLine(int x1, int y1, int x2, int y2){
     else if(dy>dx){
         int p = 2*dx - dy;
         for(int i = 0; i < dy; i++){
-            setPixel(x,y, 0XFFFFFFFF); 
+            setPixel(x,y, bgColor); 
             if(p<0){
                 y = y+iy;
                 p = p + 2*dx;
@@ -250,7 +272,7 @@ void Canvas::clearLineBuffer(int x1, int y1, int x2, int y2){
     if(dx>dy){
         int p = 2*dy - dx;
         for(int i = 0; i < dx; i++){
-            setPixelBuffer(x,y, 0X00123456); 
+            setPixelBuffer(x,y,transparent); 
             if(p<0){
                 x = x+ix;
                 p = p + 2*dy;
@@ -265,7 +287,7 @@ void Canvas::clearLineBuffer(int x1, int y1, int x2, int y2){
     else if(dy>dx){
         int p = 2*dx - dy;
         for(int i = 0; i < dy; i++){
-            setPixelBuffer(x,y, 0X00123456); 
+            setPixelBuffer(x,y, transparent); 
             if(p<0){
                 y = y+iy;
                 p = p + 2*dx;

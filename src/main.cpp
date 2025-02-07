@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
 
     bool leftMouseButtonDown = false;
 
-    int PIXEL_SIZE = 1;
+    int PIXEL_SIZE = 1; //only for testing purpose
     int lastMouseX = -1, lastMouseY = -1; // Track the last mouse position
 
     while (!quit) {
@@ -125,3 +125,4 @@ int main(int argc, char* argv[]){
 
     return 0;
 }
+
