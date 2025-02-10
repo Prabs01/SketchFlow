@@ -22,6 +22,7 @@ class Line:public Shape{
     private:
         SDL_Point p1;
         SDL_Point p2;
+        int size;
 
     public:
         Line();
@@ -33,3 +34,17 @@ class Line:public Shape{
         void move(int dx, int dy);
 };
 
+class Rectangle:public Shape{
+    private:
+        SDL_Point p1;
+        SDL_Point p2;
+
+    public:
+        Rectangle();
+        Rectangle(SDL_Point p1, SDL_Point p2);
+        Rectangle(int x1, int y1, int x2, int y2);
+
+        void draw() override;
+        void clear() override;
+        void move(int dx, int dy);
+};

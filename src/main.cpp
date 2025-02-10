@@ -2,6 +2,7 @@
 #include<iostream>
 #include<SDL_image.h>
 #include "WindowSize.h"
+
 #include"Canvas.h"
 #include"ToolBar.h"
 #include"Shape.h"
@@ -41,13 +42,6 @@ int main(int argc, char* argv[]){
     toolBar.setToolCanvas(&canvas);
 
 
-    // //temp
-    // Line line = Line(100,100,400,600);
-    // line.setCanvas(&canvas);
-    // line.draw();
-
-
-
     bool quit = false;
     SDL_Event event;
 
@@ -56,7 +50,7 @@ int main(int argc, char* argv[]){
 
     bool leftMouseButtonDown = false;
 
-    int PIXEL_SIZE = 1;
+    int PIXEL_SIZE = 1; //only for testing purpose
     int lastMouseX = -1, lastMouseY = -1; // Track the last mouse position
 
     while (!quit) {
@@ -121,15 +115,11 @@ int main(int argc, char* argv[]){
        //canvas.drawLine(100,100,400,500);
         
         SDL_RenderClear(renderer);
-        // SDL_RenderDrawRect(renderer, &pencil_rect);
-        //SDL_RenderCopy(renderer, texture, NULL, NULL);
+        
         toolBar.render();
         canvas.render();
-        // SDL_RenderCopy(renderer, pencil_tex, NULL ,&pencil_rect);
+    
         SDL_RenderPresent(renderer);
-        // SDL_RenderClear(renderer);
-        // SDL_RenderCopy(renderer, texture, NULL, NULL);
-        // SDL_RenderPresent(renderer);
     }      
 
     // delete[] pixels;
@@ -140,3 +130,4 @@ int main(int argc, char* argv[]){
 
     return 0;
 }
+
