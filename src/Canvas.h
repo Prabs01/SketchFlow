@@ -31,10 +31,10 @@ public:
 
     void init(SDL_Renderer* renderer_); // Initializes the canvas with an SDL renderer
 
-    void clear(); // Clears the canvas
-    void clearBuffer(); // Clears the buffer
+    void clear(SDL_Rect portion = CANVAS_RECT); // Clears the canvas
+    void clearBuffer(SDL_Rect portion = CANVAS_RECT); // Clears the buffer
 
-    void copyToBuffer(); // Copies canvas pixels to buffer
+    void copyToBuffer(SDL_Rect copyArea = CANVAS_RECT);// Copies canvas pixels to buffer
 
     void updatePixels(); // Copies pixel data to the canvas texture
     void updateBuffer(); // Copies buffer pixel data to the buffer texture

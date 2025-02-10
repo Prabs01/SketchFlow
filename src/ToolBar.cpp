@@ -73,6 +73,9 @@ void ToolBar::handleEvent(SDL_Event& event){
         if(event.type == SDL_MOUSEBUTTONUP){
             activeTool -> onMouseUp(event);
         }else if(event.type == SDL_MOUSEBUTTONDOWN){
+            if (event.button.button == SDL_BUTTON_LEFT){
+                mouseClicked(event);
+            }
             activeTool -> onMouseDown(event);
         }else if(event.type == SDL_MOUSEMOTION){
             activeTool -> onMouseMove(event);

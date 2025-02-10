@@ -40,8 +40,10 @@ public:
     virtual void onMouseUp(SDL_Event& event) = 0;
     virtual void onMouseMove(SDL_Event& event) = 0;
     virtual void keyboardInput(SDL_Event& event) = 0;
-    virtual bool isMouseOver() = 0;
+    
     virtual void drawCursor() = 0;
+
+    bool isMouseOver();
     void hover(); // Handles hover effects
     void setCanvas(Canvas* canvas_);
 };
@@ -61,7 +63,6 @@ public:
     void onMouseDown(SDL_Event& event) override;
     void onMouseUp(SDL_Event& event) override;
     void onMouseMove(SDL_Event& event) override;
-    bool isMouseOver() override;
     void keyboardInput(SDL_Event& event) override;
     void drawCursor() override;
     void setColor(Color color);
@@ -84,8 +85,8 @@ public:
     void onMouseDown(SDL_Event& event) override;
     void onMouseUp(SDL_Event& event) override;
     void onMouseMove(SDL_Event& event) override;
-    bool isMouseOver() override;
     void keyboardInput(SDL_Event& event) override;
+
     void setColor(Color color);
     void setEraserSize(int EraserSize_);
     void drawCursor() override;
@@ -106,9 +107,9 @@ public:
     void onMouseDown(SDL_Event& event) override;
     void onMouseUp(SDL_Event& event) override;
     void onMouseMove(SDL_Event& event) override;
-    bool isMouseOver() override;
     void drawCursor() override;
     void keyboardInput(SDL_Event& event) override;
+
     void setColor(Color color);
     void setBoundaryColor(Color color);
     void fill(int x, int y); // Fills a region with the selected color
@@ -116,6 +117,10 @@ public:
 
 // Selection tool (implementation pending)
 class Select : public Tools {
+private:
+    SDL_Rect clipRect;
+    
+
 };
 
 // Line drawer tool for creating straight lines
@@ -134,7 +139,6 @@ public:
     void onMouseDown(SDL_Event& event) override;
     void onMouseUp(SDL_Event& event) override;
     void onMouseMove(SDL_Event& event) override;
-    bool isMouseOver() override;
     void drawCursor() override;
     void keyboardInput(SDL_Event& event) override;
     void setColor(Color color);
