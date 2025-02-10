@@ -32,7 +32,7 @@ Line::Line(int x1, int y1, int x2, int y2){
 }
 
 void Line::draw(){
-    canvas->drawLine(p1.x, p1.y, p2.x, p2.y);
+    canvas->drawLine(p1.x, p1.y, p2.x, p2.y, black);
 }
 void Line::clear(){
     canvas->clearLine(p1.x, p1.y, p2.x, p2.y);

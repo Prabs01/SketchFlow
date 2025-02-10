@@ -1,5 +1,7 @@
 #include "Tools.h"
 
+
+//the bound box and images of the tool icons in the tool bar
 SDL_Rect PENCIL_RECT = {0,0, 100,100};
 char PENCIL_IMAGE_URL[] = "C:/Users/Satyam/Desktop/paint/SketchFlow/resources/paint.jpg";
 
@@ -13,8 +15,19 @@ char FILLER_IMAGE_URL[] = "C:/Users/Satyam/Desktop/paint/SketchFlow/resources/pa
 SDL_Rect LINE_DRAWER_RECT = {0,300,50,50};
 char LINE_DRAWER_IMAGE_URL[] = "C:/Users/Satyam/Desktop/paint/SketchFlow/resources/line.png";
 
+
+
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;
+}
+
+void Tools::hover(){
+    if(isMouseOver()){
+        SDL_SetTextureColorMod(imgTexture, 200, 200, 200);
+    }
+    else{
+        SDL_SetTextureColorMod(imgTexture, 255, 255, 255);
+    }
 }
 
 
@@ -27,6 +40,7 @@ Pencil::Pencil(){
     isDrawing = false;
     lastPos.x = -100;
     lastPos.y = -100;
+    toolColor = black;
 }
 
 void Pencil::makeTexture(SDL_Renderer* renderer_){
@@ -38,8 +52,10 @@ void Pencil::makeTexture(SDL_Renderer* renderer_){
 }   
 
 void Pencil::render(){
-    SDL_RenderDrawRect(renderer, &bound_box);
     SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
+    // SDL_SetRenderDrawColor(renderer, 0, 255,255,0);
+    // SDL_RenderFillRect(renderer,&bound_box);
+    // SDL_SetRenderDrawColor(renderer, 0, 0,0,0);
 }
 
 void Pencil::onMouseDown(SDL_Event& event){
@@ -103,19 +119,18 @@ bool Pencil::isMouseOver(){
     int mouseX, mouseY;
     Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
     if(mouseX >= bound_box.x && mouseX <=(bound_box.x + bound_box.w) && mouseY>=bound_box.y && mouseY<=(bound_box.y+bound_box.h)){
-        // printf(" Pencil selected ");
-        // fflush(stdout);
         return true;
     }else{
         return false;
     }
 }
 
+
 void Pencil::setPixelSize(int pixelSize_){
     pixelSize = pixelSize_;
 }
 
-void Pencil::setColor(Uint32 color){
+void Pencil::setColor(Color color){
     toolColor = color;
 }
 
@@ -133,7 +148,7 @@ Eraser::Eraser(){
     isDrawing = false;
     lastPos.x = -100;
     lastPos.y = -100;
-    toolColor = 0xFFFFFFFF;
+    toolColor = white;
     eraserRect = {100,100, eraserSize, eraserSize};
 }
 
@@ -158,10 +173,10 @@ void Eraser::drawCursor(){
     if(canvas->isInside(x,y)){
         SDL_ShowCursor(SDL_DISABLE);
         canvas->clearBuffer();
-        canvas->drawLineBuffer(x,y,x+eraserSize,y);
-        canvas->drawLineBuffer(x,y,x,y+eraserSize);
-        canvas->drawLineBuffer(x+eraserSize,y,x+eraserSize,y+eraserSize);
-        canvas->drawLineBuffer(x,y+eraserSize,x+eraserSize,y+eraserSize);
+        canvas->drawLineBuffer(x,y,x+eraserSize,y,black);
+        canvas->drawLineBuffer(x,y,x,y+eraserSize, black);
+        canvas->drawLineBuffer(x+eraserSize,y,x+eraserSize,y+eraserSize,black);
+        canvas->drawLineBuffer(x,y+eraserSize,x+eraserSize,y+eraserSize,black);
     }else{
         SDL_ShowCursor(SDL_ENABLE);
         canvas->clearBuffer();
@@ -242,7 +257,7 @@ void Eraser::setEraserSize(int eraserSize_){
     eraserSize = eraserSize_;
 }
 
-void Eraser::setColor(Uint32 color){
+void Eraser::setColor(Color color){
     toolColor = color;
 }
 
@@ -250,8 +265,8 @@ void Eraser::setColor(Uint32 color){
 // Filler
 
 Filler::Filler(){
-    fill_color = 0xFFFF0000;
-    current_color = 0xFFFFFFFF;
+    fill_color = magenta;
+    current_color = white;
     bound_box = FILLER_RECT;
     pixelSelected = false;
 }
@@ -313,8 +328,8 @@ void Filler::keyboardInput(SDL_Event& event){
 void Filler::fill(int EP1, int EP2){
   
     if (!canvas->isInside(EP1,EP2)) return;
-    if (fill_color == current_color) return;
-    if (canvas->getPixelColor(EP1, EP2) == fill_color) return;
+    if (fill_color.toUint32() == current_color.toUint32()) return;
+    if (canvas->getPixelColor(EP1, EP2).toUint32() == fill_color.toUint32()) return;
 
     vector<int> xp,yp;
     xp.push_back(EP1);
@@ -326,7 +341,7 @@ void Filler::fill(int EP1, int EP2){
         int y = yp.back();yp.pop_back();
 
         if (!canvas->isInside(x,y)) continue;
-        if (canvas->getPixelColor(x, y) != current_color) continue;
+        if (canvas->getPixelColor(x, y).toUint32() != current_color.toUint32()) continue;
 
         canvas->setPixel(x, y, fill_color);
 
@@ -343,11 +358,11 @@ void Filler::fill(int EP1, int EP2){
     
 }
 
-void Filler::setColor(Uint32 color){
+void Filler::setColor(Color color){
     fill_color = color;
 }
 
-void Filler::setBoundaryColor(Uint32 color){
+void Filler::setBoundaryColor(Color color){
     boundary_color = color;
 }
 
@@ -361,7 +376,7 @@ LineDrawer::LineDrawer(){
     startingPixel = {-100,-100};
     endingPixel = {-100,-100};
     width = 5;
-    color = 0x00000000;
+    color = black;
     drawing = false;
     bound_box = LINE_DRAWER_RECT;
 }
@@ -401,7 +416,7 @@ void LineDrawer::onMouseMove(SDL_Event& event){
         canvas->clearLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
         endingPixel.x = x;
         endingPixel.y = y;
-        canvas->drawLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
+        canvas->drawLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y, black);
     }
     
 
@@ -409,7 +424,7 @@ void LineDrawer::onMouseMove(SDL_Event& event){
 
 void LineDrawer::onMouseUp(SDL_Event& event){
     if(drawing){
-        canvas->drawLine(startingPixel.x,startingPixel.y,endingPixel.x,endingPixel.y);
+        canvas->drawLine(startingPixel.x,startingPixel.y,endingPixel.x,endingPixel.y,black);
         drawing = false;
         canvas->clearBuffer();
     }

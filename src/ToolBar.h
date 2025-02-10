@@ -7,6 +7,12 @@
 
 
 
+/*
+* The ToolBar class allows you to select different tools and call the functions of the activeTool.
+* It also renders the tool icons and handle to inputs of the active tools as well as listens for click for other tools.
+* The tools are pushed to the tools vector and activeTool points to the selected tool.
+*/
+
 class ToolBar
 {
 private:
@@ -26,9 +32,10 @@ public:
 
     void render();
 
-    bool mouseClicked(SDL_Event& event);
+    bool mouseClicked(SDL_Event& event); // listens for the clicks to the tools icon
 
-    void handleEvent(SDL_Event& event);
+    void handleEvent(SDL_Event& event);// handles the input for the active tool. 
+                                        //The active tool only has the functions it can execute. This function handles its function.
 
     ~ToolBar();
     
