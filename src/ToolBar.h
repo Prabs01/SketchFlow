@@ -5,7 +5,7 @@
 #include"Canvas.h"
 #include<vector>
 
-extern SDL_Rect TOOLBAR_RECT;
+
 
 class ToolBar
 {
@@ -18,6 +18,7 @@ private:
 
 public:
     ToolBar();
+    ToolBar(int SW, int SH);
 
     void setRenderer(SDL_Renderer* renderer_);
 

@@ -1,19 +1,16 @@
-#include"WindowSize.h"
 #include"Canvas.h"
 
-
-
 Canvas::Canvas(){
-    area = {100,0,SCREEN_WIDTH-100,SCREEN_HEIGHT};;
+    area = {100,0,0,0};
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];
     showBuffer = true;
     clear();
     clearBuffer();
 }
-Canvas::Canvas(int SCREEN_WIDTH,int SCREEN_HEIGHT){
-    area = {100,0,SCREEN_WIDTH-100,SCREEN_HEIGHT};
-    SDL_Rect CANVAS_RECT ={100,0,SCREEN_WIDTH-100,SCREEN_HEIGHT};
+Canvas::Canvas(int SW,int SH){
+    area = {100,0,SW-100,SH};
+    SDL_Rect CANVAS_RECT ={100,0,SW-100,SH};
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];
     showBuffer = true;
@@ -60,7 +57,7 @@ int Canvas::getYmin(){
 }
 
 bool Canvas::isInside(int x, int y){
-    if(x >= area.x && x<=area.w + area.x && y>=area.y && y<=area.h+area.y){
+    if(x >= area.x && x<=(area.w+100) && y>=0 && y<=area.h){
         return true;
     }else{
         return false;

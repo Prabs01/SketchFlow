@@ -1,10 +1,13 @@
 #include"ToolBar.h"
 
-SDL_Rect TOOLBAR_RECT = {0,0,100,600};
 
-ToolBar::ToolBar(){
+
+ToolBar::ToolBar(){cout<<endl;}
+
+ToolBar::ToolBar(int SW, int SH){
     activeTool = nullptr;
-    area = TOOLBAR_RECT;
+    area = {0,0,100,SH};
+    SDL_Rect TOOLBAR_RECT = {0,0,100,SH};
     tools.push_back(new Pencil);
     tools.push_back(new Eraser);
     tools.push_back(new Filler);

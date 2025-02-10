@@ -12,7 +12,17 @@ set(SDL2_IMAGE_LIB_DIR "C:/Users/Satyam/Desktop/SDL2_image-2.8.4/lib/x64")
 
 # Source files
 set(SOURCE_DIR src)
-file(GLOB MAIN_SOURCES "${SOURCE_DIR}/*.cpp")
+#file(GLOB MAIN_SOURCES "${SOURCE_DIR}/*.cpp")
+set(MAIN_SOURCES
+    ${SOURCE_DIR}/main.cpp
+    ${SOURCE_DIR}/Canvas.cpp
+    ${SOURCE_DIR}/ToolBar.cpp
+    ${SOURCE_DIR}/Tools.cpp
+    ${SOURCE_DIR}/Shape.cpp
+    ${SOURCE_DIR}/Controller.cpp
+    # Add other source files here, excluding WindowSize.cpp
+)
+
 add_executable(SketchFlow ${MAIN_SOURCES})
 
 # Include directories
