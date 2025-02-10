@@ -1,5 +1,5 @@
 #pragma once
-
+#include"WindowSize.h"
 #include<SDL.h>
 #include<iostream>
 
@@ -16,6 +16,7 @@ extern SDL_Rect CANVAS_RECT;
  */
 class Canvas
 {
+
 private:
     SDL_Renderer* renderer = nullptr;
     Uint32* pixels = nullptr; // Pixel array representing the canvas (ARGB format)
@@ -27,7 +28,9 @@ private:
     Color bgColor;
 
 public:
+    Uint32* pixels = nullptr;
     Canvas();
+    Canvas(int SCREEN_WIDTH,int SCREEN_HEIGHT);
 
     void init(SDL_Renderer* renderer_); // Initializes the canvas with an SDL renderer
 
