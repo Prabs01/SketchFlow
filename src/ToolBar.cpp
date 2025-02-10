@@ -31,11 +31,14 @@ void ToolBar::render(){
     SDL_SetRenderDrawColor(renderer, 0,0,0,255);
     for(int i = 0; i<tools.size();i++){
         tools[i]->render();
+        tools[i]->hover();
     }
 
     if(activeTool){
         activeTool->drawCursor();
+        activeTool->hover();
     }
+
     
 }
 

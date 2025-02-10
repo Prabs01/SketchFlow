@@ -1,5 +1,7 @@
 #include "Tools.h"
 
+
+//the bound box and images of the tool icons in the tool bar
 SDL_Rect PENCIL_RECT = {0,0, 100,100};
 char PENCIL_IMAGE_URL[] = "../resources/pencil.png";
 
@@ -13,8 +15,19 @@ char FILLER_IMAGE_URL[] = "../resources/paint.jpg";
 SDL_Rect LINE_DRAWER_RECT = {0,300,50,50};
 char LINE_DRAWER_IMAGE_URL[] = "../resources/line.png";
 
+
+
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;
+}
+
+void Tools::hover(){
+    if(isMouseOver()){
+        SDL_SetTextureColorMod(imgTexture, 200, 200, 200);
+    }
+    else{
+        SDL_SetTextureColorMod(imgTexture, 255, 255, 255);
+    }
 }
 
 
@@ -39,8 +52,10 @@ void Pencil::makeTexture(SDL_Renderer* renderer_){
 }   
 
 void Pencil::render(){
-    SDL_RenderDrawRect(renderer, &bound_box);
     SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
+    // SDL_SetRenderDrawColor(renderer, 0, 255,255,0);
+    // SDL_RenderFillRect(renderer,&bound_box);
+    // SDL_SetRenderDrawColor(renderer, 0, 0,0,0);
 }
 
 void Pencil::onMouseDown(SDL_Event& event){
@@ -104,13 +119,12 @@ bool Pencil::isMouseOver(){
     int mouseX, mouseY;
     Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
     if(mouseX >= bound_box.x && mouseX <=(bound_box.x + bound_box.w) && mouseY>=bound_box.y && mouseY<=(bound_box.y+bound_box.h)){
-        // printf(" Pencil selected ");
-        // fflush(stdout);
         return true;
     }else{
         return false;
     }
 }
+
 
 void Pencil::setPixelSize(int pixelSize_){
     pixelSize = pixelSize_;

@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include<SDL.h>
@@ -8,68 +7,63 @@
 
 using namespace std;
 
-//to define the rectangle where canvas is to be shown.
+// Defines the rectangle where the canvas is displayed
 extern SDL_Rect CANVAS_RECT;
 
-
 /*
- * The Canvas class allows you to draw, clear, and manipulate pixels on a 2D canvas. It uses SDL for rendering and 
- * supports operations like setting pixel colors, drawing lines, copying to buffers, and rendering the content.
- * It is equipped with a background color and allows for drawing on an offscreen buffer before displaying it on the screen.
+ * The Canvas class provides functionalities to draw, clear, and manipulate pixels on a 2D canvas.
+ * It maintains a background color, supports offscreen buffering, and allows pixel-level modifications.
  */
 class Canvas
 {
 private:
     SDL_Renderer* renderer = nullptr;
-
-    Uint32* pixels = nullptr;// this is the array(can be thought as matrix) of pixels with a Uint32 color(ARGB) value for each
+    Uint32* pixels = nullptr; // Pixel array representing the canvas (ARGB format)
     SDL_Rect area;
     SDL_Texture* canvaTexture = nullptr;
     SDL_Texture* bufferTexture = nullptr;
-    Uint32* bufferPixels = nullptr;// pixel matrix for canvas's buffer. buffer is to be used when drawing shapes or to draw the cursor
+    Uint32* bufferPixels = nullptr; // Pixel array for buffer (used for temporary drawings like cursor or shape previews)
     bool showBuffer;
     Color bgColor;
 
 public:
     Canvas();
 
-    void init(SDL_Renderer* renderer_);
+    void init(SDL_Renderer* renderer_); // Initializes the canvas with an SDL renderer
 
-    void clear();
-    void clearBuffer();
+    void clear(); // Clears the canvas
+    void clearBuffer(); // Clears the buffer
 
-    void copyToBuffer();
+    void copyToBuffer(); // Copies canvas pixels to buffer
 
-    void updatePixels();//is needed copy all the pixels to the canvaTexture and render it later
-    void updateBuffer();
+    void updatePixels(); // Copies pixel data to the canvas texture
+    void updateBuffer(); // Copies buffer pixel data to the buffer texture
 
-    void render();
+    void render(); // Renders the canvas on the screen
 
-    void setPixel(int x,int y,Color color); 
-    void setPixelBuffer(int x,int y,Color color);
+    void setPixel(int x, int y, Color color); // Sets a pixel color on the canvas
+    void setPixelBuffer(int x, int y, Color color); // Sets a pixel color in the buffer
 
-    void fitCanvas(int* x, int* y);/*by default the setPixel function takes the pixel positions relative to window.
-                                     To specify pixel postion on the canvas call fitCanvas first*/ 
+    void fitCanvas(int* x, int* y); // Converts window-relative coordinates to canvas-relative coordinates
 
-    Color getPixelColor(int x , int y);
-    Color getPixelColorBuffer(int x , int y);
+    Color getPixelColor(int x, int y); // Gets the color of a pixel on the canvas
+    Color getPixelColorBuffer(int x, int y); // Gets the color of a pixel in the buffer
 
-    int getXmax();
-    int getXmin();
-    int getYmin();
-    int getYmax();
+    int getXmax(); // Returns the max X-coordinate of the canvas
+    int getXmin(); // Returns the min X-coordinate of the canvas
+    int getYmin(); // Returns the min Y-coordinate of the canvas
+    int getYmax(); // Returns the max Y-coordinate of the canvas
 
-    bool isInside(int x, int y);
+    bool isInside(int x, int y); // Checks if a point is inside the canvas bounds
 
-    void drawLine(int x1, int y1, int x2, int y2, Color color);
-    void drawLineBuffer(int x1, int y1, int x2, int y2, Color color);
+    void drawLine(int x1, int y1, int x2, int y2, Color color); // Draws a line on the canvas
+    void drawLineBuffer(int x1, int y1, int x2, int y2, Color color); // Draws a line on the buffer
 
-    void clearLine(int x1, int y1, int x2, int y2);
-    void clearLineBuffer(int x1, int y1, int x2, int y2);
+    void clearLine(int x1, int y1, int x2, int y2); // Clears a line from the canvas
+    void clearLineBuffer(int x1, int y1, int x2, int y2); // Clears a line from the buffer
 
-    void viewBuffer();
-    void removeBuffer();
+    void viewBuffer(); // Displays the buffer
+    void removeBuffer(); // Hides the buffer
 
-    ~Canvas();
+    ~Canvas(); // Destructor to clean up resources
 };
-

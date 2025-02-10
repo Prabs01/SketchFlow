@@ -1,21 +1,26 @@
 #pragma once
 
-#include<SDL.h>
+#include <SDL.h>
 
+/*
+ * The Color struct holds red, green, blue, and alpha (transparency) values, 
+ * and provides a method to convert the color into a 32-bit unsigned integer 
+ * (Uint32) in ARGB format.
+ */
 struct Color {
-    Uint8 r, g, b, a;
+    Uint8 r, g, b, a; ///< Red, Green, Blue, and Alpha components (0-255)
 
-    Color():r(0),b(0),g(0),a(0){};
+    Color() : r(0), g(0), b(0), a(0) {}
 
     Color(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha = 255)
         : r(red), g(green), b(blue), a(alpha) {}
 
-    // Convert Color to Uint32 (ARGB)
     Uint32 toUint32() const {
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 };
 
+// Predefined common colors
 const Color red(255, 0, 0);
 const Color green(0, 255, 0);
 const Color blue(0, 0, 255);
@@ -33,4 +38,6 @@ const Color violet(238, 130, 238);
 const Color indigo(75, 0, 130);
 const Color lime(0, 255, 0);
 const Color lightGray(211, 211, 211);
-const Color transparent(0,0,0,0);
+
+
+const Color transparent(0, 0, 0, 0); ///< Fully transparent color
