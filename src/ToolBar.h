@@ -5,8 +5,6 @@
 #include"Canvas.h"
 #include<vector>
 
-// to define the bound box of the tool bar as a whole
-extern SDL_Rect TOOLBAR_RECT;
 
 
 /*
@@ -26,6 +24,7 @@ private:
 
 public:
     ToolBar();
+    ToolBar(int SW, int SH);
 
     void setRenderer(SDL_Renderer* renderer_);
 

@@ -1,7 +1,6 @@
 #include<SDL.h>
 #include<iostream>
 #include<SDL_image.h>
-#include "WindowSize.h"
 
 #include"Canvas.h"
 #include"ToolBar.h"
@@ -24,8 +23,8 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
-    SCREEN_WIDTH = displayMode.w;
-    SCREEN_HEIGHT = displayMode.h;
+    int SCREEN_WIDTH = displayMode.w;
+    int SCREEN_HEIGHT = displayMode.h;
 
 
    
@@ -34,7 +33,7 @@ int main(int argc, char* argv[]){
 
 
     Canvas canvas(SCREEN_WIDTH,SCREEN_HEIGHT);
-    ToolBar toolBar;
+    ToolBar toolBar(SCREEN_WIDTH,SCREEN_HEIGHT);
 
 
     canvas.init(renderer);

@@ -1,5 +1,4 @@
 #pragma once
-#include"WindowSize.h"
 #include<SDL.h>
 #include<iostream>
 
@@ -30,7 +29,7 @@ private:
 public:
     Uint32* pixels = nullptr;
     Canvas();
-    Canvas(int SCREEN_WIDTH,int SCREEN_HEIGHT);
+    Canvas(int SW,int SH);
 
     void init(SDL_Renderer* renderer_); // Initializes the canvas with an SDL renderer
 

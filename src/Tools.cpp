@@ -326,6 +326,10 @@ void Filler::fill(int EP1, int EP2){
         xp.push_back(x + 1);yp.push_back(y);
         xp.push_back(x);yp.push_back(y-1);
         xp.push_back(x );yp.push_back(y+1);
+        xp.push_back(x - 1);yp.push_back(y-1);
+        xp.push_back(x + 1);yp.push_back(y+1);
+        xp.push_back(x+1);yp.push_back(y-1);
+        xp.push_back(x-1);yp.push_back(y+1);
 
     }
     
