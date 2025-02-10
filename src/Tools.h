@@ -1,10 +1,12 @@
 #pragma once
 
 #include<SDL.h>
-#include<SDL2/SDL_image.h>
+#include<SDL_image.h>
 #include<iostream>
 #include"Canvas.h"
 #include"Shape.h"
+#include<vector>
+
 
 using namespace std;
 

@@ -1,30 +1,40 @@
-
 #include<SDL.h>
 #include<iostream>
-#include<SDL2/SDL_image.h>
-
+#include<SDL_image.h>
+#include "WindowSize.h"
 #include"Canvas.h"
 #include"ToolBar.h"
 #include"Shape.h"
-
 using namespace std;
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
-
-
+//SDL_DisplayMode displayMode;
 
 int main(int argc, char* argv[]){
+    SDL_Init(SDL_INIT_VIDEO);   // Mode of operation .i.e video mode
+    SDL_Init(IMG_INIT_PNG);     // which file to handle i.e png
+    
 
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_Init(IMG_INIT_PNG);
+    SDL_DisplayMode displayMode;
+    int displayIndex = 0; // Primary display
+    
+    if (SDL_GetCurrentDisplayMode(displayIndex, &displayMode) != 0) {
+        std::cerr << "SDL_GetCurrentDisplayMode Error: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+        return 1;
+    }
 
-    SDL_Window* window = SDL_CreateWindow("SDL2 Pixel Drawing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,SCREEN_HEIGHT,0);
+    SCREEN_WIDTH = displayMode.w;
+    SCREEN_HEIGHT = displayMode.h;
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    Canvas canvas;
+   
+    SDL_Window* window = SDL_CreateWindow("SDL2 Pixel Drawing", 0, 25, SCREEN_WIDTH,SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
+
+
+    Canvas canvas(SCREEN_WIDTH,SCREEN_HEIGHT);
     ToolBar toolBar;
+
 
     canvas.init(renderer);
     toolBar.setRenderer(renderer);
@@ -59,6 +69,15 @@ int main(int argc, char* argv[]){
         toolBar.handleEvent(event);
 
         switch (event.type) {
+
+            case SDL_WINDOWEVENT:
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    SCREEN_WIDTH = event.window.data1;
+                    SCREEN_HEIGHT = event.window.data2;
+                    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+                    }
+                break;
+           
             case SDL_QUIT:
                 quit = true;
                 break;
@@ -113,15 +132,11 @@ int main(int argc, char* argv[]){
         // SDL_RenderPresent(renderer);
     }      
 
-
-
     // delete[] pixels;
     // SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-
-
 
     return 0;
 }

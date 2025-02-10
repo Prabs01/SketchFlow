@@ -1,17 +1,17 @@
 #include "Tools.h"
 
 SDL_Rect PENCIL_RECT = {0,0, 100,100};
-char PENCIL_IMAGE_URL[] = "../resources/pencil.png";
+char PENCIL_IMAGE_URL[] = "C:/Users/Satyam/Desktop/paint/SketchFlow/resources/paint.jpg";
 
 SDL_Rect ERASER_RECT = {0,100, 100,100};
-char ERASER_IMAGE_URL[] = "../resources/eraser.png";
+char ERASER_IMAGE_URL[] = "C:/Users/Satyam/Desktop/paint/SketchFlow/resources/eraser.png";
 
 
 SDL_Rect FILLER_RECT = {0,200,100,100};
-char FILLER_IMAGE_URL[] = "../resources/paint.jpg";
+char FILLER_IMAGE_URL[] = "C:/Users/Satyam/Desktop/paint/SketchFlow/resources/paint.jpg";
 
 SDL_Rect LINE_DRAWER_RECT = {0,300,50,50};
-char LINE_DRAWER_IMAGE_URL[] = "../resources/line.png";
+char LINE_DRAWER_IMAGE_URL[] = "C:/Users/Satyam/Desktop/paint/SketchFlow/resources/line.png";
 
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;
@@ -311,22 +311,7 @@ void Filler::keyboardInput(SDL_Event& event){
 }
 
 void Filler::fill(int EP1, int EP2){
-    // Uint32 pixelColor = canvas -> getPixelColor(x, y);
-
-    // if(!canvas ->isInside(x,y)){
-    //     return;
-    // }
-
-    // if(pixelColor != fill_color && pixelColor == current_color){
-    //         canvas -> setPixel(x,y, fill_color);
-    //         fill(x-1, y);
-    //         fill(x+1,y);
-    //         fill(x,y-1);
-    //         fill(x,y+1);
-    // }
-    // else{
-    //     return;
-    // }
+  
     if (!canvas->isInside(EP1,EP2)) return;
     if (fill_color == current_color) return;
     if (canvas->getPixelColor(EP1, EP2) == fill_color) return;

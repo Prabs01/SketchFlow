@@ -1,5 +1,5 @@
 #pragma once
-
+#include"WindowSize.h"
 #include<SDL.h>
 #include<iostream>
 
@@ -10,9 +10,10 @@ extern SDL_Rect CANVAS_RECT;
 
 class Canvas
 {
+
 private:
     SDL_Renderer* renderer = nullptr;
-    Uint32* pixels = nullptr;
+    
     SDL_Rect area;
     SDL_Texture* canvaTexture = nullptr;
     SDL_Texture* bufferTexture = nullptr;
@@ -20,7 +21,9 @@ private:
     bool showBuffer;
 
 public:
+    Uint32* pixels = nullptr;
     Canvas();
+    Canvas(int SCREEN_WIDTH,int SCREEN_HEIGHT);
 
     void init(SDL_Renderer* renderer_);
 
