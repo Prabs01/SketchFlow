@@ -27,7 +27,6 @@ private:
     Color bgColor;
 
 public:
-    Uint32* pixels = nullptr;
     Canvas();
     Canvas(int SW,int SH);
 

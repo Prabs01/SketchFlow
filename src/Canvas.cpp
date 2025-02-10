@@ -1,5 +1,7 @@
 #include"Canvas.h"
 
+SDL_Rect CANVAS_RECT = {0,0,0,0};
+
 Canvas::Canvas(){
     area = {100,0,0,0};
     pixels = new Uint32[area.w * area.h];
@@ -10,7 +12,7 @@ Canvas::Canvas(){
 }
 Canvas::Canvas(int SW,int SH){
     area = {100,0,SW-100,SH};
-    SDL_Rect CANVAS_RECT ={100,0,SW-100,SH};
+    CANVAS_RECT ={100,0,SW-100,SH};
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];
     showBuffer = true;

@@ -3,17 +3,17 @@
 
 //the bound box and images of the tool icons in the tool bar
 SDL_Rect PENCIL_RECT = {0,0, 100,100};
-char PENCIL_IMAGE_URL[] = "C:/Users/Satyam/Desktop/paint/SketchFlow/resources/paint.jpg";
+char PENCIL_IMAGE_URL[] = "../resources/pencil.png";
 
 SDL_Rect ERASER_RECT = {0,100, 100,100};
-char ERASER_IMAGE_URL[] = "C:/Users/Satyam/Desktop/paint/SketchFlow/resources/eraser.png";
+char ERASER_IMAGE_URL[] = "../resources/eraser.png";
 
 
 SDL_Rect FILLER_RECT = {0,200,100,100};
-char FILLER_IMAGE_URL[] = "C:/Users/Satyam/Desktop/paint/SketchFlow/resources/paint.jpg";
+char FILLER_IMAGE_URL[] = "../resources/paint.jpg";
 
 SDL_Rect LINE_DRAWER_RECT = {0,300,50,50};
-char LINE_DRAWER_IMAGE_URL[] = "C:/Users/Satyam/Desktop/paint/SketchFlow/resources/line.png";
+char LINE_DRAWER_IMAGE_URL[] = "../resources/line.png";
 
 
 

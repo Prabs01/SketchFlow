@@ -57,6 +57,7 @@ int main(int argc, char* argv[]){
     //for select tool test
     SDL_Rect clipRect = {-100,-100,0,0};
     bool isSelecting = false;
+    bool selected = false;
     //////
 
     while (!quit) {
@@ -103,6 +104,9 @@ int main(int argc, char* argv[]){
             case SDL_MOUSEBUTTONUP:
                 if (event.button.button == SDL_BUTTON_LEFT){
                     //test
+                    if(isSelecting){
+                        
+                    }
                     isSelecting = false;
                     clipRect = {-100,-100,0,0};
                 }
