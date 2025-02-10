@@ -1,14 +1,20 @@
 #pragma once
+#ifdef _WIN32
+    #include <SDL.h>
+    #include <SDL_image.h>
+#elif __APPLE__
+    #include <SDL.h>
+    #include <SDL_image.h>
+#else
+    #include <SDL2/SDL.h>  // Linux (also works for other Unix-like systems)
+    #include <SDL2/SDL_image.h>
+#endif
 
-#include<SDL.h>
-#include<SDL_image.h>
-#include<iostream>
-#include"Canvas.h"
-#include"Shape.h"
-
-#include<vector>
-
-#include"Color.h"
+#include <iostream>
+#include <vector>
+#include "Canvas.h"
+#include "Shape.h"
+#include "Color.h"
 
 
 using namespace std;

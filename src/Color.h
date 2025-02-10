@@ -1,6 +1,11 @@
 #pragma once
-
-#include <SDL.h>
+#ifdef _WIN32
+    #include <SDL.h>
+#elif __APPLE__
+    #include <SDL.h>
+#else
+    #include <SDL2/SDL.h>  // Linux (also works for other Unix-like systems)
+#endif
 
 /*
  * The Color struct holds red, green, blue, and alpha (transparency) values, 

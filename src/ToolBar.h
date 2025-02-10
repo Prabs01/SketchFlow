@@ -1,6 +1,12 @@
 #pragma once
+#ifdef _WIN32
+    #include <SDL.h>
+#elif __APPLE__
+    #include <SDL.h>
+#else
+    #include <SDL2/SDL.h>  // Linux (also works for other Unix-like systems)
+#endif
 
-#include<SDL.h>
 #include"Tools.h"
 #include"Canvas.h"
 #include<vector>
