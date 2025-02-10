@@ -5,7 +5,11 @@
 #include<iostream>
 #include"Canvas.h"
 #include"Shape.h"
+
+#include<vector>
+
 #include"Color.h"
+
 
 using namespace std;
 

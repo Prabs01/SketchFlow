@@ -1,9 +1,19 @@
+#include"WindowSize.h"
 #include"Canvas.h"
 
 SDL_Rect CANVAS_RECT = {100,10,700,500};
 
 Canvas::Canvas(){
-    area = CANVAS_RECT;
+    area = {100,0,SCREEN_WIDTH-100,SCREEN_HEIGHT};;
+    pixels = new Uint32[area.w * area.h];
+    bufferPixels = new Uint32[area.w * area.h];
+    showBuffer = true;
+    clear();
+    clearBuffer();
+}
+Canvas::Canvas(int SCREEN_WIDTH,int SCREEN_HEIGHT){
+    area = {100,0,SCREEN_WIDTH-100,SCREEN_HEIGHT};
+    SDL_Rect CANVAS_RECT ={100,0,SCREEN_WIDTH-100,SCREEN_HEIGHT};
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];
     showBuffer = true;
@@ -14,7 +24,6 @@ Canvas::Canvas(){
 
 void Canvas::init(SDL_Renderer* renderer_){
     renderer = renderer_;
-
     canvaTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC, area.w, area.h);
     SDL_SetTextureBlendMode(canvaTexture, SDL_BLENDMODE_BLEND);
 
