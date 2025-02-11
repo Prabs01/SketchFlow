@@ -7,10 +7,10 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Manually specify SDL2 and SDL2_image paths (Modify these if needed)
-set(SDL2_INCLUDE_DIR "/opt/homebrew/include/SDL2")
+set(SDL2_INCLUDE_DIR "/opt/homebrew/include")
 set(SDL2_LIB_DIR "/opt/homebrew/lib")
 
-set(SDL2_IMAGE_INCLUDE_DIR "/opt/homebrew/include/SDL2")
+set(SDL2_IMAGE_INCLUDE_DIR "/opt/homebrew/include")
 set(SDL2_IMAGE_LIB_DIR "/opt/homebrew/lib")
 
 # Define the source directory

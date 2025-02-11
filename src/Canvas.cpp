@@ -8,6 +8,7 @@ Canvas::Canvas(){
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];
     showBuffer = true;
+    bgColor = white;
     clear();
     clearBuffer();
 }
@@ -74,6 +75,11 @@ void Canvas::fitCanvas(int* x, int* y){
     *y =*y + area.y;
 }
 
+void Canvas::absoluteCord(int* x, int* y){
+    *x = *x - area.x;
+    *y = *y - area.y;
+}
+
 void Canvas::setPixel(int x, int y, Color color){
     if(x >= area.x && x<=area.w + area.x && y>=area.y && y<=area.h+area.y){
         x = x-area.x;
@@ -122,8 +128,8 @@ Color Canvas::getPixelColorBuffer(int x, int y){
 }
 
 void Canvas::clear(SDL_Rect portion){
-     for(int i = portion.x ; i<portion.x+ portion.w;i++){
-        for(int j = portion.y; j<portion.y + portion.h;j++){
+    for(int i = portion.x +1; i<portion.x+ portion.w;i++){
+        for(int j = portion.y+1; j<portion.y + portion.h;j++){
             int x = i, y = j;
             // fitCanvas(&x,&y);
             setPixel(x,y,white);
@@ -131,8 +137,8 @@ void Canvas::clear(SDL_Rect portion){
     }
 }
 void Canvas::clearBuffer(SDL_Rect portion){
-    for(int i = portion.x ; i<portion.x+ portion.w;i++){
-        for(int j = portion.y; j<portion.y + portion.h;j++){
+    for(int i = portion.x +1 ; i<portion.x+ portion.w;i++){
+        for(int j = portion.y+1; j<portion.y + portion.h;j++){
             int x = i, y = j;
             // fitCanvas(&x,&y);
             setPixelBuffer(x,y,transparent);
@@ -327,9 +333,75 @@ void Canvas::removeBuffer(){
 }
 
 void Canvas::copyToBuffer(SDL_Rect copyArea){
-    for(int i = copyArea.x ; i<copyArea.x + copyArea.w;i++){
-        for(int j = copyArea.y; j<copyArea.y + copyArea.h;j++){
-            bufferPixels[j*area.w +i] = pixels[j*area.w + i];
+    for(int i = copyArea.x + 1; i<copyArea.x + copyArea.w;i++){
+        for(int j = copyArea.y + 1; j<copyArea.y + copyArea.h;j++){
+
+            int x = i;
+            int y = j;
+
+            x = x- area.x; // we need to transform the copy area co-ordinates to canvas co-ordinates
+            y = y-area.y;
+
+            if(pixels[y*area.w + x] != bgColor.toUint32())
+                bufferPixels[y*area.w +x] = pixels[y*area.w + x];
+                // printf("coping to buffer");
+                // fflush(stdout);
         }
     }
+}
+
+void Canvas::copyToCanvas(SDL_Rect copyArea){
+   for(int i = copyArea.x + 1 ; i<copyArea.x + copyArea.w;i++){
+        for(int j = copyArea.y + 1; j<copyArea.y + copyArea.h;j++){
+
+            int x = i;
+            int y = j;
+
+            x = x- area.x; // we need to transform the copy area co-ordinates to canvas co-ordinates
+            y = y-area.y;
+
+            if(bufferPixels[y*area.w + x] != transparent.toUint32())
+                pixels[y*area.w +x] = bufferPixels[y*area.w + x];
+        }
+    }
+}
+
+void Canvas::moveBufferContent(int dx, int dy,SDL_Rect moveArea){
+    Uint32* temp;
+    temp = new Uint32[area.w * area.h];
+
+    //The content for the moveArea in the buffer is swapped with the new moveArea content and previous area is cleared
+
+    for(int i = moveArea.x + 1; i<moveArea.x+ moveArea.w;i++){
+        for(int j = moveArea.y + 1; j<moveArea.y + moveArea.h;j++){
+            int x = i - area.x;
+            int y = j - area.y;
+            // fitCanvas(&x,&y);
+            temp[j*area.w + i] = bufferPixels[y*area.w + x];
+        }
+    }
+
+    for(int i = moveArea.x +1; i<moveArea.x+ moveArea.w;i++){
+        for(int j = moveArea.y + 1; j<moveArea.y + moveArea.h;j++){
+            int x = i - area.x;
+            int y = j - area.y;
+            // fitCanvas(&x,&y);
+            bufferPixels[y*area.w + x] = transparent.toUint32();
+        }
+    }
+
+    for(int i = moveArea.x +1; i<moveArea.x + moveArea.w;i++){
+        for(int j = moveArea.y +1; j<moveArea.y + moveArea.h;j++){
+            int newx = i + dx;
+            int newy = j + dy;
+            if(isInside(newx, newy)){
+                newx =newx - area.x;
+                newy = newy - area.y;
+                if(temp[j*area.w + i] != bgColor.toUint32()){
+                    bufferPixels[newy*area.w +newx] = temp[j*area.w + i];
+                }
+            }
+        }
+    }
+
 }

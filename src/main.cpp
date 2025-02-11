@@ -57,21 +57,9 @@ int main(int argc, char* argv[]){
 
     SDL_Init(SDL_INIT_VIDEO);
 
-    bool leftMouseButtonDown = false;
 
-    int PIXEL_SIZE = 1; //only for testing purpose
-    int lastMouseX = -1, lastMouseY = -1; // Track the last mouse position
-
-
-
-    //for select tool test
-    SDL_Rect clipRect = {-100,-100,0,0};
-    bool isSelecting = false;
-    bool selected = false;
-    //////
 
     while (!quit) {
-        //SDL_UpdateTexture(texture, NULL, pixels, SCREEN_WIDTH * sizeof(Uint32));
         canvas.updatePixels();
         canvas.updateBuffer();
 
@@ -113,12 +101,6 @@ int main(int argc, char* argv[]){
 
             case SDL_MOUSEBUTTONUP:
                 if (event.button.button == SDL_BUTTON_LEFT){
-                    //test
-                    if(isSelecting){
-                        
-                    }
-                    isSelecting = false;
-                    clipRect = {-100,-100,0,0};
                 }
                     
                 break;
@@ -127,41 +109,16 @@ int main(int argc, char* argv[]){
                 if (event.button.button == SDL_BUTTON_LEFT){
                     toolBar.mouseClicked(event);
 
-                    //test
-                    if(!isSelecting){
-                        isSelecting = true;
-                        int x = event.motion.x;
-                        int y = event.motion.y;
-                        clipRect.x = x;
-                        clipRect.y = y;
-                    }
-                    ////////////
+                
                 }
                 break;
 
             case SDL_MOUSEMOTION:
-                //test
-                if(isSelecting){
-                    int x = event.motion.x;
-                    int y = event.motion.y;
-                    clipRect.w = x - clipRect.x;
-                    clipRect.h = y - clipRect.y;
-                }
-                ///////
+            
                 
                 break;
         }
 
-       //canvas.drawLine(100,100,400,500);
-
-       //for select tool test
-       if(isSelecting){
-            canvas.clearBuffer();
-            canvas.drawLineBuffer(clipRect.x, clipRect.y, clipRect.x + clipRect.w, clipRect.y, brown);
-            canvas.drawLineBuffer(clipRect.x+clipRect.w, clipRect.y, clipRect.x + clipRect.w, clipRect.y+ clipRect.h, brown);
-            canvas.drawLineBuffer(clipRect.x, clipRect.y + clipRect.h, clipRect.x + clipRect.w, clipRect.y+ clipRect.h, brown);
-            canvas.drawLineBuffer(clipRect.x, clipRect.y, clipRect.x, clipRect.y+ clipRect.h, brown);
-       }
 
         
         SDL_RenderClear(renderer);

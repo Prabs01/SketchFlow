@@ -12,6 +12,7 @@ ToolBar::ToolBar(int SW, int SH){
     tools.push_back(new Eraser);
     tools.push_back(new Filler);
     tools.push_back(new LineDrawer);
+    tools.push_back(new SelectTool);
 }
 
 void ToolBar::setRenderer(SDL_Renderer* renderer_){

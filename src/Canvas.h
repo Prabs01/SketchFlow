@@ -44,6 +44,8 @@ public:
     void clearBuffer(SDL_Rect portion = CANVAS_RECT); // Clears the buffer
 
     void copyToBuffer(SDL_Rect copyArea = CANVAS_RECT);// Copies canvas pixels to buffer
+    void copyToCanvas(SDL_Rect copyArea = CANVAS_RECT);
+    void moveBufferContent(int dx, int dy,SDL_Rect moveArea = CANVAS_RECT);
 
     void updatePixels(); // Copies pixel data to the canvas texture
     void updateBuffer(); // Copies buffer pixel data to the buffer texture
@@ -54,6 +56,7 @@ public:
     void setPixelBuffer(int x, int y, Color color); // Sets a pixel color in the buffer
 
     void fitCanvas(int* x, int* y); // Converts window-relative coordinates to canvas-relative coordinates
+    void absoluteCord(int* x, int* y); // Converts canvas-relative coordinates to window-relative coordinates
 
     Color getPixelColor(int x, int y); // Gets the color of a pixel on the canvas
     Color getPixelColorBuffer(int x, int y); // Gets the color of a pixel in the buffer

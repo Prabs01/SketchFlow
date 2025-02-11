@@ -32,6 +32,9 @@ extern char FILLER_IMAGE_URL[];
 extern SDL_Rect LINE_DRAWER_RECT;
 extern char LINE_DRAWER_IMAGE_URL[];
 
+extern SDL_Rect SELECT_TOOL_RECT;
+extern char SELECT_TOOL_IMAGE_URL[];
+
 /*
  * Base class for all tools.
  * Provides common functionality such as texture management, event handling, and hover effects.
@@ -126,10 +129,28 @@ public:
 };
 
 // Selection tool (implementation pending)
-class Select : public Tools {
+class SelectTool : public Tools {
 private:
-    SDL_Rect clipRect;
-    
+    SDL_Rect clipRect; // this is the rectangle of the select tool
+    bool isSelecting; // tracks when the region is being selected
+    bool isSelected; // tracks if the region is selected or or not
+    SDL_Point lastMousePos;
+    Color clipRectColor;
+
+public:
+    SelectTool();
+    void makeTexture(SDL_Renderer* renderer) override;
+    void render() override;
+    void onMouseDown(SDL_Event& event) override;
+    void onMouseUp(SDL_Event& event) override;
+    void onMouseMove(SDL_Event& event) override;
+    void drawCursor() override;
+    void keyboardInput(SDL_Event& event) override;
+
+    void drawClipRect();
+    void clearClipRect();  //clearing clipRect is neccessary to move the selected part and clear the rectangle from buffer
+    bool isCursorInside();
+
 
 };
 

@@ -16,7 +16,8 @@ char FILLER_IMAGE_URL[] = "../resources/paint.jpg";
 SDL_Rect LINE_DRAWER_RECT = {0,300,50,50};
 char LINE_DRAWER_IMAGE_URL[] = "../resources/line.png";
 
-
+SDL_Rect SELECT_TOOL_RECT = {0,400,100,100};
+char SELECT_TOOL_IMAGE_URL[] = "../resources/eraser.jpg";
 
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;
@@ -349,7 +350,175 @@ void Filler::drawCursor(){
 }
 
 
+//select tool
 
+SelectTool::SelectTool(){
+    clipRect = {-1,-1,0,0};
+    bool isSelected = false;
+    bool isSelecting = false;
+
+    lastMousePos = {-1,-1};
+
+    bound_box = SELECT_TOOL_RECT;
+
+    clipRectColor = brown;
+}
+
+void SelectTool::makeTexture(SDL_Renderer* renderer_){
+    renderer = renderer_;
+    imgTexture = IMG_LoadTexture(renderer,SELECT_TOOL_IMAGE_URL);
+    if(!imgTexture){
+        printf("failes to load the select tool image texture %s \n",SDL_GetError());
+    }
+}
+
+void SelectTool::render(){
+    SDL_RenderDrawRect(renderer, &bound_box);
+    SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
+
+    drawClipRect();
+}
+
+void SelectTool::onMouseDown(SDL_Event& event){
+
+    //this is the intial state
+    if(!isSelecting && !isSelected){
+        isSelecting = true; // goto selecting state
+        int x = event.motion.x;
+        int y = event.motion.y;
+        clipRect.x = x;
+        clipRect.y = y;
+    }
+
+    //state when the portion is selected
+    if(!isSelecting && isSelected){
+        if(isCursorInside()){
+            isSelecting = true; //goto moving state
+            isSelected = true;
+            lastMousePos = {event.motion.x,event.motion.y}; // needed to calculate dx and dy for moving
+    
+        }else{
+            isSelecting = false; //goto the initial state
+            isSelected = false;
+            clearClipRect();
+           
+            canvas->copyToCanvas(clipRect); //copy content of buffer to canvas and clear the buffer
+            canvas->clearBuffer(clipRect);
+
+            clipRect = {-1,-1,0,0};
+            
+        }
+    }
+
+    //state when portion is being moved
+    if(isSelecting && isSelected){
+        if(!isCursorInside()){
+            isSelecting = false; // go to the initial state
+            isSelected = false;
+            clearClipRect();
+
+            canvas->copyToCanvas(clipRect); //copy content of buffer to canvas and clear the buffer
+            canvas->clearBuffer(clipRect);
+            clipRect = {-1,-1,0,0};
+        }
+    }
+
+}
+
+void SelectTool::onMouseUp(SDL_Event& event){
+    //state when the portion is being selected
+    if(isSelecting && !isSelected){
+        isSelecting = false; //go to the selected state
+        isSelected = true;
+
+        canvas->copyToBuffer(clipRect); // copy the content of canvas to buffer and clear the canvas
+        canvas->clear(clipRect);
+
+    }
+
+
+    //state when portion is being moved
+    if(isSelecting && isSelected){
+        isSelecting = false; //go to the selected state
+        isSelected = true;
+    }
+}
+
+void SelectTool::onMouseMove(SDL_Event& event){
+    //state when the potion is being selected
+    if(isSelecting && !isSelected){
+        int x = event.motion.x;
+        int y = event.motion.y;
+
+        clearClipRect();//we need to clear the previous cliprect before drawing other
+
+        clipRect.w = x - clipRect.x;
+        clipRect.h = y - clipRect.y;
+    }
+
+    //state when the portion is being moved
+    if(isSelecting && isSelected){
+        int x = event.motion.x;
+        int y = event.motion.y;
+
+        if(lastMousePos.x == -1 && lastMousePos.y == -1){
+            lastMousePos = {x,y};
+        }
+
+        int dx = (x - lastMousePos.x);
+        int dy = (y- lastMousePos.y);
+
+        clearClipRect();
+
+        canvas->moveBufferContent(dx, dy, clipRect);// move the content as the mouse moves
+
+        clipRect.x = clipRect.x + dx;
+        clipRect.y = clipRect.y + dy;
+
+        
+        lastMousePos = {x,y};
+    }
+}
+
+void SelectTool::keyboardInput(SDL_Event& event){
+
+}
+
+void SelectTool::drawCursor(){
+    
+}
+
+void SelectTool::drawClipRect(){
+    canvas->drawLineBuffer(clipRect.x, clipRect.y, clipRect.x + clipRect.w, clipRect.y, clipRectColor);
+    canvas->drawLineBuffer(clipRect.x+clipRect.w, clipRect.y, clipRect.x + clipRect.w, clipRect.y+ clipRect.h, clipRectColor);
+    canvas->drawLineBuffer(clipRect.x, clipRect.y + clipRect.h, clipRect.x + clipRect.w, clipRect.y+ clipRect.h, clipRectColor);
+    canvas->drawLineBuffer(clipRect.x, clipRect.y, clipRect.x, clipRect.y+ clipRect.h, clipRectColor);
+}
+void SelectTool::clearClipRect(){
+    canvas->clearLineBuffer(clipRect.x, clipRect.y, clipRect.x + clipRect.w, clipRect.y);
+    canvas->clearLineBuffer(clipRect.x+clipRect.w, clipRect.y, clipRect.x + clipRect.w, clipRect.y+ clipRect.h);
+    canvas->clearLineBuffer(clipRect.x, clipRect.y + clipRect.h, clipRect.x + clipRect.w, clipRect.y+ clipRect.h);
+    canvas->clearLineBuffer(clipRect.x, clipRect.y, clipRect.x, clipRect.y+ clipRect.h);
+}
+
+bool SelectTool::isCursorInside(){
+    int x,y;
+    SDL_GetMouseState(&x,&y);
+
+    SDL_Rect rect = clipRect;
+    if (rect.w < 0) {
+        rect.x += rect.w;
+        rect.w = -rect.w;
+    }
+    if (rect.h < 0) {
+        rect.y += rect.h;
+        rect.h = -rect.h;
+    }
+    return (x >= rect.x && x <= rect.x + rect.w &&
+            y >= rect.y && y <= rect.y + rect.h);
+}
+
+//line drawer
 LineDrawer::LineDrawer(){
     startingPixel = {-100,-100};
     endingPixel = {-100,-100};
