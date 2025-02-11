@@ -15,17 +15,9 @@ set(SDL2_IMAGE_LIB_DIR "/opt/homebrew/lib")
 
 # Define the source directory
 set(SOURCE_DIR src)
-#file(GLOB MAIN_SOURCES "${SOURCE_DIR}/*.cpp")
-set(MAIN_SOURCES
-    ${SOURCE_DIR}/main.cpp
-    ${SOURCE_DIR}/Canvas.cpp
-    ${SOURCE_DIR}/ToolBar.cpp
-    ${SOURCE_DIR}/Tools.cpp
-    ${SOURCE_DIR}/Shape.cpp
-    ${SOURCE_DIR}/Controller.cpp
-    # Add other source files here, excluding WindowSize.cpp
-)
 
+# Collect source files
+file(GLOB MAIN_SOURCES "${SOURCE_DIR}/*.cpp")
 add_executable(SketchFlow ${MAIN_SOURCES})
 
 # Include SDL2 and SDL2_image directories

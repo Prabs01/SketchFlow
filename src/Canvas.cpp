@@ -3,7 +3,8 @@
 SDL_Rect CANVAS_RECT = {0,0,0,0};
 
 Canvas::Canvas(){
-    area = {100,0,0,0};
+    area = {100,0,700-100,500};
+    CANVAS_RECT ={100,0,700-100,500};
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];
     showBuffer = true;
@@ -11,8 +12,8 @@ Canvas::Canvas(){
     clearBuffer();
 }
 Canvas::Canvas(int SW,int SH){
-    area = {100,0,700-100,500};
-    CANVAS_RECT ={100,0,700-100,500};
+    area = {100,0,SW-100,SH};
+    CANVAS_RECT ={100,0,SW-100,SH};
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];
     showBuffer = true;
@@ -90,7 +91,7 @@ void Canvas::setPixelBuffer(int x, int y, Color color){
 }
 
 Color Canvas::getPixelColor(int x, int y){
-   x = x - area.x;
+    x = x - area.x;
     y = y - area.y;
     
     Uint32 pixel = pixels[y * area.w + x];
@@ -120,14 +121,20 @@ Color Canvas::getPixelColorBuffer(int x, int y){
     return Color(r, g, b, a);
 }
 
-void Canvas::clear(){
-    memset(pixels, 255, area.w*area.h*sizeof(Uint32));
-}
-void Canvas::clearBuffer(){
-    for(int i = 0 ; i<area.w;i++){
-        for(int j = 0; j<area.h;j++){
+void Canvas::clear(SDL_Rect portion){
+     for(int i = portion.x ; i<portion.x+ portion.w;i++){
+        for(int j = portion.y; j<portion.y + portion.h;j++){
             int x = i, y = j;
-            fitCanvas(&x,&y);
+            // fitCanvas(&x,&y);
+            setPixel(x,y,white);
+        }
+    }
+}
+void Canvas::clearBuffer(SDL_Rect portion){
+    for(int i = portion.x ; i<portion.x+ portion.w;i++){
+        for(int j = portion.y; j<portion.y + portion.h;j++){
+            int x = i, y = j;
+            // fitCanvas(&x,&y);
             setPixelBuffer(x,y,transparent);
         }
     }
@@ -319,9 +326,9 @@ void Canvas::removeBuffer(){
     //clearBuffer();
 }
 
-void Canvas::copyToBuffer(){
-    for(int i = 0 ; i<area.w;i++){
-        for(int j = 0; j<area.h;j++){
+void Canvas::copyToBuffer(SDL_Rect copyArea){
+    for(int i = copyArea.x ; i<copyArea.x + copyArea.w;i++){
+        for(int j = copyArea.y; j<copyArea.y + copyArea.h;j++){
             bufferPixels[j*area.w +i] = pixels[j*area.w + i];
         }
     }

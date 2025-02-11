@@ -3,7 +3,8 @@
 
 //the bound box and images of the tool icons in the tool bar
 SDL_Rect PENCIL_RECT = {0,0, 100,100};
-char PENCIL_IMAGE_URL[] = "../resources/paint.jpg";
+
+char PENCIL_IMAGE_URL[] = "../resources/pencil.png";
 
 SDL_Rect ERASER_RECT = {0,100, 100,100};
 char ERASER_IMAGE_URL[] = "../resources/eraser.png";
@@ -19,6 +20,16 @@ char LINE_DRAWER_IMAGE_URL[] = "../resources/line.png";
 
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;
+}
+
+bool Tools::isMouseOver(){
+    int mouseX, mouseY;
+    Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+    if(mouseX >= bound_box.x && mouseX <=(bound_box.x + bound_box.w) && mouseY>=bound_box.y && mouseY<=(bound_box.y+bound_box.h)){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 void Tools::hover(){
@@ -115,15 +126,6 @@ void Pencil::keyboardInput(SDL_Event& event){
     }
 }
 
-bool Pencil::isMouseOver(){
-    int mouseX, mouseY;
-    Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-    if(mouseX >= bound_box.x && mouseX <=(bound_box.x + bound_box.w) && mouseY>=bound_box.y && mouseY<=(bound_box.y+bound_box.h)){
-        return true;
-    }else{
-        return false;
-    }
-}
 
 
 void Pencil::setPixelSize(int pixelSize_){
@@ -232,18 +234,6 @@ void Eraser::onMouseMove(SDL_Event& event){
     
 }
 
-bool Eraser::isMouseOver(){
-    int mouseX, mouseY;
-    Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-    if(mouseX >= bound_box.x && mouseX <=(bound_box.x + bound_box.w) && mouseY>=bound_box.y && mouseY<=(bound_box.y+bound_box.h)){
-        // printf(" Eraser selected ");
-        // fflush(stdout);
-        return true;
-        
-    }else{
-        return false;
-    }
-}
 
 void Eraser::keyboardInput(SDL_Event& event){
     if(event.key.keysym.sym == SDLK_EQUALS){
@@ -304,18 +294,6 @@ void Filler::onMouseMove(SDL_Event& event){
     return;
 }
 
-bool Filler::isMouseOver(){
-    int mouseX, mouseY;
-    Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-    if(mouseX >= bound_box.x && mouseX <=(bound_box.x + bound_box.w) && mouseY>=bound_box.y && mouseY<=(bound_box.y+bound_box.h)){
-        // printf(" Eraser selected ");
-        // fflush(stdout);
-        return true;
-        
-    }else{
-        return false;
-    }
-}
 
 void Filler::keyboardInput(SDL_Event& event){
     if(event.key.keysym.sym == SDLK_EQUALS){
@@ -431,18 +409,6 @@ void LineDrawer::onMouseUp(SDL_Event& event){
     
 }
 
-bool LineDrawer::isMouseOver(){
-    int mouseX, mouseY;
-    Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-    if(mouseX >= bound_box.x && mouseX <=(bound_box.x + bound_box.w) && mouseY>=bound_box.y && mouseY<=(bound_box.y+bound_box.h)){
-        // printf(" Eraser selected ");
-        // fflush(stdout);
-        return true;
-        
-    }else{
-        return false;
-    }
-}
 
 void LineDrawer::keyboardInput(SDL_Event& event){
     if(event.key.keysym.sym == SDLK_EQUALS){
