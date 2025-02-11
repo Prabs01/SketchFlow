@@ -3,6 +3,7 @@
 
 //the bound box and images of the tool icons in the tool bar
 SDL_Rect PENCIL_RECT = {0,0, 100,100};
+
 char PENCIL_IMAGE_URL[] = "../resources/pencil.png";
 
 SDL_Rect ERASER_RECT = {0,100, 100,100};

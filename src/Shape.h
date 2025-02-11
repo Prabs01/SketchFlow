@@ -1,6 +1,13 @@
 #pragma once
-#include<SDL.h>
-#include"Canvas.h"
+#ifdef _WIN32
+    #include <SDL.h>
+#elif __APPLE__
+    #include <SDL2/SDL.h>
+#else
+    #include <SDL2/SDL.h>  // Linux (also works for other Unix-like systems)
+#endif
+
+#include "Canvas.h"
 
 class Shape
 {

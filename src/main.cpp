@@ -1,10 +1,20 @@
-#include<SDL.h>
-#include<iostream>
-#include<SDL_image.h>
+#ifdef _WIN32
+    #include <SDL.h>
+    #include <SDL_image.h>
+#elif __APPLE__
+    #include <SDL2/SDL.h>
+    #include <SDL2/SDL_image.h>
+#else
+    #include <SDL2/SDL.h>  // Linux (also works for other Unix-like systems)
+    #include <SDL2/SDL_image.h>
+#endif
 
-#include"Canvas.h"
-#include"ToolBar.h"
-#include"Shape.h"
+#include <iostream>
+
+#include "Canvas.h"
+#include "ToolBar.h"
+#include "Shape.h"
+
 using namespace std;
 
 //SDL_DisplayMode displayMode;

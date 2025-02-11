@@ -3,7 +3,8 @@
 SDL_Rect CANVAS_RECT = {0,0,0,0};
 
 Canvas::Canvas(){
-    area = {100,0,0,0};
+    area = {100,0,700-100,500};
+    CANVAS_RECT ={100,0,700-100,500};
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];
     showBuffer = true;
