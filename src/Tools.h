@@ -151,7 +151,6 @@ public:
     void clearClipRect();  //clearing clipRect is neccessary to move the selected part and clear the rectangle from buffer
     bool isCursorInside();
 
-
 };
 
 // Line drawer tool for creating straight lines

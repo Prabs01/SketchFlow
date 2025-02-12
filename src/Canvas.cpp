@@ -70,6 +70,11 @@ bool Canvas::isInside(int x, int y){
     }
 }
 
+bool Canvas::isInside(SDL_Rect rect){
+    return(isInside(rect.x,rect.y) && isInside(rect.x+rect.w, rect.y)
+     && isInside(rect.x,rect.y+rect.h) && isInside(rect.x+rect.w, rect.y+rect.h));
+}
+
 void Canvas::fitCanvas(int* x, int* y){
     *x =*x + area.x;
     *y =*y + area.y;
@@ -374,19 +379,25 @@ void Canvas::moveBufferContent(int dx, int dy,SDL_Rect moveArea){
 
     for(int i = moveArea.x + 1; i<moveArea.x+ moveArea.w;i++){
         for(int j = moveArea.y + 1; j<moveArea.y + moveArea.h;j++){
-            int x = i - area.x;
-            int y = j - area.y;
-            // fitCanvas(&x,&y);
-            temp[j*area.w + i] = bufferPixels[y*area.w + x];
+            int x = i, y=j;
+            if(isInside(x, y)){
+                x = i - area.x;
+                y = j - area.y;
+                // fitCanvas(&x,&y);
+                temp[j*area.w + i] = bufferPixels[y*area.w + x];
+            }
         }
     }
 
     for(int i = moveArea.x +1; i<moveArea.x+ moveArea.w;i++){
         for(int j = moveArea.y + 1; j<moveArea.y + moveArea.h;j++){
-            int x = i - area.x;
-            int y = j - area.y;
-            // fitCanvas(&x,&y);
-            bufferPixels[y*area.w + x] = transparent.toUint32();
+            int x = i, y=j;
+            if(isInside(x, y)){
+                x = i - area.x;
+                y = j - area.y;
+                bufferPixels[y*area.w + x] = transparent.toUint32();
+            }
+            
         }
     }
 

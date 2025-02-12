@@ -67,6 +67,7 @@ public:
     int getYmax(); // Returns the max Y-coordinate of the canvas
 
     bool isInside(int x, int y); // Checks if a point is inside the canvas bounds
+    bool isInside(SDL_Rect rect);
 
     void drawLine(int x1, int y1, int x2, int y2, Color color); // Draws a line on the canvas
     void drawLineBuffer(int x1, int y1, int x2, int y2, Color color); // Draws a line on the buffer

@@ -457,7 +457,7 @@ void SelectTool::onMouseMove(SDL_Event& event){
     }
 
     //state when the portion is being moved
-    if(isSelecting && isSelected){
+    if(isSelecting && isSelected && canvas->isInside(clipRect)){
         int x = event.motion.x;
         int y = event.motion.y;
 
@@ -470,12 +470,16 @@ void SelectTool::onMouseMove(SDL_Event& event){
 
         clearClipRect();
 
-        canvas->moveBufferContent(dx, dy, clipRect);// move the content as the mouse moves
+        SDL_Rect buffer = clipRect;
 
-        clipRect.x = clipRect.x + dx;
-        clipRect.y = clipRect.y + dy;
+        buffer.x = clipRect.x + dx;
+        buffer.y = clipRect.y + dy;
 
-        
+        if(canvas -> isInside(buffer)){
+            
+            canvas->moveBufferContent(dx, dy, clipRect);// move the content as the mouse moves
+            clipRect = buffer;
+        }
         lastMousePos = {x,y};
     }
 }
@@ -517,6 +521,9 @@ bool SelectTool::isCursorInside(){
     return (x >= rect.x && x <= rect.x + rect.w &&
             y >= rect.y && y <= rect.y + rect.h);
 }
+
+
+
 
 //line drawer
 LineDrawer::LineDrawer(){
