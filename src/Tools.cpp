@@ -529,7 +529,7 @@ bool SelectTool::isCursorInside(){
 LineDrawer::LineDrawer(){
     startingPixel = {-100,-100};
     endingPixel = {-100,-100};
-    width = 5;
+    width = 3;
     color = black;
     drawing = false;
     bound_box = LINE_DRAWER_RECT;
@@ -558,6 +558,8 @@ void LineDrawer::onMouseDown(SDL_Event& event){
         endingPixel.x = x;
         endingPixel.y = y;
         drawing = true;
+        drawingLine = Line(startingPixel, endingPixel,width, color);
+        drawingLine.setCanvas(canvas);
     }
 }
 
@@ -567,10 +569,12 @@ void LineDrawer::onMouseMove(SDL_Event& event){
 
     
     if(drawing){
-        canvas->clearLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
-        endingPixel.x = x;
-        endingPixel.y = y;
-        canvas->drawLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y, black);
+        // canvas->clearLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
+        drawingLine.clearBuffer();
+        drawingLine.setEndingPoint(x,y);
+        printf("helloo3\n");
+        fflush(stdout);
+        drawingLine.drawBuffer();
     }
     
 
@@ -578,9 +582,9 @@ void LineDrawer::onMouseMove(SDL_Event& event){
 
 void LineDrawer::onMouseUp(SDL_Event& event){
     if(drawing){
-        canvas->drawLine(startingPixel.x,startingPixel.y,endingPixel.x,endingPixel.y,black);
+        drawingLine.draw();
         drawing = false;
-        canvas->clearBuffer();
+        drawingLine.clearBuffer();
     }
     
 }
@@ -590,6 +594,7 @@ void LineDrawer::keyboardInput(SDL_Event& event){
     if(event.key.keysym.sym == SDLK_EQUALS){
         width += 1;
     }else if(event.key.keysym.sym == SDLK_MINUS){
+        if(width >=2)
         width -= 1;
     }
 }

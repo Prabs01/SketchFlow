@@ -15,6 +15,7 @@
 #include "Canvas.h"
 #include "Shape.h"
 #include "Color.h"
+#include"Shape.h"
 
 
 using namespace std;
@@ -68,7 +69,6 @@ private:
     int pixelSize;
     bool isDrawing;
     SDL_Point lastPos;
-
 public:
     Pencil();
     void makeTexture(SDL_Renderer* renderer) override;
@@ -161,6 +161,7 @@ private:
     int width;
     Color color;
     bool drawing;
+    Line drawingLine;
 
 public:
     LineDrawer();

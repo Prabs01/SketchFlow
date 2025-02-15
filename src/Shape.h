@@ -19,6 +19,9 @@ public:
     virtual void draw() = 0;
     virtual void clear() = 0;
 
+    virtual void drawBuffer() = 0;
+    virtual void clearBuffer()=0;
+
     void setCanvas(Canvas* canvas);
     
     ~Shape();
@@ -30,16 +33,36 @@ class Line:public Shape{
         SDL_Point p1;
         SDL_Point p2;
         int size;
+        Color color;
 
     public:
         Line();
-        Line(SDL_Point p1, SDL_Point p2);
-        Line(int x1, int y1, int x2, int y2);
+        Line(SDL_Point p1, SDL_Point p2, int size = 3, Color color = black);
+        Line(int x1, int y1, int x2, int y2, int size =3, Color color = black);
 
         void draw() override;
         void clear() override;
+
+        void drawBuffer() override;
+        void clearBuffer() override;
+
         void move(int dx, int dy);
+
+        void incSize(int inc = 1);
+        void dcrSize(int dcr = 1);
+
+        void setEndingPoint(SDL_Point p2);
+        void setEndingPoint(int x2, int y2);
+        void setStartingPoint(SDL_Point p1);
+        void setStartingPoint(int x1, int y1);
 };
+
+/*_________NOTE FOR SWAROOP_________
+ -you MUST implement the virtual functions (dreaw(), clear(),etc..)of the parent class otherwise the program will not work.
+ -make such that you can increases the line width and change the color of the shapes(take reference from line).
+ - while testing you MUST CALL the setCanvas() function after making a shape object(after calling the constructor). Otherwise shape will not be able to access the canvas.
+ - First try handling inputs in the main function event handler and if all things are working only then give a pull request.
+*/
 
 class Rectangle:public Shape{
     private:

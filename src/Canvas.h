@@ -61,6 +61,8 @@ public:
     Color getPixelColor(int x, int y); // Gets the color of a pixel on the canvas
     Color getPixelColorBuffer(int x, int y); // Gets the color of a pixel in the buffer
 
+    Color getBackgroundColor();// get the background color of the canvas
+
     int getXmax(); // Returns the max X-coordinate of the canvas
     int getXmin(); // Returns the min X-coordinate of the canvas
     int getYmin(); // Returns the min Y-coordinate of the canvas

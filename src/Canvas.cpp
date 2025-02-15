@@ -132,6 +132,10 @@ Color Canvas::getPixelColorBuffer(int x, int y){
     return Color(r, g, b, a);
 }
 
+Color Canvas::getBackgroundColor(){
+    return bgColor;
+}
+
 void Canvas::clear(SDL_Rect portion){
     for(int i = portion.x +1; i<portion.x+ portion.w;i++){
         for(int j = portion.y+1; j<portion.y + portion.h;j++){
