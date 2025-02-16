@@ -1,5 +1,5 @@
 # About SketchFlow
-
+Note : This has been hardcoded to run only on developers system so they are going to sell their laptops to clont for their project display. Thus if you want to experience please make 1.5 lakhs ready on your bank account.
 SketchFlow is a simple and intuitive paint application built using SDL2 (Simple DirectMedia Layer 2). It allows users to draw and create digital artwork with basic painting tools. Whether you're sketching out ideas or just doodling for fun, SketchFlow provides an easy-to-use interface for creating and saving your drawings.
 
 ## Requirements
