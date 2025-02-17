@@ -25,14 +25,14 @@ Canvas::Canvas(int SW,int SH){
 
 void Canvas::init(SDL_Renderer* renderer_){
     renderer = renderer_;
-    canvaTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC, area.w, area.h);
-    SDL_SetTextureBlendMode(canvaTexture, SDL_BLENDMODE_BLEND);
+    canvasTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC, area.w, area.h);
+    SDL_SetTextureBlendMode(canvasTexture, SDL_BLENDMODE_BLEND);
 
     bufferTexture = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC, area.w, area.h);
     SDL_SetTextureBlendMode(bufferTexture, SDL_BLENDMODE_BLEND);
 }
 void Canvas::updatePixels(){
-    SDL_UpdateTexture(canvaTexture, NULL, pixels,area.w * sizeof(Uint32));
+    SDL_UpdateTexture(canvasTexture, NULL, pixels,area.w * sizeof(Uint32));
 }
 
 void Canvas::updateBuffer(){
@@ -40,7 +40,7 @@ void Canvas::updateBuffer(){
 }
 
 void Canvas::render(){
-    SDL_RenderCopy(renderer, canvaTexture,NULL, &area);
+    SDL_RenderCopy(renderer, canvasTexture,NULL, &area);
     if(showBuffer){
         SDL_RenderCopy(renderer,bufferTexture,NULL, &area);
     }
@@ -158,7 +158,7 @@ void Canvas::clearBuffer(SDL_Rect portion){
 
 Canvas::~Canvas(){
     delete[] pixels;
-    SDL_DestroyTexture(canvaTexture);
+    SDL_DestroyTexture(canvasTexture);
 }
 
 
