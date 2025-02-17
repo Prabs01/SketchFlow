@@ -38,7 +38,7 @@ int main(int argc, char* argv[]){
 
 
    
-    SDL_Window* window = SDL_CreateWindow("SDL2 Pixel Drawing", 0, 25, SCREEN_WIDTH,SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+    SDL_Window* window = SDL_CreateWindow("SketchFlow", 0, 25, SCREEN_WIDTH,SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
 
 
