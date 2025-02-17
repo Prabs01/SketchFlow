@@ -11,13 +11,13 @@ char ERASER_IMAGE_URL[] = "../resources/eraser.png";
 
 
 SDL_Rect FILLER_RECT = {0,200,100,100};
-char FILLER_IMAGE_URL[] = "../resources/paint.jpg";
+char FILLER_IMAGE_URL[] = "../resources/paint.png";
 
 SDL_Rect LINE_DRAWER_RECT = {0,300,50,50};
 char LINE_DRAWER_IMAGE_URL[] = "../resources/line.png";
 
 SDL_Rect SELECT_TOOL_RECT = {0,400,100,100};
-char SELECT_TOOL_IMAGE_URL[] = "../resources/eraser.jpg";
+char SELECT_TOOL_IMAGE_URL[] = "../resources/select.png";
 
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;
