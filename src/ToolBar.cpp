@@ -5,6 +5,7 @@
 ToolBar::ToolBar(){cout<<endl;}
 
 ToolBar::ToolBar(int SW, int SH){
+    bgcolor = lightGray;
     activeTool = nullptr;
     area = {0,0,100,SH};
     SDL_Rect TOOLBAR_RECT = {0,0,100,SH};
@@ -30,7 +31,7 @@ void ToolBar::setToolCanvas(Canvas* canvas_){
 }
 
 void ToolBar::render(){
-    SDL_SetRenderDrawColor(renderer, 100,100,100,255);
+    SDL_SetRenderDrawColor(renderer, bgcolor.r,bgcolor.g,bgcolor.b,bgcolor.a);
     SDL_RenderFillRect(renderer, &area);
     SDL_SetRenderDrawColor(renderer, 0,0,0,255);
     for(int i = 0; i<tools.size();i++){
@@ -40,7 +41,7 @@ void ToolBar::render(){
 
     if(activeTool){
         activeTool->drawCursor();
-        activeTool->hover();
+        activeTool->clicked();
     }
 
     
@@ -56,7 +57,9 @@ bool ToolBar::mouseClicked(SDL_Event& event){
         for(int i = 0; i<tools.size();i++){
             if(tools[i]->isMouseOver()){
                 
-
+                if(activeTool)
+                    activeTool->unSelect();
+                    
                 activeTool = tools[i];
 
                 // if(activeTool){

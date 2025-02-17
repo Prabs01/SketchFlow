@@ -35,11 +35,18 @@ bool Tools::isMouseOver(){
 
 void Tools::hover(){
     if(isMouseOver()){
-        SDL_SetTextureColorMod(imgTexture, 200, 200, 200);
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(renderer, gray.r,gray.g,gray.b,100);
+        SDL_RenderFillRect(renderer, &bound_box);
+        SDL_SetRenderDrawColor(renderer, 0,0,0,255);
     }
-    else{
-        SDL_SetTextureColorMod(imgTexture, 255, 255, 255);
-    }
+}
+
+void Tools::clicked(){
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(renderer, black.r,black.g,black.b,100);
+    SDL_RenderFillRect(renderer, &bound_box);
+    SDL_SetRenderDrawColor(renderer, 0,0,0,255);
 }
 
 
@@ -137,7 +144,20 @@ void Pencil::setColor(Color color){
     toolColor = color;
 }
 
-void Pencil::drawCursor(){
+void Pencil::drawCursor() {
+    // int x, y;
+    // SDL_GetMouseState(&x, &y);
+    // if (canvas->isInside(x, y)) {
+    //     SDL_ShowCursor(SDL_DISABLE);
+    //     canvas->clearBuffer();
+    //     canvas->drawLineBuffer(x, y, x + 10, y - 10, black); // Simple pencil symbol (diagonal line)
+    // } else {
+    //     SDL_ShowCursor(SDL_ENABLE);
+    //     canvas->clearBuffer();
+    // }
+}
+
+void Pencil::unSelect(){
 
 }
 
@@ -252,6 +272,10 @@ void Eraser::setColor(Color color){
     toolColor = color;
 }
 
+void Eraser::unSelect(){
+    
+}
+
 
 // Filler
 
@@ -346,6 +370,10 @@ void Filler::setBoundaryColor(Color color){
 }
 
 void Filler::drawCursor(){
+    
+}
+
+void Filler::unSelect(){
     
 }
 
@@ -488,8 +516,26 @@ void SelectTool::keyboardInput(SDL_Event& event){
 
 }
 
-void SelectTool::drawCursor(){
-    
+void SelectTool::drawCursor() {
+    static int prevX = -1, prevY = -1;
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    if (canvas->isInside(x, y) && !isSelected) {
+        SDL_ShowCursor(SDL_DISABLE);
+        if (prevX != -1 && prevY != -1) {
+            canvas->clearLineBuffer(prevX - 5, prevY, prevX + 5, prevY); // Clear previous cursor position
+            canvas->clearLineBuffer(prevX, prevY - 5, prevX, prevY + 5);
+        }
+        canvas->drawLineBuffer(x - 5, y, x + 5, y, black); // Horizontal line of +
+        canvas->drawLineBuffer(x, y - 5, x, y + 5, black); // Vertical line of +
+        prevX = x;
+        prevY = y;
+    } else {
+        SDL_ShowCursor(SDL_ENABLE);
+        canvas->clearLineBuffer(prevX - 5, prevY, prevX + 5, prevY); // Clear previous cursor position
+        canvas->clearLineBuffer(prevX, prevY - 5, prevX, prevY + 5);
+        prevX = prevY = -1;
+    }
 }
 
 void SelectTool::drawClipRect(){
@@ -522,6 +568,14 @@ bool SelectTool::isCursorInside(){
             y >= rect.y && y <= rect.y + rect.h);
 }
 
+void SelectTool::unSelect(){
+    canvas->copyToCanvas(clipRect); //copy content of buffer to canvas and clear the buffer
+    canvas->clearBuffer();
+    clipRect = {-1,-1,0,0};
+
+    printf("unselect called");
+    fflush(stdout);
+}
 
 
 
@@ -603,3 +657,6 @@ void LineDrawer::drawCursor(){
     
 }
 
+void LineDrawer::unSelect(){
+    
+}

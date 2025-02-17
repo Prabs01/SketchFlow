@@ -28,6 +28,7 @@ private:
     vector<Tools*> tools;
     SDL_Renderer* renderer;
     Canvas* canvas= nullptr;
+    Color bgcolor;
 
 public:
     ToolBar();

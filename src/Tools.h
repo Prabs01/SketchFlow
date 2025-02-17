@@ -57,8 +57,11 @@ public:
     
     virtual void drawCursor() = 0;
 
+    virtual void unSelect() = 0; // to rest the actions of the tools once unselected
+
     bool isMouseOver();
     void hover(); // Handles hover effects
+    void clicked();
     void setCanvas(Canvas* canvas_);
 };
 
@@ -77,6 +80,7 @@ public:
     void onMouseUp(SDL_Event& event) override;
     void onMouseMove(SDL_Event& event) override;
     void keyboardInput(SDL_Event& event) override;
+    void unSelect() override;
     void drawCursor() override;
     void setColor(Color color);
     void setPixelSize(int pixelSize_);
@@ -99,6 +103,7 @@ public:
     void onMouseUp(SDL_Event& event) override;
     void onMouseMove(SDL_Event& event) override;
     void keyboardInput(SDL_Event& event) override;
+    void unSelect() override;
 
     void setColor(Color color);
     void setEraserSize(int EraserSize_);
@@ -122,6 +127,7 @@ public:
     void onMouseMove(SDL_Event& event) override;
     void drawCursor() override;
     void keyboardInput(SDL_Event& event) override;
+    void unSelect() override;
 
     void setColor(Color color);
     void setBoundaryColor(Color color);
@@ -146,6 +152,7 @@ public:
     void onMouseMove(SDL_Event& event) override;
     void drawCursor() override;
     void keyboardInput(SDL_Event& event) override;
+    void unSelect() override;
 
     void drawClipRect();
     void clearClipRect();  //clearing clipRect is neccessary to move the selected part and clear the rectangle from buffer
@@ -172,5 +179,6 @@ public:
     void onMouseMove(SDL_Event& event) override;
     void drawCursor() override;
     void keyboardInput(SDL_Event& event) override;
+    void unSelect() override;
     void setColor(Color color);
 };
