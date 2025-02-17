@@ -37,62 +37,56 @@ Line::Line(int x1, int y1, int x2, int y2, int size_, Color color_){
 }
 
 
-void Line::draw(){
-    int dx = abs(p2.x-p1.x);
-    int dy = abs(p2.y-p1.y);
+void Line::draw() {
+    int dx = abs(p2.x - p1.x);
+    int dy = abs(p2.y - p1.y);
 
-    int ix = (p1.x<p2.x)?1:-1;
-    int iy = (p1.y<p2.y)?1:-1;
+    int ix = (p1.x < p2.x) ? 1 : -1;
+    int iy = (p1.y < p2.y) ? 1 : -1;
 
     int x = p1.x;
     int y = p1.y;
 
-    if(dx>dy){
-        int p = 2*dy - dx;
-        for(int i = 0; i < dx; i++){
-
-             for (int yp = 0; yp < size; ++yp) {
-                for (int xp = 0; xp < size; ++xp) {
-                    int pixelX = x + xp;
-                    int pixelY = y + yp;
-
-                    canvas->setPixel(pixelX, pixelY, color);
-                }
-            }
-            if(p<0){
-                x = x+ix;
-                p = p + 2*dy;
-            }
-            else if(p>=0){
-                x = x+ix;
-                y = y+iy;
-                p = p + 2*dy -2*dx;
-            }
-        }
-    }
-    else if(dy>dx){
-        int p = 2*dx - dy;
-        for(int i = 0; i < dy; i++){
+    if (dx >= dy) {  // Case where x changes more than y
+        int p = 2 * dy - dx;
+        for (int i = 0; i <= dx; i++) {  // <= ensures last pixel is drawn
             for (int yp = 0; yp < size; ++yp) {
                 for (int xp = 0; xp < size; ++xp) {
-                    int pixelX = x + xp;
-                    int pixelY = y + yp;
-
-                    canvas->setPixel(pixelX, pixelY, color);
+                    canvas->setPixel(x + xp, y + yp, color);
                 }
             }
-            if(p<0){
-                y = y+iy;
-                p = p + 2*dx;
+            if (p < 0) {
+                p += 2 * dy;
+            } else {
+                y += iy;
+                p += 2 * dy - 2 * dx;
             }
-            else if(p>=0){
-                y = y+iy;
-                x = x+ix;
-                p = p + 2*dx -2*dy;
+            x += ix;
+        }
+    } else {  // Case where y changes more than x
+        int p = 2 * dx - dy;
+        for (int i = 0; i <= dy; i++) {  // <= ensures last pixel is drawn
+            for (int yp = 0; yp < size; ++yp) {
+                for (int xp = 0; xp < size; ++xp) {
+                    canvas->setPixel(x + xp, y + yp, color);
+                }
             }
+            if (p < 0) {
+                p += 2 * dx;
+            } else {
+                x += ix;
+                p += 2 * dx - 2 * dy;
+            }
+            y += iy;
         }
     }
+
+    printf("\n(%d,%d) to (%d,%d)", p1.x, p1.y, p2.x, p2.y);
+    fflush(stdout);
 }
+
+
+
 void Line::clear(){
     int dx = abs(p2.x-p1.x);
     int dy = abs(p2.y-p1.y);
@@ -341,7 +335,9 @@ Polygon::Polygon(int Vertices_, int cx, int cy, int x, int y, int size_, Color c
         for (int i = 0; i < numVertices; i++) {
             vertices[i].x = vertices[i].x + cx;
             vertices[i].y = vertices[i].y + cy;
+            printf("\n(%d,%d)\t",vertices[i].x,vertices[i].y);
         }
+
         printf("Success : Initialized the points!\n");
         fflush(stdout);
     }
@@ -357,10 +353,18 @@ void Polygon::draw(){
     
     int i = 0;
     while (i < numVertices - 1 ) {
-        canvas->drawLine(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y, color); // Draws a line on the canvas
+        printf("\n(%d,%d) to (%d,%d)\t",vertices[i].x,vertices[i].y,vertices[i+1].x, vertices[i+1].y);
+        fflush(stdout);
+        Line* l1 = new Line(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y,size, color);
+        l1->setCanvas(canvas);
+        l1->draw(); // Draws a line on the canvas
+        free(l1);
         i++;
     }
-    canvas->drawLine(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y, color); // Draws a line on the canvas
+    Line* l2= new Line(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y, size,color);
+    l2->setCanvas(canvas);
+    l2->draw(); // Draws a line on the canvas
+    free(l2);
 }
 
 void Polygon::clear(){

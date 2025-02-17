@@ -70,7 +70,7 @@ int main(int argc, char* argv[]){
     SDL_Event event;
 
 
-    Polygon P1(7, 300, 300, 250, 250, 3, black);
+    Polygon P1(6, 300, 300, 250, 250, 3, black);
     P1.setCanvas(&canvas);
     
     while (!quit) {
