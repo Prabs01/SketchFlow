@@ -39,16 +39,17 @@ void Canvas::updateBuffer(){
     SDL_UpdateTexture(bufferTexture, NULL, bufferPixels,area.w * sizeof(Uint32));
 }
 
-void Canvas::render(){
-    SDL_RenderCopy(renderer, canvasTexture,NULL, &area);
+void Canvas::render(){  //after updating the pixels, render it to the screen
+    SDL_RenderCopy(renderer, canvasTexture, NULL, &area);
     if(showBuffer){
         SDL_RenderCopy(renderer,bufferTexture,NULL, &area);
     }
     
 }
 
+//canvas cooords & canvas size : relative to window
 int Canvas::getXmax(){
-    return area.x+area.w;
+    return area.x+area.w;   
 }
 int Canvas::getXmin(){
     return area.x;
@@ -70,17 +71,17 @@ bool Canvas::isInside(int x, int y){
     }
 }
 
-bool Canvas::isInside(SDL_Rect rect){
+bool Canvas::isInside(SDL_Rect rect){   // for rectangles like select tool
     return(isInside(rect.x,rect.y) && isInside(rect.x+rect.w, rect.y)
      && isInside(rect.x,rect.y+rect.h) && isInside(rect.x+rect.w, rect.y+rect.h));
 }
 
-void Canvas::fitCanvas(int* x, int* y){
+void Canvas::fitCanvas(int* x, int* y){ //sends points out of canvas to inside canvas - for mouse
     *x =*x + area.x;
     *y =*y + area.y;
 }
 
-void Canvas::absoluteCord(int* x, int* y){
+void Canvas::absoluteCord(int* x, int* y){  // canvas coordinate to window coordinate
     *x = *x - area.x;
     *y = *y - area.y;
 }

@@ -40,12 +40,12 @@ public:
 
     void init(SDL_Renderer* renderer_); // Initializes the canvas with an SDL renderer
 
-    void clear(SDL_Rect portion = CANVAS_RECT); // Clears the canvas
+    void clear(SDL_Rect portion = CANVAS_RECT); // Clears the sent rectangular portion
     void clearBuffer(SDL_Rect portion = CANVAS_RECT); // Clears the buffer
 
     void copyToBuffer(SDL_Rect copyArea = CANVAS_RECT);// Copies canvas pixels to buffer
-    void copyToCanvas(SDL_Rect copyArea = CANVAS_RECT);
-    void moveBufferContent(int dx, int dy,SDL_Rect moveArea = CANVAS_RECT);
+    void copyToCanvas(SDL_Rect copyArea = CANVAS_RECT);// for sending buffer to canvas
+    void moveBufferContent(int dx, int dy, SDL_Rect moveArea = CANVAS_RECT);
 
     void updatePixels(); // Copies pixel data to the canvas texture
     void updateBuffer(); // Copies buffer pixel data to the buffer texture

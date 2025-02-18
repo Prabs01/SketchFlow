@@ -48,7 +48,7 @@ protected:
     SDL_Rect bound_box;
 
 public:
-    virtual void makeTexture(SDL_Renderer* renderer_) = 0;
+    virtual void makeTexture(SDL_Renderer* renderer_) = 0;  //the makeTexture loads the tools image
     virtual void render() = 0;
     virtual void onMouseDown(SDL_Event& event) = 0;
     virtual void onMouseUp(SDL_Event& event) = 0;
@@ -180,5 +180,5 @@ public:
     void drawCursor() override;
     void keyboardInput(SDL_Event& event) override;
     void unSelect() override;
-    void setColor(Color color);
+    void setColor(Color color_);
 };

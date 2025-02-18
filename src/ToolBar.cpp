@@ -23,14 +23,14 @@ void ToolBar::setRenderer(SDL_Renderer* renderer_){
     }
 }
 
-void ToolBar::setToolCanvas(Canvas* canvas_){
+void ToolBar::setToolCanvas(Canvas* canvas_){   //main -> toolbar -> tool (give canvas permission)
     canvas = canvas_;
     for(int i = 0 ;i<tools.size();i++){
         tools[i]->setCanvas(canvas_);
     }
 }
 
-void ToolBar::render(){
+void ToolBar::render(){     //renders the toolbar with all the shapes/tools and also hover-click effect
     SDL_SetRenderDrawColor(renderer, bgcolor.r,bgcolor.g,bgcolor.b,bgcolor.a);
     SDL_RenderFillRect(renderer, &area);
     SDL_SetRenderDrawColor(renderer, 0,0,0,255);
@@ -40,8 +40,8 @@ void ToolBar::render(){
     }
 
     if(activeTool){
-        activeTool->drawCursor();
-        activeTool->clicked();
+        activeTool->drawCursor(); //draws the active tool cursor on the canvas
+        activeTool->clicked();  //makes dark after tool is selected
     }
 
     
@@ -75,7 +75,7 @@ bool ToolBar::mouseClicked(SDL_Event& event){
     }
 }
 
-void ToolBar::handleEvent(SDL_Event& event){
+void ToolBar::handleEvent(SDL_Event& event){ //tool event handler : handles the active tool functionality
     if(activeTool){
         if(event.type == SDL_MOUSEBUTTONUP){
             activeTool -> onMouseUp(event);

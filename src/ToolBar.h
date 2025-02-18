@@ -43,7 +43,8 @@ public:
     bool mouseClicked(SDL_Event& event); // listens for the clicks to the tools icon
 
     void handleEvent(SDL_Event& event);// handles the input for the active tool. 
-                                        //The active tool only has the functions it can execute. This function handles its function.
+    //tools only know what to do. not what the user inputs
+    //commands the tools what to do.
 
     ~ToolBar();
     

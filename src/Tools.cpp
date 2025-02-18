@@ -660,3 +660,6 @@ void LineDrawer::drawCursor(){
 void LineDrawer::unSelect(){
     
 }
+void LineDrawer::setColor(Color color_){
+    color = color_;
+}

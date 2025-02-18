@@ -69,6 +69,10 @@ int main(int argc, char* argv[]){
     bool quit = false;
     SDL_Event event;
 
+
+    Polygon P1(7, 300, 300, 250, 250, 3, black);
+    P1.setCanvas(&canvas);
+    
     while (!quit) {
         canvas.updatePixels();
         canvas.updateBuffer();
@@ -93,7 +97,11 @@ int main(int argc, char* argv[]){
 
             case SDL_KEYDOWN:
                 if(event.key.keysym.sym == SDLK_c)
-                    canvas.clear();
+                    canvas.clear();              
+
+                if(event.key.keysym.sym == SDLK_p)
+                    P1.draw();      
+
 
                 // //Temporary movement logic
                 // if(event.key.keysym.sym == SDLK_UP)
