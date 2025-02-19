@@ -1,4 +1,3 @@
-
 #include "Shape.h"
 
 Shape::Shape(){
@@ -36,8 +35,7 @@ Line::Line(int x1, int y1, int x2, int y2, int size_, Color color_){
     color = color_;
 }
 
-
-void Line::draw() {
+void Line::drawLine(bool isBuffer, bool isClear) {
     int dx = abs(p2.x - p1.x);
     int dy = abs(p2.y - p1.y);
 
@@ -47,12 +45,20 @@ void Line::draw() {
     int x = p1.x;
     int y = p1.y;
 
+    // Choose the pixel color based on whether it's drawing or clearing
+    void (Canvas::*pixelFunc)(int, int, Color) = isBuffer ? &Canvas::setPixelBuffer : &Canvas::setPixel;
+    
+    Color colorToUse = isClear ? transparent : color;
+    if(!isBuffer){
+        Color colorToUse = isClear ? canvas->getBackgroundColor() : color;
+    }
+
     if (dx >= dy) {  // Case where x changes more than y
         int p = 2 * dy - dx;
-        for (int i = 0; i <= dx; i++) {  // <= ensures last pixel is drawn
+        for (int i = 0; i <= dx; i++) {
             for (int yp = 0; yp < size; ++yp) {
                 for (int xp = 0; xp < size; ++xp) {
-                    canvas->setPixel(x + xp, y + yp, color);
+                    (canvas->*pixelFunc)(x + xp, y + yp, colorToUse);
                 }
             }
             if (p < 0) {
@@ -65,10 +71,10 @@ void Line::draw() {
         }
     } else {  // Case where y changes more than x
         int p = 2 * dx - dy;
-        for (int i = 0; i <= dy; i++) {  // <= ensures last pixel is drawn
+        for (int i = 0; i <= dy; i++) {
             for (int yp = 0; yp < size; ++yp) {
                 for (int xp = 0; xp < size; ++xp) {
-                    canvas->setPixel(x + xp, y + yp, color);
+                    (canvas->*pixelFunc)(x + xp, y + yp, colorToUse);
                 }
             }
             if (p < 0) {
@@ -80,184 +86,23 @@ void Line::draw() {
             y += iy;
         }
     }
-
-    // printf("\n(%d,%d) to (%d,%d)", p1.x, p1.y, p2.x, p2.y);
-    // fflush(stdout);
 }
 
-
-
-void Line::clear(){
-    int dx = abs(p2.x-p1.x);
-    int dy = abs(p2.y-p1.y);
-
-    int ix = (p1.x<p2.x)?1:-1;
-    int iy = (p1.y<p2.y)?1:-1;
-
-    int x = p1.x;
-    int y = p1.y;
-
-    if(dx>dy){
-        int p = 2*dy - dx;
-        for(int i = 0; i < dx; i++){
-
-             for (int yp = 0; yp < size; ++yp) {
-                for (int xp = 0; xp < size; ++xp) {
-                    int pixelX = x + xp;
-                    int pixelY = y + yp;
-
-                    canvas->setPixel(pixelX, pixelY, canvas->getBackgroundColor());
-                }
-            }
-            if(p<0){
-                x = x+ix;
-                p = p + 2*dy;
-            }
-            else if(p>=0){
-                x = x+ix;
-                y = y+iy;
-                p = p + 2*dy -2*dx;
-            }
-        }
-    }
-    else if(dy>dx){
-        int p = 2*dx - dy;
-        for(int i = 0; i < dy; i++){
-            for (int yp = 0; yp < size; ++yp) {
-                for (int xp = 0; xp < size; ++xp) {
-                    int pixelX = x + xp;
-                    int pixelY = y + yp;
-
-                    canvas->setPixel(pixelX, pixelY, canvas -> getBackgroundColor());
-                }
-            }
-            if(p<0){
-                y = y+iy;
-                p = p + 2*dx;
-            }
-            else if(p>=0){
-                y = y+iy;
-                x = x+ix;
-                p = p + 2*dx -2*dy;
-            }
-        }
-    }
+void Line::draw() {
+    drawLine(false, false);  // Main canvas, drawing
 }
 
-void Line::drawBuffer(){
-    int dx = abs(p2.x-p1.x);
-    int dy = abs(p2.y-p1.y);
-
-    int ix = (p1.x<p2.x)?1:-1;
-    int iy = (p1.y<p2.y)?1:-1;
-
-    int x = p1.x;
-    int y = p1.y;
-
-    if(dx>dy){
-        int p = 2*dy - dx;
-        for(int i = 0; i < dx; i++){
-
-             for (int yp = 0; yp < size; ++yp) {
-                for (int xp = 0; xp < size; ++xp) {
-                    int pixelX = x + xp;
-                    int pixelY = y + yp;
-
-                    canvas->setPixelBuffer(pixelX, pixelY, color);
-                }
-            }
-            if(p<0){
-                x = x+ix;
-                p = p + 2*dy;
-            }
-            else if(p>=0){
-                x = x+ix;
-                y = y+iy;
-                p = p + 2*dy -2*dx;
-            }
-        }
-    }
-    else if(dy>dx){
-        int p = 2*dx - dy;
-        for(int i = 0; i < dy; i++){
-            for (int yp = 0; yp < size; ++yp) {
-                for (int xp = 0; xp < size; ++xp) {
-                    int pixelX = x + xp;
-                    int pixelY = y + yp;
-
-                    canvas->setPixelBuffer(pixelX, pixelY, color);
-                }
-            }
-            if(p<0){
-                y = y+iy;
-                p = p + 2*dx;
-            }
-            else if(p>=0){
-                y = y+iy;
-                x = x+ix;
-                p = p + 2*dx -2*dy;
-            }
-        }
-    }
+void Line::clear() {
+    drawLine(false, true);  // Main canvas, clearing
 }
 
-void Line::clearBuffer(){
-    int dx = abs(p2.x-p1.x);
-    int dy = abs(p2.y-p1.y);
-
-    int ix = (p1.x<p2.x)?1:-1;
-    int iy = (p1.y<p2.y)?1:-1;
-
-    int x = p1.x;
-    int y = p1.y;
-
-    if(dx>dy){
-        int p = 2*dy - dx;
-        for(int i = 0; i < dx; i++){
-
-             for (int yp = 0; yp < size; ++yp) {
-                for (int xp = 0; xp < size; ++xp) {
-                    int pixelX = x + xp;
-                    int pixelY = y + yp;
-
-                    canvas->setPixelBuffer(pixelX, pixelY, transparent);
-                }
-            }
-            if(p<0){
-                x = x+ix;
-                p = p + 2*dy;
-            }
-            else if(p>=0){
-                x = x+ix;
-                y = y+iy;
-                p = p + 2*dy -2*dx;
-            }
-        }
-    }
-    else if(dy>dx){
-        int p = 2*dx - dy;
-        for(int i = 0; i < dy; i++){
-            for (int yp = 0; yp < size; ++yp) {
-                for (int xp = 0; xp < size; ++xp) {
-                    int pixelX = x + xp;
-                    int pixelY = y + yp;
-
-                    canvas->setPixelBuffer(pixelX, pixelY, transparent);
-                }
-            }
-            if(p<0){
-                y = y+iy;
-                p = p + 2*dx;
-            }
-            else if(p>=0){
-                y = y+iy;
-                x = x+ix;
-                p = p + 2*dx -2*dy;
-            }
-        }
-    }
+void Line::drawBuffer() {
+    drawLine(true, false);  // Buffer, drawing
 }
 
+void Line::clearBuffer() {
+    drawLine(true, true);  // Buffer, clearing
+}
 
 void Line::move(int dx, int dy){
     clear();
@@ -335,14 +180,11 @@ Polygon::Polygon(int Vertices_, int cx, int cy, int x, int y, int size_, Color c
         for (int i = 0; i < numVertices; i++) {
             vertices[i].x = vertices[i].x + cx;
             vertices[i].y = vertices[i].y + cy;
-            // printf("\n(%d,%d)\t",vertices[i].x,vertices[i].y);
         }
 
-        // printf("Success : Initialized the points!\n");
-        // fflush(stdout);
     }
     else{
-        //printf("Error : Failed to initialize the points!\n");
+        printf("Error : Failed to initialize the points!\n");
     }
 
 }
@@ -353,8 +195,6 @@ void Polygon::draw(){
     
     int i = 0;
     while (i < numVertices - 1 ) {
-        //printf("\n(%d,%d) to (%d,%d)\t",vertices[i].x,vertices[i].y,vertices[i+1].x, vertices[i+1].y);
-        //fflush(stdout);
         Line* l1 = new Line(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y,size, color);
         l1->setCanvas(canvas);
         l1->draw(); // Draws a line on the canvas
