@@ -20,6 +20,11 @@
 * The tools are pushed to the tools vector and activeTool points to the selected tool.
 */
 
+struct ColorBox {
+    SDL_Rect rect;
+    Color color;
+};
+
 class ToolBar
 {
 private:
@@ -28,6 +33,10 @@ private:
     vector<Tools*> tools;
     SDL_Renderer* renderer;
     Canvas* canvas= nullptr;
+    Color bgcolor;
+
+    Color currentColor;
+    std::vector<ColorBox> colorBoxes;
 
 public:
     ToolBar();
@@ -42,7 +51,16 @@ public:
     bool mouseClicked(SDL_Event& event); // listens for the clicks to the tools icon
 
     void handleEvent(SDL_Event& event);// handles the input for the active tool. 
-                                        //The active tool only has the functions it can execute. This function handles its function.
+    //tools only know what to do. not what the user inputs
+    //commands the tools what to do.
+
+    Color getCurrentColor() const;
+    bool isColorButtonClicked(int x, int y);
+    Color getSelectedColor();
+    void renderCurrentColorBox(SDL_Renderer* renderer, Color currentColor); // Method to render the current color box
+
+    void initColorBoxes();
+    void renderColorBoxes();
 
     ~ToolBar();
     

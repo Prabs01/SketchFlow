@@ -17,12 +17,18 @@
 
 using namespace std;
 
-//SDL_DisplayMode displayMode;
-
 int main(int argc, char* argv[]){
-    SDL_Init(SDL_INIT_VIDEO);   // Mode of operation .i.e video mode
-    SDL_Init(IMG_INIT_PNG);     // which file to handle i.e png
-    
+    // Mode of operation .i.e video mode
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
+        return 1;
+    }
+
+    // which file to handle i.e png
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
+        return 1;
+    }
 
     SDL_DisplayMode displayMode;
     int displayIndex = 0; // Primary display
@@ -35,12 +41,21 @@ int main(int argc, char* argv[]){
 
     int SCREEN_WIDTH = displayMode.w;
     int SCREEN_HEIGHT = displayMode.h;
-
-
    
-    SDL_Window* window = SDL_CreateWindow("SDL2 Pixel Drawing", 0, 25, SCREEN_WIDTH,SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
+    SDL_Window* window = SDL_CreateWindow("SketchFlow", 0, 25, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+    if (!window) {
+        std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+        return 1;
+    }
 
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (!renderer) {
+        std::cerr << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
 
     Canvas canvas(SCREEN_WIDTH,SCREEN_HEIGHT);
     ToolBar toolBar(SCREEN_WIDTH,SCREEN_HEIGHT);
@@ -50,15 +65,16 @@ int main(int argc, char* argv[]){
     toolBar.setRenderer(renderer);
     toolBar.setToolCanvas(&canvas);
 
+    canvas.pushCanvas();
+
 
     bool quit = false;
     SDL_Event event;
 
 
-    SDL_Init(SDL_INIT_VIDEO);
-
-
-
+    Polygon P1(6, 300, 300, 250, 250, 3, black);
+    P1.setCanvas(&canvas);
+    
     while (!quit) {
         canvas.updatePixels();
         canvas.updateBuffer();
@@ -82,21 +98,20 @@ int main(int argc, char* argv[]){
                 break;
 
             case SDL_KEYDOWN:
-                if(event.key.keysym.sym == SDLK_c)
-                    canvas.clear();
+                if(event.key.keysym.sym == SDLK_c){
+                    canvas.clear();     
+                    canvas.pushCanvas();
+                }
+                             
 
-                //temp
-                if(event.key.keysym.sym == SDLK_UP)
-                    // line.move(0,-5);
+                if(event.key.keysym.sym == SDLK_p)
+                    P1.draw();      
 
-                if(event.key.keysym.sym == SDLK_LEFT)
-                    // line.move(-5,0);
+                if(event.key.keysym.sym == SDLK_z){
+                    canvas.popCanvas();
+                }
 
-                if(event.key.keysym.sym == SDLK_RIGHT)
-                    // line.move(5,0);
-
-                if(event.key.keysym.sym == SDLK_DOWN)
-                    // line.move(0,5);
+                break;
 
 
             case SDL_MOUSEBUTTONUP:
@@ -109,17 +124,15 @@ int main(int argc, char* argv[]){
                 if (event.button.button == SDL_BUTTON_LEFT){
                     toolBar.mouseClicked(event);
 
-                
                 }
                 break;
 
             case SDL_MOUSEMOTION:
-            
-                
+                break;
+
+            default:
                 break;
         }
-
-
         
         SDL_RenderClear(renderer);
 
@@ -127,12 +140,14 @@ int main(int argc, char* argv[]){
         canvas.render();
     
         SDL_RenderPresent(renderer);
+        SDL_Delay(10);
     }      
 
     // delete[] pixels;
     // SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    IMG_Quit();
     SDL_Quit();
 
     return 0;

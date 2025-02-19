@@ -2,19 +2,9 @@
 
 SDL_Rect CANVAS_RECT = {0,0,0,0};
 
-Canvas::Canvas(){
-    area = {100,0,700-100,500};
-    CANVAS_RECT ={100,0,700-100,500};
-    pixels = new Uint32[area.w * area.h];
-    bufferPixels = new Uint32[area.w * area.h];
-    showBuffer = true;
-    bgColor = white;
-    clear();
-    clearBuffer();
-}
 Canvas::Canvas(int SW,int SH){
     area = {100,0,SW-100,SH};
-    CANVAS_RECT ={100,0,SW-100,SH};
+    CANVAS_RECT = area;
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];
     showBuffer = true;
@@ -25,30 +15,31 @@ Canvas::Canvas(int SW,int SH){
 
 void Canvas::init(SDL_Renderer* renderer_){
     renderer = renderer_;
-    canvaTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC, area.w, area.h);
-    SDL_SetTextureBlendMode(canvaTexture, SDL_BLENDMODE_BLEND);
+    canvasTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC, area.w, area.h);
+    SDL_SetTextureBlendMode(canvasTexture, SDL_BLENDMODE_BLEND);
 
     bufferTexture = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_ARGB8888,SDL_TEXTUREACCESS_STATIC, area.w, area.h);
     SDL_SetTextureBlendMode(bufferTexture, SDL_BLENDMODE_BLEND);
 }
 void Canvas::updatePixels(){
-    SDL_UpdateTexture(canvaTexture, NULL, pixels,area.w * sizeof(Uint32));
+    SDL_UpdateTexture(canvasTexture, NULL, pixels,area.w * sizeof(Uint32));
 }
 
 void Canvas::updateBuffer(){
     SDL_UpdateTexture(bufferTexture, NULL, bufferPixels,area.w * sizeof(Uint32));
 }
 
-void Canvas::render(){
-    SDL_RenderCopy(renderer, canvaTexture,NULL, &area);
+void Canvas::render(){  //after updating the pixels, render it to the screen
+    SDL_RenderCopy(renderer, canvasTexture, NULL, &area);
     if(showBuffer){
         SDL_RenderCopy(renderer,bufferTexture,NULL, &area);
     }
     
 }
 
+//canvas cooords & canvas size : relative to window
 int Canvas::getXmax(){
-    return area.x+area.w;
+    return area.x+area.w;   
 }
 int Canvas::getXmin(){
     return area.x;
@@ -70,17 +61,17 @@ bool Canvas::isInside(int x, int y){
     }
 }
 
-bool Canvas::isInside(SDL_Rect rect){
+bool Canvas::isInside(SDL_Rect rect){   // for rectangles like select tool
     return(isInside(rect.x,rect.y) && isInside(rect.x+rect.w, rect.y)
      && isInside(rect.x,rect.y+rect.h) && isInside(rect.x+rect.w, rect.y+rect.h));
 }
 
-void Canvas::fitCanvas(int* x, int* y){
+void Canvas::fitCanvas(int* x, int* y){ //sends points out of canvas to inside canvas - for mouse
     *x =*x + area.x;
     *y =*y + area.y;
 }
 
-void Canvas::absoluteCord(int* x, int* y){
+void Canvas::absoluteCord(int* x, int* y){  // canvas coordinate to window coordinate
     *x = *x - area.x;
     *y = *y - area.y;
 }
@@ -158,7 +149,7 @@ void Canvas::clearBuffer(SDL_Rect portion){
 
 Canvas::~Canvas(){
     delete[] pixels;
-    SDL_DestroyTexture(canvaTexture);
+    SDL_DestroyTexture(canvasTexture);
 }
 
 
@@ -420,3 +411,44 @@ void Canvas::moveBufferContent(int dx, int dy,SDL_Rect moveArea){
     }
 
 }
+
+void Canvas::pushCanvas(){
+    Uint32* snapShot = new Uint32[area.w * area.h];
+    memcpy(snapShot, pixels,area.w*area.h*sizeof(Uint32));
+    undoStack.push(snapShot);
+
+    printf("\npushed");
+    fflush(stdout);
+}
+
+void Canvas::popCanvas() {
+    if (undoStack.empty()) {  
+        printf("\nUndo stack is empty!");
+        fflush(stdout);
+        return;
+    }
+
+    Uint32* lastState = undoStack.top();
+    undoStack.pop();
+
+    if (!lastState) {  
+        printf("\nError: Last state is a nullptr!");
+        fflush(stdout);
+        return;
+    }
+
+    if (!pixels) {  
+        printf("\nError: pixels is NULL! Cannot restore.");
+        fflush(stdout);
+        delete[] lastState;
+        return;
+    }
+
+    memcpy(pixels, lastState, area.w * area.h * sizeof(Uint32));
+
+    delete[] lastState;
+
+    printf("\nUndo performed successfully.");
+    fflush(stdout);
+}
+

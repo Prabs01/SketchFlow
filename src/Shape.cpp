@@ -37,62 +37,56 @@ Line::Line(int x1, int y1, int x2, int y2, int size_, Color color_){
 }
 
 
-void Line::draw(){
-    int dx = abs(p2.x-p1.x);
-    int dy = abs(p2.y-p1.y);
+void Line::draw() {
+    int dx = abs(p2.x - p1.x);
+    int dy = abs(p2.y - p1.y);
 
-    int ix = (p1.x<p2.x)?1:-1;
-    int iy = (p1.y<p2.y)?1:-1;
+    int ix = (p1.x < p2.x) ? 1 : -1;
+    int iy = (p1.y < p2.y) ? 1 : -1;
 
     int x = p1.x;
     int y = p1.y;
 
-    if(dx>dy){
-        int p = 2*dy - dx;
-        for(int i = 0; i < dx; i++){
-
-             for (int yp = 0; yp < size; ++yp) {
-                for (int xp = 0; xp < size; ++xp) {
-                    int pixelX = x + xp;
-                    int pixelY = y + yp;
-
-                    canvas->setPixel(pixelX, pixelY, color);
-                }
-            }
-            if(p<0){
-                x = x+ix;
-                p = p + 2*dy;
-            }
-            else if(p>=0){
-                x = x+ix;
-                y = y+iy;
-                p = p + 2*dy -2*dx;
-            }
-        }
-    }
-    else if(dy>dx){
-        int p = 2*dx - dy;
-        for(int i = 0; i < dy; i++){
+    if (dx >= dy) {  // Case where x changes more than y
+        int p = 2 * dy - dx;
+        for (int i = 0; i <= dx; i++) {  // <= ensures last pixel is drawn
             for (int yp = 0; yp < size; ++yp) {
                 for (int xp = 0; xp < size; ++xp) {
-                    int pixelX = x + xp;
-                    int pixelY = y + yp;
-
-                    canvas->setPixel(pixelX, pixelY, color);
+                    canvas->setPixel(x + xp, y + yp, color);
                 }
             }
-            if(p<0){
-                y = y+iy;
-                p = p + 2*dx;
+            if (p < 0) {
+                p += 2 * dy;
+            } else {
+                y += iy;
+                p += 2 * dy - 2 * dx;
             }
-            else if(p>=0){
-                y = y+iy;
-                x = x+ix;
-                p = p + 2*dx -2*dy;
+            x += ix;
+        }
+    } else {  // Case where y changes more than x
+        int p = 2 * dx - dy;
+        for (int i = 0; i <= dy; i++) {  // <= ensures last pixel is drawn
+            for (int yp = 0; yp < size; ++yp) {
+                for (int xp = 0; xp < size; ++xp) {
+                    canvas->setPixel(x + xp, y + yp, color);
+                }
             }
+            if (p < 0) {
+                p += 2 * dx;
+            } else {
+                x += ix;
+                p += 2 * dx - 2 * dy;
+            }
+            y += iy;
         }
     }
+
+    // printf("\n(%d,%d) to (%d,%d)", p1.x, p1.y, p2.x, p2.y);
+    // fflush(stdout);
 }
+
+
+
 void Line::clear(){
     int dx = abs(p2.x-p1.x);
     int dy = abs(p2.y-p1.y);
@@ -285,15 +279,123 @@ void Line::setStartingPoint(SDL_Point p){
 }
 
 void Line::setEndingPoint(int x2, int y2){
-    printf("helloo\n");
-    fflush(stdout);
+    // printf("helloo\n");
+    // fflush(stdout);
     p2.x = x2;
     p2.y = y2;
-    printf("helloo2\n");
-    fflush(stdout);
+    // printf("helloo2\n");
+    // fflush(stdout);
 }
 
 void Line::setEndingPoint(SDL_Point p){
     p2.x = p.x;
     p2.y = p.y;
 }
+
+
+Polygon::Polygon(){ //def constructor
+    numVertices = 3;
+    p1 = {-100,-100};
+    p2 = {-100, -100};
+    size = 3;
+}
+
+Polygon::Polygon(int Vertices_, int cx, int cy, int x, int y, int size_, Color color_){
+    numVertices = Vertices_;
+    p1.x = cx;
+    p1.y = cy;
+    p2.x = x;
+    p2.y = y;
+    size = size_;
+    color = color_;
+
+    float rad = sqrt( pow((x-cx), 2) + pow((y-cy), 2) );
+    float angle = (2*M_PI)/numVertices ;
+    
+    vertices = (SDL_Point*)malloc(numVertices * sizeof(SDL_Point)); // Dynamically allocate memory
+    if (vertices != NULL) {
+        
+        double rotAngle = atan2((double)(y - cy), (x - cx));  // atan2 handles vertical lines correctly
+
+        //find coordinates w.r.t. axes
+        for (int i = 0; i < numVertices; i++) {
+            vertices[i].x = rad*cos(angle*i); // Copy points into the allocated array
+            vertices[i].y = rad*sin(angle*i); // Copy points into the allocated array
+        }
+
+        //rotate back to its original coordinates
+        for (int i = 0; i < numVertices; i++) {
+             float tempx = vertices[i].x*cos(rotAngle) - vertices[i].y*sin(rotAngle);
+             float tempy = vertices[i].x*sin(rotAngle) + vertices[i].y*cos(rotAngle);
+             vertices[i].x = tempx;
+             vertices[i].y = tempy;
+        }
+
+        //translate back to og position
+        for (int i = 0; i < numVertices; i++) {
+            vertices[i].x = vertices[i].x + cx;
+            vertices[i].y = vertices[i].y + cy;
+            // printf("\n(%d,%d)\t",vertices[i].x,vertices[i].y);
+        }
+
+        // printf("Success : Initialized the points!\n");
+        // fflush(stdout);
+    }
+    else{
+        //printf("Error : Failed to initialize the points!\n");
+    }
+
+}
+
+void Polygon::draw(){
+    //printf("Drawing the polygon with %d vertices\n", numVertices);
+    //fflush(stdout);
+    
+    int i = 0;
+    while (i < numVertices - 1 ) {
+        //printf("\n(%d,%d) to (%d,%d)\t",vertices[i].x,vertices[i].y,vertices[i+1].x, vertices[i+1].y);
+        //fflush(stdout);
+        Line* l1 = new Line(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y,size, color);
+        l1->setCanvas(canvas);
+        l1->draw(); // Draws a line on the canvas
+        free(l1);
+        i++;
+    }
+    Line* l2= new Line(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y, size,color);
+    l2->setCanvas(canvas);
+    l2->draw(); // Draws a line on the canvas
+    free(l2);
+}
+
+void Polygon::clear(){
+    //printf("Drawing the polygon with %d vertices\n", numVertices);
+    int i = 0;
+    while (i < numVertices - 1 ) {
+        canvas->drawLine(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y, canvas->getBackgroundColor()); // Draws a line on the canvas
+        i++;
+    }
+    canvas->drawLine(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y, canvas->getBackgroundColor()); // Draws a line on the canvas
+
+    free(vertices);
+}
+
+void Polygon::drawBuffer(){
+    //printf("Drawing the polygon with %d vertices\n", numVertices);
+    int i = 0;
+    while (i < numVertices - 1 ) {
+        canvas->drawLineBuffer(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y, color); // Draws a line on the canvas
+        i++;
+    }
+    canvas->drawLineBuffer(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y, color); // Draws a line on the canvas               
+}
+
+void Polygon::clearBuffer(){
+    //printf("Drawing the polygon with %d vertices\n", numVertices);
+    int i = 0;
+    while (i < numVertices - 1 ) {
+        canvas->drawLineBuffer(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y, transparent); // Draws a line on the canvas
+        i++;
+    }
+    canvas->drawLineBuffer(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y, transparent); // Draws a line on the canvas               
+}
+
