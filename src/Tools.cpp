@@ -80,15 +80,20 @@ void Pencil::render(){
 }
 
 void Pencil::onMouseDown(SDL_Event& event){
+    if(!isDrawing){
+        canvas->pushCanvas();
+    }
     isDrawing = true;
     lastPos.x = event.motion.x;
     lastPos.y = event.motion.y;
 }
 
 void Pencil::onMouseUp(SDL_Event& event){
-    isDrawing = false;
-    lastPos.x = -100;
-    lastPos.y = -100;
+    if(isDrawing){
+        isDrawing = false;
+        lastPos.x = -100;
+        lastPos.y = -100;
+    }
 }
 
 void Pencil::onMouseMove(SDL_Event& event){
@@ -206,15 +211,21 @@ void Eraser::drawCursor(){
 }
 
 void Eraser::onMouseDown(SDL_Event& event){
+    if(!isDrawing){
+        canvas->pushCanvas();
+    }
     isDrawing = true;
     lastPos.x = event.motion.x;
     lastPos.y = event.motion.y;
 }
 
 void Eraser::onMouseUp(SDL_Event& event){
-    isDrawing = false;
-    lastPos.x = -100;
-    lastPos.y = -100;
+    if(isDrawing){
+        isDrawing = false;
+        lastPos.x = -100;
+        lastPos.y = -100;
+    }
+    
 }
 
 void Eraser::onMouseMove(SDL_Event& event){
@@ -301,6 +312,7 @@ void Filler::onMouseUp(SDL_Event& event){
 
 void Filler::onMouseDown(SDL_Event& event){
     if(!pixelSelected){
+        canvas->pushCanvas();
         int x = event.motion.x;
         int y = event.motion.y;
         current_color = canvas->getPixelColor(x,y);
@@ -402,6 +414,7 @@ void SelectTool::onMouseDown(SDL_Event& event){
 
     //this is the intial state
     if(!isSelecting && !isSelected){
+        canvas->pushCanvas();
         isSelecting = true; // goto selecting state
         int x = event.motion.x;
         int y = event.motion.y;
@@ -425,7 +438,7 @@ void SelectTool::onMouseDown(SDL_Event& event){
             canvas->clearBuffer(clipRect);
 
             clipRect = {-1,-1,0,0};
-            
+
         }
     }
 
@@ -439,6 +452,8 @@ void SelectTool::onMouseDown(SDL_Event& event){
             canvas->copyToCanvas(clipRect); //copy content of buffer to canvas and clear the buffer
             canvas->clearBuffer(clipRect);
             clipRect = {-1,-1,0,0};
+
+
         }
     }
 
@@ -598,6 +613,8 @@ void LineDrawer::onMouseDown(SDL_Event& event){
     int y = event.motion.y;
 
     if(!drawing){
+        canvas->pushCanvas();
+
         startingPixel.x = x;
         startingPixel.y  = y;
         endingPixel.x = x;
@@ -617,8 +634,8 @@ void LineDrawer::onMouseMove(SDL_Event& event){
         // canvas->clearLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
         drawingLine.clearBuffer();
         drawingLine.setEndingPoint(x,y);
-        printf("helloo3\n");
-        fflush(stdout);
+    //    printf("helloo3\n");
+    //     fflush(stdout);
         drawingLine.drawBuffer();
     }
     
