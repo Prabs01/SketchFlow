@@ -102,19 +102,6 @@ int main(int argc, char* argv[]){
                 if(event.key.keysym.sym == SDLK_p)
                     P1.draw();      
 
-
-                // //Temporary movement logic
-                // if(event.key.keysym.sym == SDLK_UP)
-                //     // line.move(0,-5);
-
-                // if(event.key.keysym.sym == SDLK_LEFT)
-                //     // line.move(-5,0);
-
-                // if(event.key.keysym.sym == SDLK_RIGHT)
-                //     // line.move(5,0);
-
-                // if(event.key.keysym.sym == SDLK_DOWN)
-                //     // line.move(0,5);
                 break;
 
 
@@ -144,6 +131,7 @@ int main(int argc, char* argv[]){
         canvas.render();
     
         SDL_RenderPresent(renderer);
+        SDL_Delay(10);
     }      
 
     // delete[] pixels;

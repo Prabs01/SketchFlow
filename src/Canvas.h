@@ -36,8 +36,7 @@ private:
     Color currentColor; // Current drawing color
 
 
-public:
-    Canvas();
+public:    
     Canvas(int SW,int SH);
 
     void init(SDL_Renderer* renderer_); // Initializes the canvas with an SDL renderer
