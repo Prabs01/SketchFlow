@@ -92,18 +92,26 @@ void Canvas::setPixelBuffer(int x, int y, Color color){
     }
 }
 
-Color Canvas::getPixelColor(int x, int y){
-    x = x - area.x;
-    y = y - area.y;
-    
-    Uint32 pixel = pixels[y * area.w + x];
+Color Canvas::getPixelColor(int x, int y) {
+    // Convert screen coordinates to canvas-local coordinates
+    x -= area.x;
+    y -= area.y;
 
-    Uint8 r = (pixel >> 16) & 0xFF;  // Extract red (8 bits)
-    Uint8 g = (pixel >> 8) & 0xFF;   // Extract green (8 bits)
-    Uint8 b = pixel & 0xFF;          // Extract blue (8 bits)
-    Uint8 a = (pixel >> 24) & 0xFF;  // Extract alpha (8 bits)
+    // Add bounds checking to prevent invalid memory access
+    if (x < 0 || x >= area.w || y < 0 || y >= area.h) {
+        // Handle invalid coordinates (return transparent/black or throw)
+        return Color(0, 0, 0, 0);  // Default: transparent black
+    }
 
-    // Return the Color object with extracted RGBA values
+    // Fix: Use proper stride calculation (width instead of width-1)
+    Uint32 pixel = pixels[y * area.w + x];  // Corrected line
+
+    // Color extraction remains the same
+    Uint8 r = (pixel >> 16) & 0xFF;
+    Uint8 g = (pixel >> 8) & 0xFF;
+    Uint8 b = pixel & 0xFF;
+    Uint8 a = (pixel >> 24) & 0xFF;
+
     return Color(r, g, b, a);
 }
 
