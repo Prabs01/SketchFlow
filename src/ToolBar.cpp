@@ -7,6 +7,12 @@ ToolBar::ToolBar(){cout<<endl;}
 ToolBar::ToolBar(int SW, int SH){
     bgcolor = lightGray;
     activeTool = nullptr;
+    if(horizontalToolbar){
+        area = {0,0,SW,120};      //x-start, y-start, x-increase, y-increase
+    }
+    else{
+        area = {0,0,120,SH};
+    }
     area = {0,0,100,SH};
     SDL_Rect TOOLBAR_RECT = area ;
     tools.push_back(new Pencil);

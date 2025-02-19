@@ -17,6 +17,7 @@ using namespace std;
 
 // Defines the rectangle where the canvas is displayed
 extern SDL_Rect CANVAS_RECT;
+extern bool horizontalToolbar;
 
 /*
  * The Canvas class provides functionalities to draw, clear, and manipulate pixels on a 2D canvas.
