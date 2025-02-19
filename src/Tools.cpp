@@ -620,7 +620,8 @@ void LineDrawer::onMouseDown(SDL_Event& event){
         endingPixel.x = x;
         endingPixel.y = y;
         drawing = true;
-        drawingLine = Line(startingPixel, endingPixel,width, toolColor);
+        //drawingLine = Line(startingPixel, endingPixel,width, toolColor);
+        drawingLine = Polygon(10, startingPixel.x,startingPixel.y, endingPixel.x, endingPixel.y);
         drawingLine.setCanvas(canvas);
     }
 }

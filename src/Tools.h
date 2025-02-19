@@ -164,7 +164,8 @@ private:
     SDL_Point endingPixel;
     int width;
     bool drawing;
-    Line drawingLine;
+    //Line drawingLine;
+    Polygon drawingLine;
 
 public:
     LineDrawer();

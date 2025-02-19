@@ -76,6 +76,10 @@ class Polygon:public Shape{
         void drawBuffer() override;
         void clearBuffer() override;
 
+        void generateVertices(int x, int y);
+
+        void setEndingPoint(int x, int y);
+
 };
 
 /*_________NOTE FOR SWAROOP_________
