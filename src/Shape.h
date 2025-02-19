@@ -8,6 +8,7 @@
 #endif
 
 #include "Canvas.h"
+#include <cmath>
 
 class Shape
 {
