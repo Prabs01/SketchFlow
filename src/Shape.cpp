@@ -81,8 +81,8 @@ void Line::draw() {
         }
     }
 
-    printf("\n(%d,%d) to (%d,%d)", p1.x, p1.y, p2.x, p2.y);
-    fflush(stdout);
+    // printf("\n(%d,%d) to (%d,%d)", p1.x, p1.y, p2.x, p2.y);
+    // fflush(stdout);
 }
 
 
@@ -279,12 +279,12 @@ void Line::setStartingPoint(SDL_Point p){
 }
 
 void Line::setEndingPoint(int x2, int y2){
-    printf("helloo\n");
-    fflush(stdout);
+    // printf("helloo\n");
+    // fflush(stdout);
     p2.x = x2;
     p2.y = y2;
-    printf("helloo2\n");
-    fflush(stdout);
+    // printf("helloo2\n");
+    // fflush(stdout);
 }
 
 void Line::setEndingPoint(SDL_Point p){
@@ -335,26 +335,26 @@ Polygon::Polygon(int Vertices_, int cx, int cy, int x, int y, int size_, Color c
         for (int i = 0; i < numVertices; i++) {
             vertices[i].x = vertices[i].x + cx;
             vertices[i].y = vertices[i].y + cy;
-            printf("\n(%d,%d)\t",vertices[i].x,vertices[i].y);
+            // printf("\n(%d,%d)\t",vertices[i].x,vertices[i].y);
         }
 
-        printf("Success : Initialized the points!\n");
-        fflush(stdout);
+        // printf("Success : Initialized the points!\n");
+        // fflush(stdout);
     }
     else{
-        printf("Error : Failed to initialize the points!\n");
+        //printf("Error : Failed to initialize the points!\n");
     }
 
 }
 
 void Polygon::draw(){
-    printf("Drawing the polygon with %d vertices\n", numVertices);
-    fflush(stdout);
+    //printf("Drawing the polygon with %d vertices\n", numVertices);
+    //fflush(stdout);
     
     int i = 0;
     while (i < numVertices - 1 ) {
-        printf("\n(%d,%d) to (%d,%d)\t",vertices[i].x,vertices[i].y,vertices[i+1].x, vertices[i+1].y);
-        fflush(stdout);
+        //printf("\n(%d,%d) to (%d,%d)\t",vertices[i].x,vertices[i].y,vertices[i+1].x, vertices[i+1].y);
+        //fflush(stdout);
         Line* l1 = new Line(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y,size, color);
         l1->setCanvas(canvas);
         l1->draw(); // Draws a line on the canvas
@@ -368,7 +368,7 @@ void Polygon::draw(){
 }
 
 void Polygon::clear(){
-    printf("Drawing the polygon with %d vertices\n", numVertices);
+    //printf("Drawing the polygon with %d vertices\n", numVertices);
     int i = 0;
     while (i < numVertices - 1 ) {
         canvas->drawLine(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y, canvas->getBackgroundColor()); // Draws a line on the canvas
@@ -380,7 +380,7 @@ void Polygon::clear(){
 }
 
 void Polygon::drawBuffer(){
-    printf("Drawing the polygon with %d vertices\n", numVertices);
+    //printf("Drawing the polygon with %d vertices\n", numVertices);
     int i = 0;
     while (i < numVertices - 1 ) {
         canvas->drawLineBuffer(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y, color); // Draws a line on the canvas
@@ -390,7 +390,7 @@ void Polygon::drawBuffer(){
 }
 
 void Polygon::clearBuffer(){
-    printf("Drawing the polygon with %d vertices\n", numVertices);
+    //printf("Drawing the polygon with %d vertices\n", numVertices);
     int i = 0;
     while (i < numVertices - 1 ) {
         canvas->drawLineBuffer(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y, transparent); // Draws a line on the canvas

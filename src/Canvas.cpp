@@ -421,3 +421,44 @@ void Canvas::moveBufferContent(int dx, int dy,SDL_Rect moveArea){
     }
 
 }
+
+void Canvas::pushCanvas(){
+    Uint32* snapShot = new Uint32[area.w * area.h];
+    memcpy(snapShot, pixels,area.w*area.h*sizeof(Uint32));
+    undoStack.push(snapShot);
+
+    printf("\npushed");
+    fflush(stdout);
+}
+
+void Canvas::popCanvas() {
+    if (undoStack.empty()) {  
+        printf("\nUndo stack is empty!");
+        fflush(stdout);
+        return;
+    }
+
+    Uint32* lastState = undoStack.top();
+    undoStack.pop();
+
+    if (!lastState) {  
+        printf("\nError: Last state is a nullptr!");
+        fflush(stdout);
+        return;
+    }
+
+    if (!pixels) {  
+        printf("\nError: pixels is NULL! Cannot restore.");
+        fflush(stdout);
+        delete[] lastState;
+        return;
+    }
+
+    memcpy(pixels, lastState, area.w * area.h * sizeof(Uint32));
+
+    delete[] lastState;
+
+    printf("\nUndo performed successfully.");
+    fflush(stdout);
+}
+

@@ -9,7 +9,8 @@
 
 
 #include <iostream>
-
+#include<stack>
+#include<cstring>
 #include"Color.h"
 
 using namespace std;
@@ -34,7 +35,7 @@ private:
     bool showBuffer;
     Color bgColor;
     Color currentColor; // Current drawing color
-
+    stack<Uint32*> undoStack;
 
 public:
     Canvas();
@@ -81,6 +82,9 @@ public:
 
     void viewBuffer(); // Displays the buffer
     void removeBuffer(); // Hides the buffer
+
+    void pushCanvas();//for undo function
+    void popCanvas();
 
     void setCurrentColor(Color color) {
         currentColor = color; // Sets the current drawing color

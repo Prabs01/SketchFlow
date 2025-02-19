@@ -65,6 +65,8 @@ int main(int argc, char* argv[]){
     toolBar.setRenderer(renderer);
     toolBar.setToolCanvas(&canvas);
 
+    canvas.pushCanvas();
+
 
     bool quit = false;
     SDL_Event event;
@@ -96,25 +98,19 @@ int main(int argc, char* argv[]){
                 break;
 
             case SDL_KEYDOWN:
-                if(event.key.keysym.sym == SDLK_c)
-                    canvas.clear();              
+                if(event.key.keysym.sym == SDLK_c){
+                    canvas.clear();     
+                    canvas.pushCanvas();
+                }
+                             
 
                 if(event.key.keysym.sym == SDLK_p)
                     P1.draw();      
 
 
-                // //Temporary movement logic
-                // if(event.key.keysym.sym == SDLK_UP)
-                //     // line.move(0,-5);
-
-                // if(event.key.keysym.sym == SDLK_LEFT)
-                //     // line.move(-5,0);
-
-                // if(event.key.keysym.sym == SDLK_RIGHT)
-                //     // line.move(5,0);
-
-                // if(event.key.keysym.sym == SDLK_DOWN)
-                //     // line.move(0,5);
+                if(event.key.keysym.sym == SDLK_z){
+                    canvas.popCanvas();
+                }
                 break;
 
 
