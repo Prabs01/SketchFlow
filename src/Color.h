@@ -15,15 +15,23 @@
 struct Color {
     Uint8 r, g, b, a; ///< Red, Green, Blue, and Alpha components (0-255)
 
+    // Default constructor (black, fully transparent)
     Color() : r(0), g(0), b(0), a(0) {}
 
+    // Parameterized constructor
     Color(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha = 255)
         : r(red), g(green), b(blue), a(alpha) {}
 
+    // Copy constructor
+    Color(const Color& other) 
+        : r(other.r), g(other.g), b(other.b), a(other.a) {}
+
+    // Convert color to a 32-bit unsigned integer
     Uint32 toUint32() const {
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 };
+
 
 // Predefined common colors
 const Color red(255, 0, 0);

@@ -46,6 +46,7 @@ protected:
     SDL_Renderer* renderer = nullptr;
     Canvas* canvas = nullptr;
     SDL_Rect bound_box;
+    Color toolColor;
 
 public:
     virtual void makeTexture(SDL_Renderer* renderer_) = 0;  //the makeTexture loads the tools image
@@ -63,12 +64,13 @@ public:
     void hover(); // Handles hover effects
     void clicked();
     void setCanvas(Canvas* canvas_);
+    void setToolColor(Color color);
+    SDL_Rect getBoundBox() const { return bound_box; } // Add this method
 };
 
 // Pencil tool for freehand drawing
 class Pencil : public Tools {
 private:
-    Color toolColor;
     int pixelSize;
     bool isDrawing;
     SDL_Point lastPos;
@@ -82,14 +84,12 @@ public:
     void keyboardInput(SDL_Event& event) override;
     void unSelect() override;
     void drawCursor() override;
-    void setColor(Color color);
     void setPixelSize(int pixelSize_);
 };
 
 // Eraser tool for removing pixels
 class Eraser : public Tools {
 private:
-    Color toolColor;
     int eraserSize;
     bool isDrawing;
     SDL_Point lastPos;
@@ -105,7 +105,6 @@ public:
     void keyboardInput(SDL_Event& event) override;
     void unSelect() override;
 
-    void setColor(Color color);
     void setEraserSize(int EraserSize_);
     void drawCursor() override;
 };
@@ -113,7 +112,6 @@ public:
 // Filler tool for flood fill algorithm
 class Filler : public Tools {
 private:
-    Color fill_color;
     Color boundary_color;
     Color current_color;
     bool pixelSelected;
@@ -129,7 +127,6 @@ public:
     void keyboardInput(SDL_Event& event) override;
     void unSelect() override;
 
-    void setColor(Color color);
     void setBoundaryColor(Color color);
     void fill(int x, int y); // Fills a region with the selected color
 };
@@ -166,7 +163,6 @@ private:
     SDL_Point startingPixel;
     SDL_Point endingPixel;
     int width;
-    Color color;
     bool drawing;
     Line drawingLine;
 
@@ -180,5 +176,4 @@ public:
     void drawCursor() override;
     void keyboardInput(SDL_Event& event) override;
     void unSelect() override;
-    void setColor(Color color_);
 };

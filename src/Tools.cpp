@@ -49,6 +49,9 @@ void Tools::clicked(){
     SDL_SetRenderDrawColor(renderer, 0,0,0,255);
 }
 
+void Tools::setToolColor(Color color){
+    toolColor = color;
+}
 
 
 //Functions of pencil
@@ -140,9 +143,6 @@ void Pencil::setPixelSize(int pixelSize_){
     pixelSize = pixelSize_;
 }
 
-void Pencil::setColor(Color color){
-    toolColor = color;
-}
 
 void Pencil::drawCursor() {
     // int x, y;
@@ -268,10 +268,6 @@ void Eraser::setEraserSize(int eraserSize_){
     eraserSize = eraserSize_;
 }
 
-void Eraser::setColor(Color color){
-    toolColor = color;
-}
-
 void Eraser::unSelect(){
     
 }
@@ -280,7 +276,7 @@ void Eraser::unSelect(){
 // Filler
 
 Filler::Filler(){
-    fill_color = magenta;
+    toolColor = red;
     current_color = white;
     bound_box = FILLER_RECT;
     pixelSelected = false;
@@ -331,8 +327,8 @@ void Filler::keyboardInput(SDL_Event& event){
 void Filler::fill(int EP1, int EP2){
   
     if (!canvas->isInside(EP1,EP2)) return;
-    if (fill_color.toUint32() == current_color.toUint32()) return;
-    if (canvas->getPixelColor(EP1, EP2).toUint32() == fill_color.toUint32()) return;
+    if (toolColor.toUint32() == current_color.toUint32()) return;
+    if (canvas->getPixelColor(EP1, EP2).toUint32() == toolColor.toUint32()) return;
 
     vector<int> xp,yp;
     xp.push_back(EP1);
@@ -346,7 +342,7 @@ void Filler::fill(int EP1, int EP2){
         if (!canvas->isInside(x,y)) continue;
         if (canvas->getPixelColor(x, y).toUint32() != current_color.toUint32()) continue;
 
-        canvas->setPixel(x, y, fill_color);
+        canvas->setPixel(x, y, toolColor);
 
         xp.push_back(x - 1);yp.push_back(y);
         xp.push_back(x + 1);yp.push_back(y);
@@ -359,10 +355,6 @@ void Filler::fill(int EP1, int EP2){
 
     }
     
-}
-
-void Filler::setColor(Color color){
-    fill_color = color;
 }
 
 void Filler::setBoundaryColor(Color color){
@@ -584,7 +576,7 @@ LineDrawer::LineDrawer(){
     startingPixel = {-100,-100};
     endingPixel = {-100,-100};
     width = 3;
-    color = black;
+    toolColor = black;
     drawing = false;
     bound_box = LINE_DRAWER_RECT;
 }
@@ -612,7 +604,7 @@ void LineDrawer::onMouseDown(SDL_Event& event){
         endingPixel.x = x;
         endingPixel.y = y;
         drawing = true;
-        drawingLine = Line(startingPixel, endingPixel,width, color);
+        drawingLine = Line(startingPixel, endingPixel,width, toolColor);
         drawingLine.setCanvas(canvas);
     }
 }
@@ -659,7 +651,4 @@ void LineDrawer::drawCursor(){
 
 void LineDrawer::unSelect(){
     
-}
-void LineDrawer::setColor(Color color_){
-    color = color_;
 }

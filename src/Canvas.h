@@ -33,6 +33,8 @@ private:
     Uint32* bufferPixels = nullptr; // Pixel array for buffer (used for temporary drawings like cursor or shape previews)
     bool showBuffer;
     Color bgColor;
+    Color currentColor; // Current drawing color
+
 
 public:
     Canvas();
@@ -79,6 +81,14 @@ public:
 
     void viewBuffer(); // Displays the buffer
     void removeBuffer(); // Hides the buffer
+
+    void setCurrentColor(Color color) {
+        currentColor = color; // Sets the current drawing color
+    }
+
+    Color getCurrentColor() const {
+        return currentColor; // Returns the current drawing color
+    }
 
     ~Canvas(); // Destructor to clean up resources
 };
