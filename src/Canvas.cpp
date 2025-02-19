@@ -1,9 +1,15 @@
 #include"Canvas.h"
 
 SDL_Rect CANVAS_RECT = {0,0,0,0};
+bool horizontalToolbar = false;
 
 Canvas::Canvas(int SW,int SH){
-    area = {100,0,SW-100,SH};
+    if(horizontalToolbar){
+        area = {0,120,SW,SH-120};      //x-start, y-start, x-increase, y-increase
+    }
+    else{
+        area = {120,0,SW-120,SH};
+    }
     CANVAS_RECT = area;
     pixels = new Uint32[area.w * area.h];
     bufferPixels = new Uint32[area.w * area.h];

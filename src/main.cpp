@@ -102,7 +102,6 @@ int main(int argc, char* argv[]){
                     canvas.clear();     
                     canvas.pushCanvas();
                 }
-                             
 
                 if(event.key.keysym.sym == SDLK_p)
                     P1.draw();      

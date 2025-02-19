@@ -41,6 +41,8 @@ class Line:public Shape{
         Line(SDL_Point p1, SDL_Point p2, int size = 3, Color color = black);
         Line(int x1, int y1, int x2, int y2, int size =3, Color color = black);
 
+        void drawLine(bool isBuffer, bool isClear);
+
         void draw() override;
         void clear() override;
 
