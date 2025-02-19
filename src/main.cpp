@@ -107,10 +107,10 @@ int main(int argc, char* argv[]){
                 if(event.key.keysym.sym == SDLK_p)
                     P1.draw();      
 
-
                 if(event.key.keysym.sym == SDLK_z){
                     canvas.popCanvas();
                 }
+
                 break;
 
 
@@ -140,6 +140,7 @@ int main(int argc, char* argv[]){
         canvas.render();
     
         SDL_RenderPresent(renderer);
+        SDL_Delay(10);
     }      
 
     // delete[] pixels;

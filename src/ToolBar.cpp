@@ -8,7 +8,7 @@ ToolBar::ToolBar(int SW, int SH){
     bgcolor = lightGray;
     activeTool = nullptr;
     area = {0,0,100,SH};
-    SDL_Rect TOOLBAR_RECT = {0,0,100,SH};
+    SDL_Rect TOOLBAR_RECT = area ;
     tools.push_back(new Pencil);
     tools.push_back(new Eraser);
     tools.push_back(new Filler);
