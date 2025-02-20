@@ -187,6 +187,8 @@ class PolygonTool : public Tools {
         int width;
         bool isDrawing; // Track if the user is currently drawing
         Polygon polygon; // Polygon object for drawing
+        bool isMoving = false;
+        int prevX,prevY;
     
     
     public:
@@ -199,4 +201,6 @@ class PolygonTool : public Tools {
         void drawCursor() override;
         void keyboardInput(SDL_Event& event) override;
         void unSelect() override;
+
+
     };

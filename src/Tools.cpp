@@ -690,6 +690,7 @@ PolygonTool::PolygonTool(int numVertices){
     toolColor = black;
     isDrawing = false;
     bound_box = POLYGON_TOOL_RECT; // Set the bounding box for the tool icon
+    polygon = Polygon(numVertices, -10,-10,-10,-10);
 }
 
 // Load the polygon icon
@@ -712,7 +713,7 @@ void PolygonTool::onMouseDown(SDL_Event& event) {
     int x = event.motion.x;
     int y = event.motion.y;
 
-    if(!isDrawing){
+    if(!isDrawing && !isMoving){
         canvas->pushCanvas();
 
         center.x = x;
@@ -722,7 +723,35 @@ void PolygonTool::onMouseDown(SDL_Event& event) {
         isDrawing = true;
         polygon = Polygon(noVertices, center.x, center.y, vertex.x, vertex.y, width, toolColor);
         polygon.setCanvas(canvas);
+
+        printf("\nstate 2");
+        fflush(stdout);
     }
+    if(!isDrawing && isMoving){
+        if(polygon.isPointInside(x,y)){
+            isMoving = true;
+            isDrawing = true;
+            prevX = x;
+            prevY = y;
+
+            printf("\nstate 4");
+            fflush(stdout);
+        }
+    }
+
+    if(isMoving){
+        if(!polygon.isPointInside(x,y)){
+            isMoving = false;
+            isDrawing = false;
+
+            polygon.clearBuffer();
+            polygon.draw();
+
+            printf("\nstate 1");
+            fflush(stdout);
+        }
+    }
+
 }
 
 // Handle mouse move event
@@ -731,23 +760,47 @@ void PolygonTool::onMouseMove(SDL_Event& event) {
     int y = event.motion.y;
 
     
-    if(isDrawing){
+    if(isDrawing && !isMoving){
         // canvas->clearLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
         polygon.clearBuffer();
         polygon.setEndingPoint(x,y);
-    //    printf("helloo3\n");
+    //    printf("\nhelloo3\n");
     //     fflush(stdout);
         polygon.drawBuffer();
     }
     
+    if(isDrawing && isMoving){
+        // Calculate movement offset
+        int dx = x - prevX;
+        int dy = y - prevY;
+
+        // Move the polygon
+        polygon.move(dx, dy);
+
+        // Update previous position
+        prevX = x;
+        prevY = y;
+    }
 }
 
 // Handle mouse up event
 void PolygonTool::onMouseUp(SDL_Event& event) {
-    if (isDrawing) {
-        polygon.draw(); // Draw the final polygon on the canvas
+    if (isDrawing && !isMoving) {
+
         isDrawing = false; // Stop drawing
-        polygon.clearBuffer(); // Clear points for the next polygon
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
+
+    }
+
+    if(isDrawing && isMoving){
+        isDrawing = false;
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
     }
 }
 
