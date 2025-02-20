@@ -176,7 +176,6 @@ void Polygon::generateVertices(int x, int y){
             vertices[i].x = vertices[i].x + cx;
             vertices[i].y = vertices[i].y + cy;
         }
-
     }
     else{
         printf("Error : Failed to initialize the points!\n");
@@ -197,68 +196,41 @@ Polygon::Polygon(int Vertices_, int cx, int cy, int x, int y, int size_, Color c
 
 }
 
-void Polygon::draw(){
-    //printf("Drawing the polygon with %d vertices\n", numVertices);
-    //fflush(stdout);
+
+void Polygon::drawPolygon(bool isBuffer, bool isClear) {
     
-    int i = 0;
-    while (i < numVertices - 1 ) {
-        Line* l1 = new Line(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y,size, color);
-        l1->setCanvas(canvas);
-        l1->draw(); // Draws a line on the canvas
-        free(l1);
-        i++;
+    Color colorToUse = isClear ? transparent : color;
+    if(!isBuffer){
+        colorToUse = isClear ? canvas->getBackgroundColor() : color;
     }
-    Line* l2= new Line(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y, size,color);
-    l2->setCanvas(canvas);
-    l2->draw(); // Draws a line on the canvas
-    free(l2);
+
+    for (int i = 0; i < numVertices; ++i) {
+        int nextIndex = (i + 1) % numVertices; // Wrap around to the first vertex
+        Line line(vertices[i].x, vertices[i].y, vertices[nextIndex].x, vertices[nextIndex].y, size, color);
+        line.setCanvas(canvas);
+
+        if (isBuffer) {
+            line.drawBuffer(); // Draw to buffer
+        } else {
+            line.draw(); // Draw to canvas
+        }
+    }
 }
 
-void Polygon::clear(){
-    //printf("Drawing the polygon with %d vertices\n", numVertices);
-    int i = 0;
-    while (i < numVertices - 1 ) {
-        Line* l1 = new Line(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y,size, canvas->getBackgroundColor());
-        l1->setCanvas(canvas);
-        l1->draw(); // Draws a line on the canvas
-        free(l1);
-        i++;
-    }
-    Line* l2= new Line(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y, size,canvas->getBackgroundColor());
-    l2->setCanvas(canvas);
-    l2->draw(); // Draws a line on the canvas
-    free(l2);
+void Polygon::draw() {
+    drawPolygon(false, false);  // Main canvas, drawing
 }
 
-void Polygon::drawBuffer(){
-    int i = 0;
-    while (i < numVertices - 1 ) {
-        Line* l1 = new Line(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y,size, color);
-        l1->setCanvas(canvas);
-        l1->drawBuffer(); // Draws a line on the canvas
-        free(l1);
-        i++;
-    }
-    Line* l2= new Line(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y, size,color);
-    l2->setCanvas(canvas);
-    l2->drawBuffer(); // Draws a line on the canvas
-    free(l2);               
+void Polygon::clear() {
+    drawPolygon(false, true);  // Main canvas, clearing
 }
 
-void Polygon::clearBuffer(){
-    int i = 0;
-    while (i < numVertices - 1 ) {
-        Line* l1 = new Line(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y,size, transparent);
-        l1->setCanvas(canvas);
-        l1->drawBuffer(); // Draws a line on the canvas
-        free(l1);
-        i++;
-    }
-    Line* l2= new Line(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y, size,transparent);
-    l2->setCanvas(canvas);
-    l2->drawBuffer(); // Draws a line on the canvas
-    free(l2);               
+void Polygon::drawBuffer() {
+    drawPolygon(true, false);  // Buffer, drawing
+}
+
+void Polygon::clearBuffer() {
+    drawPolygon(true, true);  // Buffer, clearing
 }
 
 void Polygon::setEndingPoint(int x, int y){

@@ -72,8 +72,8 @@ int main(int argc, char* argv[]){
     SDL_Event event;
 
 
-    Polygon P1(6, 300, 300, 250, 250, 3, black);
-    P1.setCanvas(&canvas);
+    // Polygon P1(300, 300, 250, 250, 6, 3, black);
+    // P1.setCanvas(&canvas);
     
     while (!quit) {
         canvas.updatePixels();
@@ -103,8 +103,8 @@ int main(int argc, char* argv[]){
                     canvas.pushCanvas();
                 }
 
-                if(event.key.keysym.sym == SDLK_p)
-                    P1.draw();      
+                // if(event.key.keysym.sym == SDLK_p)
+                //     P1.draw();      
 
                 if(event.key.keysym.sym == SDLK_z){
                     canvas.popCanvas();

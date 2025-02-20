@@ -70,24 +70,17 @@ class Polygon:public Shape{
         Polygon();
         Polygon(int numVertices, int x1, int y1, int x2, int y2, int size =3, Color color = black);
         
+        void drawPolygon(bool isBuffer, bool isClear);
+
         void draw() override;
         void clear() override;
-
         void drawBuffer() override;
         void clearBuffer() override;
 
         void generateVertices(int x, int y);
-
         void setEndingPoint(int x, int y);
 
 };
-
-/*_________NOTE FOR SWAROOP_________
- - you MUST implement the virtual functions (draw(), clear(),etc..)of the parent class otherwise the program will not work.
- - make such that you can increases the line width and change the color of the shapes(take reference from line).
- - while testing you MUST CALL the setCanvas() function after making a shape object(after calling the constructor). Otherwise shape will not be able to access the canvas.
- - First try handling inputs in the main function event handler and if all things are working only then give a pull request.
-*/
 
 // class Rectangle:public Shape{
 //     private:

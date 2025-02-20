@@ -18,6 +18,9 @@ char LINE_DRAWER_IMAGE_URL[] = "../resources/line.png";
 SDL_Rect SELECT_TOOL_RECT = {0,400,100,100};
 char SELECT_TOOL_IMAGE_URL[] = "../resources/select.png";
 
+SDL_Rect POLYGON_TOOL_RECT = {50, 300, 50, 50 };
+char POLYGON_TOOL_IMAGE_URL[] = "../resources/polygon.png";
+
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;
 }
@@ -53,7 +56,8 @@ void Tools::setToolColor(Color color){
 }
 
 
-//Functions of pencil
+
+/*############################### Pencil #############################*/
 
 Pencil::Pencil(){
     pixelSize = 5;
@@ -167,8 +171,8 @@ void Pencil::unSelect(){
 
 
 
+/*############################### Eraser #############################*/
 
-//functions for eraser
 Eraser::Eraser(){
     eraserSize = 20;
     bound_box = ERASER_RECT;
@@ -283,7 +287,7 @@ void Eraser::unSelect(){
 }
 
 
-// Filler
+/*###############################Filler Tool #############################*/
 
 Filler::Filler(){
     toolColor = red;
@@ -381,7 +385,8 @@ void Filler::unSelect(){
 }
 
 
-//select tool
+
+/*###############################Select Tool #############################*/
 
 SelectTool::SelectTool(){
     clipRect = {-1,-1,0,0};
@@ -585,7 +590,9 @@ void SelectTool::unSelect(){
 
 
 
-//line drawer
+
+/*###############################Line Drawing Tool #############################*/
+
 LineDrawer::LineDrawer(){
     startingPixel = {-100,-100};
     endingPixel = {-100,-100};
@@ -620,8 +627,7 @@ void LineDrawer::onMouseDown(SDL_Event& event){
         endingPixel.x = x;
         endingPixel.y = y;
         drawing = true;
-        //drawingLine = Line(startingPixel, endingPixel,width, toolColor);
-        drawingLine = Polygon(10, startingPixel.x,startingPixel.y, endingPixel.x, endingPixel.y);
+        drawingLine = Line(startingPixel, endingPixel, width, toolColor);
         drawingLine.setCanvas(canvas);
     }
 }
@@ -668,4 +674,115 @@ void LineDrawer::drawCursor(){
 
 void LineDrawer::unSelect(){
     
+}
+
+
+
+
+/*###############################Polygon Tool #############################*/
+
+// Constructor
+PolygonTool::PolygonTool(){
+    center = {-100,-100};
+    vertex = {-100,-100};
+    noVertices = 5;
+    width = 3;
+    toolColor = black;
+    isDrawing = false;
+    bound_box = POLYGON_TOOL_RECT; // Set the bounding box for the tool icon
+}
+
+// Load the polygon icon
+void PolygonTool::makeTexture(SDL_Renderer* renderer_) {
+    renderer = renderer_;
+    imgTexture = IMG_LoadTexture(renderer, POLYGON_TOOL_IMAGE_URL);
+    if (!imgTexture) {
+        printf("Failed to load polygon image texture: %s\n", SDL_GetError());
+    }
+}
+
+// Render the tool icon
+void PolygonTool::render() {
+    SDL_RenderDrawRect(renderer, &bound_box);
+    SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
+}
+
+// Handle mouse down event
+void PolygonTool::onMouseDown(SDL_Event& event) {
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    if(!isDrawing){
+        canvas->pushCanvas();
+
+        center.x = x;
+        center.y  = y;
+        vertex.x = x;
+        vertex.y = y;
+        isDrawing = true;
+        polygon = Polygon(noVertices, center.x, center.y, vertex.x, vertex.y, width, toolColor);
+        polygon.setCanvas(canvas);
+    }
+}
+
+// Handle mouse move event
+void PolygonTool::onMouseMove(SDL_Event& event) {  
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    
+    if(isDrawing){
+        // canvas->clearLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
+        polygon.clearBuffer();
+        polygon.setEndingPoint(x,y);
+    //    printf("helloo3\n");
+    //     fflush(stdout);
+        polygon.drawBuffer();
+    }
+    
+}
+
+// Handle mouse up event
+void PolygonTool::onMouseUp(SDL_Event& event) {
+    if (isDrawing) {
+        polygon.draw(); // Draw the final polygon on the canvas
+        isDrawing = false; // Stop drawing
+        polygon.clearBuffer(); // Clear points for the next polygon
+    }
+}
+
+// Draw the cursor for the tool
+void PolygonTool::drawCursor() {
+//     int x, y;
+//     SDL_GetMouseState(&x, &y);
+//     if (canvas->isInside(x, y)) {
+//         SDL_ShowCursor(SDL_DISABLE);
+//         canvas->clearBuffer();
+//         // Draw a temporary line from the last point to the current mouse position
+//         if (!points.empty()) {
+//             Line tempLine(points.back(), {x, y}, 2, black);
+//             tempLine.setCanvas(canvas);
+//             tempLine.drawBuffer(); // Draw the temporary line in the buffer
+//         }
+//     } else {
+//         SDL_ShowCursor(SDL_ENABLE);
+//         canvas->clearBuffer();
+//     }
+}
+
+// Handle keyboard input (if needed)
+void PolygonTool::keyboardInput(SDL_Event& event) {
+    if(event.key.keysym.sym == SDLK_EQUALS){
+        width += 1;
+    }else if(event.key.keysym.sym == SDLK_MINUS){
+        if(width >=2)
+        width -= 1;
+    }
+}
+
+// Reset the tool state
+void PolygonTool::unSelect() {
+    // canvas->clearBuffer(); // Clear the buffer
+    // polygon.clear(); // Clear points
+    // isDrawing = false; // Reset drawing state
 }
