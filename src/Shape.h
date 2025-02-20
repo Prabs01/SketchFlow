@@ -116,3 +116,36 @@ class Rectangle:public Shape{
 
         void move(int dx, int dy);
 };
+
+
+class Ellipse:public Shape{
+    private:
+        std::vector<SDL_Point> originalVertices;
+        std::vector<SDL_Point> vertices;   // Array of vertices (points)
+        SDL_Point p1;
+        SDL_Point p2;
+        int size;
+        Color ellipseColor;
+        double angle = 0.0;
+
+    public:
+        Ellipse();
+        Ellipse(int x1, int y1, int x2, int y2, int size, Color color);
+        
+        void drawEllipse(bool isBuffer, bool isClear);
+
+        void draw() override;
+        void clear() override;
+        void drawBuffer() override;
+        void clearBuffer() override;
+
+        bool isPointInside(int x, int y);
+
+        void generateVertices(int x, int y);
+        void setEndingPoint(int x, int y);
+
+        void setRotation(double newAngle);
+        void rotate(double angleChange);
+
+        void move(int dx, int dy);
+};

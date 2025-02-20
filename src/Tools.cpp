@@ -25,7 +25,7 @@ SDL_Rect RECTANGLE_TOOL_RECT = {0, 350, 50, 50 };
 char RECTANGLE_TOOL_IMAGE_URL[] = "../resources/rectangle.png";
 
 SDL_Rect ELLIPSE_TOOL_RECT = {50, 350, 50, 50 };
-// char ELLIPSE_TOOL_IMAGE_URL[] = "../resources/ellipse.png";
+char ELLIPSE_TOOL_IMAGE_URL[] = "../resources/ellipse.png";
 
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;
@@ -830,7 +830,6 @@ void PolygonTool::unSelect() {
 
 #pragma endregion
 
-
 /*###############################Rectangle Tool #############################*/
 #pragma region
 // Constructor
@@ -985,6 +984,159 @@ void RectTool::keyboardInput(SDL_Event& event) {
 
 // Reset the tool state
 void RectTool::unSelect() {
+    // canvas->clearBuffer(); // Clear the buffer
+    // polygon.clear(); // Clear points
+    // isDrawing = false; // Reset drawing state
+}
+
+#pragma endregion
+
+
+/*###############################Ellipse Tool #############################*/
+#pragma region
+// Constructor
+EllipseTool::EllipseTool(){
+    vertex1 = {-100,-100};
+    vertex2 = {-100,-100};
+    width = 3;
+    toolColor = black;
+    isDrawing = false;
+    isMoving = false;
+    bound_box = ELLIPSE_TOOL_RECT; // Set the bounding box for the tool icon
+    ellipse = Ellipse();
+}
+
+// Load the polygon icon
+void EllipseTool::makeTexture(SDL_Renderer* renderer_) {
+    renderer = renderer_;
+    imgTexture = IMG_LoadTexture(renderer, ELLIPSE_TOOL_IMAGE_URL);
+    if (!imgTexture) {
+        printf("Failed to load polygon image texture: %s\n", SDL_GetError());
+    }
+}
+
+// Render the tool icon
+void EllipseTool::render() {
+    SDL_RenderDrawRect(renderer, &bound_box);
+    SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
+}
+
+void EllipseTool::onMouseDown(SDL_Event& event) {
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    if(!isDrawing && !isMoving){
+        canvas->pushCanvas();
+        
+        vertex1.x = x;
+        vertex1.y  = y;
+        vertex2.x = x;
+        vertex2.y = y;
+        isDrawing = true;
+        ellipse = Ellipse( vertex1.x, vertex1.y, vertex2.x, vertex2.y, width, toolColor);
+        ellipse.setCanvas(canvas);
+    }
+
+    if(!isDrawing && isMoving){
+        if(ellipse.isPointInside(x,y)){
+            isMoving = true;
+            isDrawing = true;
+            prevX = x;
+            prevY = y;
+        }
+    }
+
+    if(isMoving){
+        if(!ellipse.isPointInside(x,y)){
+            isMoving = false;
+            isDrawing = false;
+
+            ellipse.clearBuffer();
+            ellipse.draw();
+        }
+    }
+}
+
+void EllipseTool::onMouseMove(SDL_Event& event) {  
+    int x = event.motion.x;
+    int y = event.motion.y;
+   
+    if(isDrawing && !isMoving){
+        ellipse.clearBuffer();
+        ellipse.setEndingPoint(x,y);
+        ellipse.drawBuffer();
+    }
+    
+    if(isDrawing && isMoving){
+        // Calculate movement offset
+        int dx = x - prevX;
+        int dy = y - prevY;
+
+        ellipse.clearBuffer();
+        // Move the rectangle
+        ellipse.move(dx, dy);
+
+        ellipse.drawBuffer();
+
+        // Update previous position
+        prevX = x;
+        prevY = y;
+    }
+}
+
+// Handle mouse up event
+void EllipseTool::onMouseUp(SDL_Event& event) {
+    if (isDrawing && !isMoving) {
+
+        isDrawing = false; // Stop drawing
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
+
+    }
+
+    if(isDrawing && isMoving){
+        isDrawing = false;
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
+    }
+}
+
+// Draw the cursor for the tool
+void EllipseTool::drawCursor() {
+}
+
+// Handle keyboard input (if needed)
+void EllipseTool::keyboardInput(SDL_Event& event) {
+    if(event.key.keysym.sym == SDLK_EQUALS){
+        width += 1;
+    }else if(event.key.keysym.sym == SDLK_MINUS){
+        if(width >=2)
+        width -= 1;
+    }
+    if(event.key.keysym.sym == SDLK_r){
+        if(isDrawing || isMoving){
+            double angle = (M_PI / 180.0)*5;  // M_PI is a constant in <cmath>
+            ellipse.clearBuffer();
+            ellipse.rotate(angle);
+            ellipse.drawBuffer();
+        }
+    }
+    if(event.key.keysym.sym == SDLK_e){
+        if(isDrawing || isMoving){
+            double angle = -(M_PI / 180.0)*5;  // M_PI is a constant in <cmath>
+            ellipse.clearBuffer();
+            ellipse.rotate(angle);
+            ellipse.drawBuffer();
+        }
+    }
+}
+
+// Reset the tool state
+void EllipseTool::unSelect() {
     // canvas->clearBuffer(); // Clear the buffer
     // polygon.clear(); // Clear points
     // isDrawing = false; // Reset drawing state

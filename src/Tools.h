@@ -225,3 +225,26 @@ class RectTool : public Tools {
         void keyboardInput(SDL_Event& event) override;
         void unSelect() override;
     };
+
+
+class EllipseTool : public Tools {
+
+    private:
+        SDL_Point vertex1, vertex2;// Store the points of the polygon
+        int width;
+        bool isDrawing; // Track if the user is currently drawing
+        Ellipse ellipse; // Polygon object for drawing
+        bool isMoving = false;
+        int prevX,prevY;
+    
+    public:
+        EllipseTool();
+        void makeTexture(SDL_Renderer* renderer_) override;
+        void render() override;
+        void onMouseDown(SDL_Event& event) override;
+        void onMouseUp(SDL_Event& event) override;
+        void onMouseMove(SDL_Event& event) override;
+        void drawCursor() override;
+        void keyboardInput(SDL_Event& event) override;
+        void unSelect() override;
+    };

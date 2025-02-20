@@ -393,29 +393,73 @@ void Rectangle::move(int dx, int dy){
 }
 
 
-/*
-############################### ELLIPSE ###############################
+/*############################### ELLIPSE ###############################*/
 
-void Rectangle::generateVertices(int x, int y){
+void Ellipse::generateVertices(int x, int y) {
+    originalVertices.resize(4);
+    vertices.resize(4);
 
+    // Store unrotated diagonal point
+    p2 = {x, y};
+
+    // Compute axis-aligned rectangle
+    originalVertices[0] = {p1.x, p1.y};  // First corner
+    originalVertices[1] = {x, p1.y};     // Top-right
+    originalVertices[2] = {x, y};        // Bottom-right
+    originalVertices[3] = {p1.x, y};     // Bottom-left
+
+    // Copy to vertices before applying rotation
+    vertices = originalVertices;
+
+    // Apply initial rotation
+    rotate(0);
 }
 
-Rectangle::Rectangle(int x1, int y1, int x2, int y2, int size_ = 3, Color color_ = black){
+// Rotate around the center without modifying the original shape
+void Ellipse::rotate(double angleChange) {
+    angle += angleChange;  // Update rotation angle
+
+    // Compute the center of the rectangle
+    int cx = (originalVertices[0].x + originalVertices[2].x) / 2;
+    int cy = (originalVertices[0].y + originalVertices[2].y) / 2;
+
+    for (int i = 0; i < 4; i++) {
+        // Get the original vertex relative to the center
+        int relX = originalVertices[i].x - cx;
+        int relY = originalVertices[i].y - cy;
+
+        // Apply rotation matrix
+        int rotatedX = static_cast<int>(relX * cos(angle) - relY * sin(angle));
+        int rotatedY = static_cast<int>(relX * sin(angle) + relY * cos(angle));
+
+        // Set rotated coordinates
+        vertices[i].x = cx + rotatedX;
+        vertices[i].y = cy + rotatedY;
+    }
+}
+
+Ellipse::Ellipse(){ //def constructor
+    p1 = {-100,-100};
+    p2 = {-100, -100};
+    size = 3;
+}
+
+Ellipse::Ellipse(int x1, int y1, int x2, int y2, int size_ = 3, Color color_ = black){
     p1.x = x1;
     p1.y = y1;
     p2.x = x2;
     p2.y = y2;
     size = size_;
-    rectColor = color_;
+    ellipseColor = color_;
 
     generateVertices(x2,y2);
 }
         
-void Rectangle::drawRectangle(bool isBuffer, bool isClear){
+void Ellipse::drawEllipse(bool isBuffer, bool isClear){
 
-    Color colorToUse = isClear ? transparent : rectColor;
+    Color colorToUse = isClear ? transparent : ellipseColor;
     if(!isBuffer){
-        colorToUse = isClear ? canvas->getBackgroundColor() : color;
+        colorToUse = isClear ? canvas->getBackgroundColor() : ellipseColor;
     }
 
     for (int i = 0; i < 4; ++i) {
@@ -432,21 +476,50 @@ void Rectangle::drawRectangle(bool isBuffer, bool isClear){
 
 }
 
-void Rectangle::draw() {
-    drawRectangle(false, false);
+void Ellipse::draw() {
+    drawEllipse(false, false);
 }
-void Rectangle::clear() {
-    drawRectangle(false, true);
+void Ellipse::clear() {
+    drawEllipse(false, true);
 }
-void Rectangle::drawBuffer() {
-    drawRectangle(true, false);
+void Ellipse::drawBuffer() {
+    drawEllipse(true, false);
 }
-void Rectangle::clearBuffer() {
-    drawRectangle(true, true);
+void Ellipse::clearBuffer() {
+    drawEllipse(true, true);
 }
 
-void Rectangle::setEndingPoint(int x, int y){   //for use from Tools.cpp
+void Ellipse::setEndingPoint(int x, int y){   //for use from Tools.cpp
     generateVertices(x,y);
 }
-*/
 
+bool Ellipse::isPointInside(int px, int py){
+    bool inside = false;
+
+    for (int i = 0, j = 4 - 1; i < 4; j = i++) {
+        int xi = vertices[i].x, yi = vertices[i].y;
+        int xj = vertices[j].x, yj = vertices[j].y;
+
+        // Check if point is exactly on a horizontal edge
+        if ((yi == py && yj == py) && (px >= std::min(xi, xj) && px <= std::max(xi, xj))) {
+            return true;
+        }
+
+        // Ray-Casting Algorithm: Check if ray crosses an edge
+        bool intersect = ((yi > py) != (yj > py)) &&
+                         (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+}
+
+void Ellipse::move(int dx, int dy){
+    for (int i = 0; i < 4; i++) {
+        originalVertices[i].x +=dx;
+        originalVertices[i].y += dy;
+        vertices[i].x += dx;
+        vertices[i].y += dy;
+    }
+}
