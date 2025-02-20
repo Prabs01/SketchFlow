@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
     int SCREEN_WIDTH = displayMode.w;
     int SCREEN_HEIGHT = displayMode.h;
    
-    SDL_Window* window = SDL_CreateWindow("SketchFlow", 0, 25, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+    SDL_Window* window = SDL_CreateWindow("Art_And_Colors", 0, 25, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     if (!window) {
         std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
