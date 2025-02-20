@@ -682,10 +682,10 @@ void LineDrawer::unSelect(){
 /*###############################Polygon Tool #############################*/
 
 // Constructor
-PolygonTool::PolygonTool(){
+PolygonTool::PolygonTool(int numVertices){
     center = {-100,-100};
     vertex = {-100,-100};
-    noVertices = 5;
+    noVertices = numVertices;
     width = 3;
     toolColor = black;
     isDrawing = false;

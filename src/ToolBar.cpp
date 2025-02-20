@@ -20,7 +20,7 @@ ToolBar::ToolBar(int SW, int SH){
     tools.push_back(new Filler);
     tools.push_back(new LineDrawer);
     tools.push_back(new SelectTool);
-    tools.push_back(new PolygonTool);
+    tools.push_back(new PolygonTool(3));
     initColorBoxes();
 }
 

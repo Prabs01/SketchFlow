@@ -190,7 +190,7 @@ class PolygonTool : public Tools {
     
     
     public:
-        PolygonTool();
+        PolygonTool(int numVertices);
         void makeTexture(SDL_Renderer* renderer_) override;
         void render() override;
         void onMouseDown(SDL_Event& event) override;

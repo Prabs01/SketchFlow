@@ -9,7 +9,7 @@ void Shape::setCanvas(Canvas* canvas_){
 }
 
 Shape::~Shape(){
-    free(canvas);
+    //free(canvas);
 }
 
 
@@ -206,7 +206,7 @@ void Polygon::drawPolygon(bool isBuffer, bool isClear) {
 
     for (int i = 0; i < numVertices; ++i) {
         int nextIndex = (i + 1) % numVertices; // Wrap around to the first vertex
-        Line line(vertices[i].x, vertices[i].y, vertices[nextIndex].x, vertices[nextIndex].y, size, color);
+        Line line(vertices[i].x, vertices[i].y, vertices[nextIndex].x, vertices[nextIndex].y, size, colorToUse);
         line.setCanvas(canvas);
 
         if (isBuffer) {
