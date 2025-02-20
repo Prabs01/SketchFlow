@@ -8,10 +8,7 @@ void Shape::setCanvas(Canvas* canvas_){
     canvas = canvas_;
 }
 
-Shape::~Shape(){
-    //free(canvas);
-}
-
+/*############################### LINE ###############################*/
 
 Line::Line(){
     p1 = {-100,-100};
@@ -124,12 +121,8 @@ void Line::setStartingPoint(SDL_Point p){
 }
 
 void Line::setEndingPoint(int x2, int y2){
-    // printf("helloo\n");
-    // fflush(stdout);
     p2.x = x2;
     p2.y = y2;
-    // printf("helloo2\n");
-    // fflush(stdout);
 }
 
 void Line::setEndingPoint(SDL_Point p){
@@ -137,6 +130,7 @@ void Line::setEndingPoint(SDL_Point p){
     p2.y = p.y;
 }
 
+/*############################### POLYGON ###############################*/
 
 Polygon::Polygon(){ //def constructor
     numVertices = 3;
@@ -171,7 +165,7 @@ void Polygon::generateVertices(int x, int y){
              vertices[i].y = tempy;
         }
 
-        //translate back to og position
+        //translate back to original position
         for (int i = 0; i < numVertices; i++) {
             vertices[i].x = vertices[i].x + cx;
             vertices[i].y = vertices[i].y + cy;
@@ -195,7 +189,6 @@ Polygon::Polygon(int Vertices_, int cx, int cy, int x, int y, int size_, Color c
     generateVertices(x,y);
 
 }
-
 
 void Polygon::drawPolygon(bool isBuffer, bool isClear) {
     
@@ -269,3 +262,161 @@ void Polygon::move(int dx, int dy){
     }
     drawBuffer();
 }
+
+/*############################### RECTANGLE ###############################*/
+
+void Rectangle::generateVertices(int x, int y) {
+    vertices.resize(4);  // Use vector's resize() instead of malloc
+
+    // Diagonal points are p1 (p1.x, p1.y) and (x, y)
+    int x1 = p1.x, y1 = p1.y;
+    int x2 = x, y2 = y;
+
+    // Center of rectangle
+    int centerX = (x1 + x2) / 2;
+    int centerY = (y1 + y2) / 2;
+
+    // Simplified width/height calculation
+    float width = std::abs(x2 - x1);
+    float height = std::abs(y2 - y1);
+
+    // Rotation angle
+    double angle = atan2(y2 - y1, x2 - x1);
+
+    // Half dimensions
+    float halfWidth = width / 2.0f;
+    float halfHeight = height / 2.0f;
+
+    // Generate rotated vertices
+    for (int i = 0; i < 4; i++) {
+        float signX = (i % 2 == 0) ? -1 : 1;
+        float signY = (i < 2) ? -1 : 1;
+
+        // Relative positions
+        float relX = signX * halfWidth;
+        float relY = signY * halfHeight;
+
+        // Rotated coordinates
+        float rotatedX = centerX + relX * cos(angle) - relY * sin(angle);
+        float rotatedY = centerY + relX * sin(angle) + relY * cos(angle);
+
+        // Assign to vector
+        vertices[i] = {static_cast<int>(rotatedX), static_cast<int>(rotatedY)};
+    }
+}
+
+
+Rectangle::Rectangle(){ //def constructor
+    p1 = {-100,-100};
+    p2 = {-100, -100};
+    size = 3;
+}
+
+Rectangle::Rectangle(int x1, int y1, int x2, int y2, int size_ = 3, Color color_ = black){
+    p1.x = x1;
+    p1.y = y1;
+    p2.x = x2;
+    p2.y = y2;
+    size = size_;
+    rectColor = color_;
+
+    generateVertices(x2,y2);
+}
+        
+void Rectangle::drawRectangle(bool isBuffer, bool isClear){
+
+    Color colorToUse = isClear ? transparent : rectColor;
+    if(!isBuffer){
+        colorToUse = isClear ? canvas->getBackgroundColor() : rectColor;
+    }
+
+    for (int i = 0; i < 4; ++i) {
+        int nextIndex = (i + 1) % 4; // Wrap around to the first vertex
+        Line line(vertices[i].x, vertices[i].y, vertices[nextIndex].x, vertices[nextIndex].y, size, colorToUse);
+        line.setCanvas(canvas);
+
+        if (isBuffer) {
+            line.drawBuffer(); // Draw to buffer
+        } else {
+            line.draw(); // Draw to canvas
+        }
+    }
+
+}
+
+void Rectangle::draw() {
+    drawRectangle(false, false);
+}
+void Rectangle::clear() {
+    drawRectangle(false, true);
+}
+void Rectangle::drawBuffer() {
+    drawRectangle(true, false);
+}
+void Rectangle::clearBuffer() {
+    drawRectangle(true, true);
+}
+
+void Rectangle::setEndingPoint(int x, int y){   //for use from Tools.cpp
+    generateVertices(x,y);
+}
+
+
+
+/*
+############################### ELLIPSE ###############################
+
+void Rectangle::generateVertices(int x, int y){
+
+}
+
+Rectangle::Rectangle(int x1, int y1, int x2, int y2, int size_ = 3, Color color_ = black){
+    p1.x = x1;
+    p1.y = y1;
+    p2.x = x2;
+    p2.y = y2;
+    size = size_;
+    rectColor = color_;
+
+    generateVertices(x2,y2);
+}
+        
+void Rectangle::drawRectangle(bool isBuffer, bool isClear){
+
+    Color colorToUse = isClear ? transparent : rectColor;
+    if(!isBuffer){
+        colorToUse = isClear ? canvas->getBackgroundColor() : color;
+    }
+
+    for (int i = 0; i < 4; ++i) {
+        int nextIndex = (i + 1) % 4; // Wrap around to the first vertex
+        Line line(vertices[i].x, vertices[i].y, vertices[nextIndex].x, vertices[nextIndex].y, size, colorToUse);
+        line.setCanvas(canvas);
+
+        if (isBuffer) {
+            line.drawBuffer(); // Draw to buffer
+        } else {
+            line.draw(); // Draw to canvas
+        }
+    }
+
+}
+
+void Rectangle::draw() {
+    drawRectangle(false, false);
+}
+void Rectangle::clear() {
+    drawRectangle(false, true);
+}
+void Rectangle::drawBuffer() {
+    drawRectangle(true, false);
+}
+void Rectangle::clearBuffer() {
+    drawRectangle(true, true);
+}
+
+void Rectangle::setEndingPoint(int x, int y){   //for use from Tools.cpp
+    generateVertices(x,y);
+}
+*/
+

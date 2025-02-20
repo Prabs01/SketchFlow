@@ -34,12 +34,13 @@ private:
     SDL_Renderer* renderer;
     Canvas* canvas= nullptr;
     Color bgcolor;
+    int polygon_vertices;
 
     Color currentColor;
     std::vector<ColorBox> colorBoxes;
 
 public:
-    ToolBar();
+    // ToolBar();
     ToolBar(int SW, int SH);
 
     void setRenderer(SDL_Renderer* renderer_);

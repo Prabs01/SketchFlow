@@ -2,25 +2,29 @@
 
 
 
-ToolBar::ToolBar(){cout<<endl;}
+// ToolBar::ToolBar(){cout<<endl;}
 
 ToolBar::ToolBar(int SW, int SH){
     bgcolor = lightGray;
     activeTool = nullptr;
+    polygon_vertices = 5;
+
     if(horizontalToolbar){
         area = {0,0,SW,120};      //x-start, y-start, x-increase, y-increase
-    }
-    else{
+    } else{
         area = {0,0,120,SH};
     }
-    area = {0,0,100,SH};
+    // area = {0,0,100,SH};
     SDL_Rect TOOLBAR_RECT = area ;
+    //the vector items to be pushed here should be a derived class of the tools class 
     tools.push_back(new Pencil);
     tools.push_back(new Eraser);
     tools.push_back(new Filler);
     tools.push_back(new LineDrawer);
     tools.push_back(new SelectTool);
     tools.push_back(new PolygonTool(3));
+    tools.push_back(new RectTool);
+    tools.push_back(new PolygonTool(polygon_vertices));
     initColorBoxes();
 }
 
