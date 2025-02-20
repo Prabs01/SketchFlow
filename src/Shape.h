@@ -9,7 +9,6 @@
 
 #include "Canvas.h"
 #include <cmath>
-#include <vector>
 
 class Shape
 {
@@ -60,21 +59,17 @@ class Line:public Shape{
 
 class Polygon:public Shape{
     private:
-        // SDL_Point* vertices;   // Array of vertices (points)
-        std::vector<SDL_Point> vertices; // Store all vertices
-        SDL_Point tempPoint; // Current mouse position for preview
-        int size;
-        Color color;
+        SDL_Point* vertices;   // Array of vertices (points)
         int numVertices; 
         SDL_Point p1; //center
         SDL_Point p2; //vertex
-
+        int size;
+        Color color;
 
     public:
         Polygon();
-        Polygon(int x, int y, int cx, int cy, int numVertices, int size = 3, Color color = black);        
-        //
-        void updateVertices(const std::vector<SDL_Point>& points, SDL_Point temp);
+        Polygon(int numVertices, int x1, int y1, int x2, int y2, int size =3, Color color = black);
+        
         void drawPolygon(bool isBuffer, bool isClear);
 
         void draw() override;
@@ -82,7 +77,7 @@ class Polygon:public Shape{
         void drawBuffer() override;
         void clearBuffer() override;
 
-        // void generateVertices(int x, int y);
+        void generateVertices(int x, int y);
         void setEndingPoint(int x, int y);
 
 };

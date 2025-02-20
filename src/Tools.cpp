@@ -703,54 +703,58 @@ void PolygonTool::render() {
     SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
 }
 
-
-
-
 // Handle mouse down event
 void PolygonTool::onMouseDown(SDL_Event& event) {
     if (!isDrawing) {
-        canvas->pushCanvas();
-        isDrawing = true;
-        points.clear();
+        canvas->pushCanvas(); // Save the current canvas state
+        isDrawing = true; // Start drawing
+        points.clear(); // Clear previous points
     }
-    SDL_Point point = { event.motion.x, event.motion.y };
+    // Add the clicked point to the points vector
+    SDL_Point point = {event.motion.x, event.motion.y};
     points.push_back(point);
-    // Update polygon with current points and temp position
-    polygon.updateVertices(points, point);
+    polygon = Polygon(points[0].x, points[0].y, point.x, point.y, points.size()); // Create a polygon object
+    polygon.setCanvas(canvas); // Set the canvas for the polygon
 }
 
-void PolygonTool::onMouseMove(SDL_Event& event) {
-    if (isDrawing) {
-        // Clear previous buffer
-        polygon.clearBuffer();
-        // Update temp point and redraw
-        SDL_Point temp = { event.motion.x, event.motion.y };
-        polygon.updateVertices(points, temp);
-        polygon.drawBuffer();
-    }
-}
-
+// Handle mouse up event
 void PolygonTool::onMouseUp(SDL_Event& event) {
     if (isDrawing) {
-        isDrawing = false;
-        polygon.draw(); // Finalize to main canvas
-        canvas->pushCanvas(); // Save state
-        points.clear();
+        isDrawing = false; // Stop drawing
+        polygon.draw(); // Draw the final polygon on the canvas
+        points.clear(); // Clear points for the next polygon
     }
 }
 
+// Handle mouse move event
+void PolygonTool::onMouseMove(SDL_Event& event) {
+    if (isDrawing) {
+        // Update the polygon's last point to the current mouse position
+        if (!points.empty()) {
+            polygon.setEndingPoint(event.motion.x, event.motion.y); // Update the last point
+            polygon.drawBuffer(); // Draw the polygon in the buffer for real-time feedback
+        }
+    }
+}
+
+// Draw the cursor for the tool
 void PolygonTool::drawCursor() {
-    if (!isDrawing) return;
     int x, y;
     SDL_GetMouseState(&x, &y);
-    // Draw temporary line in buffer
-    if (!points.empty()) {
-        Line tempLine(points.back(), {x, y}, 2, black);
-        tempLine.setCanvas(canvas);
-        tempLine.drawBuffer();
+    if (canvas->isInside(x, y)) {
+        SDL_ShowCursor(SDL_DISABLE);
+        canvas->clearBuffer();
+        // Draw a temporary line from the last point to the current mouse position
+        if (!points.empty()) {
+            Line tempLine(points.back(), {x, y}, 2, black);
+            tempLine.setCanvas(canvas);
+            tempLine.drawBuffer(); // Draw the temporary line in the buffer
+        }
+    } else {
+        SDL_ShowCursor(SDL_ENABLE);
+        canvas->clearBuffer();
     }
 }
-
 
 // Handle keyboard input (if needed)
 void PolygonTool::keyboardInput(SDL_Event& event) {

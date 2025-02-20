@@ -145,28 +145,15 @@ Polygon::Polygon(){ //def constructor
     size = 3;
 }
 
-// void Polygon::generateVertices(int x, int y){
-//     int cx = p1.x;
-//     int cy = p1.y;
-
-// }
-
-Polygon::Polygon(int x, int y, int cx, int cy, int Vertices_, int size_, Color color_){
-    numVertices = Vertices_;
-    p1.x = cx;
-    p1.y = cy;
-    p2.x = x;
-    p2.y = y;
-    size = size_;
-    color = color_;
-
-    // generateVertices(x,y);
+void Polygon::generateVertices(int x, int y){
+    int cx = p1.x;
+    int cy = p1.y;
+    
     float rad = sqrt( pow((x-cx), 2) + pow((y-cy), 2) );
     float angle = (2*M_PI)/numVertices ;
     
-// Replace with vector operations
-    vertices.resize(numVertices);
-    if (!vertices.empty()) {
+    vertices = (SDL_Point*)malloc(numVertices * sizeof(SDL_Point)); // Dynamically allocate memory
+    if (vertices != NULL) {
         
         double rotAngle = atan2((double)(y - cy), (x - cx));  // atan2 handles vertical lines correctly
 
@@ -197,30 +184,37 @@ Polygon::Polygon(int x, int y, int cx, int cy, int Vertices_, int size_, Color c
 
 }
 
-void Polygon::updateVertices(const std::vector<SDL_Point>& points, SDL_Point temp) {
-    vertices = points;
-    tempPoint = temp;
+Polygon::Polygon(int Vertices_, int cx, int cy, int x, int y, int size_, Color color_){
+    numVertices = Vertices_;
+    p1.x = cx;
+    p1.y = cy;
+    p2.x = x;
+    p2.y = y;
+    size = size_;
+    color = color_;
+
+    generateVertices(x,y);
+
 }
 
+
 void Polygon::drawPolygon(bool isBuffer, bool isClear) {
-    if (vertices.empty()) return;
-
-    // Color colorToUse = isClear ? transparent : color;
+    
     Color colorToUse = isClear ? transparent : color;
-    if (!isBuffer) {
-        colorToUse = isClear ? canvas->getBackgroundColor() : color;
-    }
-// Use colorToUse when setting pixels
-    void (Canvas::*drawFunc)(int, int, int, int, int, Color) = isBuffer ? &Canvas::drawLineBuffer : &Canvas::drawLine;
-
-    // Draw lines between all vertices
-    for (size_t i = 1; i < vertices.size(); ++i) {
-        (canvas->*drawFunc)(vertices[i-1].x, vertices[i-1].y, vertices[i].x, vertices[i].y, size, colorToUse);
+    if(!isBuffer){
+        Color colorToUse = isClear ? canvas->getBackgroundColor() : color;
     }
 
-    // Draw temporary line to current mouse position
-    if (!vertices.empty() && tempPoint.x != -1) {
-        (canvas->*drawFunc)(vertices.back().x, vertices.back().y, tempPoint.x, tempPoint.y, size, colorToUse);
+    for (int i = 0; i < numVertices; ++i) {
+        int nextIndex = (i + 1) % numVertices; // Wrap around to the first vertex
+        Line line(vertices[i].x, vertices[i].y, vertices[nextIndex].x, vertices[nextIndex].y, size, color);
+        line.setCanvas(canvas);
+
+        if (isBuffer) {
+            line.drawBuffer(); // Draw to buffer
+        } else {
+            line.draw(); // Draw to canvas
+        }
     }
 }
 
@@ -241,5 +235,5 @@ void Polygon::clearBuffer() {
 }
 
 void Polygon::setEndingPoint(int x, int y){
-    Polygon(x, y, p1.x, p1.y, numVertices, size, color);
+    generateVertices(x,y);
 }

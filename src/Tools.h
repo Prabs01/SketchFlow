@@ -179,7 +179,6 @@ public:
 };
 
 
-
 class PolygonTool : public Tools {
 
     private:
