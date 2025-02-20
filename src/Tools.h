@@ -164,8 +164,7 @@ private:
     SDL_Point endingPixel;
     int width;
     bool drawing;
-    //Line drawingLine;
-    Polygon drawingLine;
+    Line drawingLine;
 
 public:
     LineDrawer();
@@ -178,3 +177,26 @@ public:
     void keyboardInput(SDL_Event& event) override;
     void unSelect() override;
 };
+
+
+
+class PolygonTool : public Tools {
+
+    private:
+        std::vector<SDL_Point> points; // Store the points of the polygon
+        bool isDrawing; // Track if the user is currently drawing
+        Polygon polygon; // Polygon object for drawing
+        int width = 3;
+    
+    
+    public:
+        PolygonTool();
+        void makeTexture(SDL_Renderer* renderer_) override;
+        void render() override;
+        void onMouseDown(SDL_Event& event) override;
+        void onMouseUp(SDL_Event& event) override;
+        void onMouseMove(SDL_Event& event) override;
+        void drawCursor() override;
+        void keyboardInput(SDL_Event& event) override;
+        void unSelect() override;
+    };
