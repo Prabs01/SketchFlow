@@ -182,10 +182,11 @@ public:
 class PolygonTool : public Tools {
 
     private:
-        std::vector<SDL_Point> points; // Store the points of the polygon
+        SDL_Point center, vertex;// Store the points of the polygon
+        int noVertices;
+        int width;
         bool isDrawing; // Track if the user is currently drawing
         Polygon polygon; // Polygon object for drawing
-        int width = 3;
     
     
     public:

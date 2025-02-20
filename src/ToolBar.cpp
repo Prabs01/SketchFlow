@@ -89,6 +89,7 @@ void ToolBar::render(){     //renders the toolbar with all the shapes/tools and 
     SDL_RenderFillRect(renderer, &area);
     SDL_SetRenderDrawColor(renderer, 0,0,0,255);
     for(int i = 0; i<tools.size();i++){
+        //here we should implement the grid(size) and send makeTexture() its position[x][y]
         tools[i]->render();
         tools[i]->hover();
     }

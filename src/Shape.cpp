@@ -176,7 +176,6 @@ void Polygon::generateVertices(int x, int y){
             vertices[i].x = vertices[i].x + cx;
             vertices[i].y = vertices[i].y + cy;
         }
-
     }
     else{
         printf("Error : Failed to initialize the points!\n");
@@ -202,7 +201,7 @@ void Polygon::drawPolygon(bool isBuffer, bool isClear) {
     
     Color colorToUse = isClear ? transparent : color;
     if(!isBuffer){
-        Color colorToUse = isClear ? canvas->getBackgroundColor() : color;
+        colorToUse = isClear ? canvas->getBackgroundColor() : color;
     }
 
     for (int i = 0; i < numVertices; ++i) {

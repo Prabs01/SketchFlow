@@ -682,9 +682,13 @@ void LineDrawer::unSelect(){
 /*###############################Polygon Tool #############################*/
 
 // Constructor
-PolygonTool::PolygonTool() : isDrawing(false) {
+PolygonTool::PolygonTool(){
+    center = {-100,-100};
+    vertex = {-100,-100};
+    noVertices = 5;
     width = 3;
     toolColor = black;
+    isDrawing = false;
     bound_box = POLYGON_TOOL_RECT; // Set the bounding box for the tool icon
 }
 
@@ -705,65 +709,80 @@ void PolygonTool::render() {
 
 // Handle mouse down event
 void PolygonTool::onMouseDown(SDL_Event& event) {
-    if (!isDrawing) {
-        canvas->pushCanvas(); // Save the current canvas state
-        isDrawing = true; // Start drawing
-        points.clear(); // Clear previous points
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    if(!isDrawing){
+        canvas->pushCanvas();
+
+        center.x = x;
+        center.y  = y;
+        vertex.x = x;
+        vertex.y = y;
+        isDrawing = true;
+        polygon = Polygon(noVertices, center.x, center.y, vertex.x, vertex.y, width, toolColor);
+        polygon.setCanvas(canvas);
     }
-    // Add the clicked point to the points vector
-    SDL_Point point = {event.motion.x, event.motion.y};
-    points.push_back(point);
-    polygon = Polygon(points[0].x, points[0].y, point.x, point.y, points.size()); // Create a polygon object
-    polygon.setCanvas(canvas); // Set the canvas for the polygon
+}
+
+// Handle mouse move event
+void PolygonTool::onMouseMove(SDL_Event& event) {  
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    
+    if(isDrawing){
+        // canvas->clearLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
+        polygon.clearBuffer();
+        polygon.setEndingPoint(x,y);
+    //    printf("helloo3\n");
+    //     fflush(stdout);
+        polygon.drawBuffer();
+    }
+    
 }
 
 // Handle mouse up event
 void PolygonTool::onMouseUp(SDL_Event& event) {
     if (isDrawing) {
-        isDrawing = false; // Stop drawing
         polygon.draw(); // Draw the final polygon on the canvas
-        points.clear(); // Clear points for the next polygon
-    }
-}
-
-// Handle mouse move event
-void PolygonTool::onMouseMove(SDL_Event& event) {
-    if (isDrawing) {
-        // Update the polygon's last point to the current mouse position
-        if (!points.empty()) {
-            polygon.setEndingPoint(event.motion.x, event.motion.y); // Update the last point
-            polygon.drawBuffer(); // Draw the polygon in the buffer for real-time feedback
-        }
+        isDrawing = false; // Stop drawing
+        polygon.clearBuffer(); // Clear points for the next polygon
     }
 }
 
 // Draw the cursor for the tool
 void PolygonTool::drawCursor() {
-    int x, y;
-    SDL_GetMouseState(&x, &y);
-    if (canvas->isInside(x, y)) {
-        SDL_ShowCursor(SDL_DISABLE);
-        canvas->clearBuffer();
-        // Draw a temporary line from the last point to the current mouse position
-        if (!points.empty()) {
-            Line tempLine(points.back(), {x, y}, 2, black);
-            tempLine.setCanvas(canvas);
-            tempLine.drawBuffer(); // Draw the temporary line in the buffer
-        }
-    } else {
-        SDL_ShowCursor(SDL_ENABLE);
-        canvas->clearBuffer();
-    }
+//     int x, y;
+//     SDL_GetMouseState(&x, &y);
+//     if (canvas->isInside(x, y)) {
+//         SDL_ShowCursor(SDL_DISABLE);
+//         canvas->clearBuffer();
+//         // Draw a temporary line from the last point to the current mouse position
+//         if (!points.empty()) {
+//             Line tempLine(points.back(), {x, y}, 2, black);
+//             tempLine.setCanvas(canvas);
+//             tempLine.drawBuffer(); // Draw the temporary line in the buffer
+//         }
+//     } else {
+//         SDL_ShowCursor(SDL_ENABLE);
+//         canvas->clearBuffer();
+//     }
 }
 
 // Handle keyboard input (if needed)
 void PolygonTool::keyboardInput(SDL_Event& event) {
-    // Implement any keyboard shortcuts or actions if necessary
+    if(event.key.keysym.sym == SDLK_EQUALS){
+        width += 1;
+    }else if(event.key.keysym.sym == SDLK_MINUS){
+        if(width >=2)
+        width -= 1;
+    }
 }
 
 // Reset the tool state
 void PolygonTool::unSelect() {
-    canvas->clearBuffer(); // Clear the buffer
-    points.clear(); // Clear points
-    isDrawing = false; // Reset drawing state
+    // canvas->clearBuffer(); // Clear the buffer
+    // polygon.clear(); // Clear points
+    // isDrawing = false; // Reset drawing state
 }
