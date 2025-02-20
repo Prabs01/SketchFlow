@@ -1,6 +1,4 @@
 #include"Canvas.h"
-#include <SDL_image.h>
-
 
 SDL_Rect CANVAS_RECT = {0,0,0,0};
 bool horizontalToolbar = false;
