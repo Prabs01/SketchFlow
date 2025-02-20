@@ -3,23 +3,23 @@
 
 //the bound box and images of the tool icons in the tool bar
 SDL_Rect PENCIL_RECT = {0,0, 100,100};
-char PENCIL_IMAGE_URL[] = "../resources/pencil.png";
+char PENCIL_IMAGE_URL[] = "./resources/pencil.png";
 
 SDL_Rect ERASER_RECT = {0,100, 100,100};
-char ERASER_IMAGE_URL[] = "../resources/eraser.png";
+char ERASER_IMAGE_URL[] = "./resources/eraser.png";
 
 
 SDL_Rect FILLER_RECT = {0,200,100,100};
-char FILLER_IMAGE_URL[] = "../resources/paint.png";
+char FILLER_IMAGE_URL[] = "./resources/paint.png";
 
 SDL_Rect LINE_DRAWER_RECT = {0,300,50,50};
-char LINE_DRAWER_IMAGE_URL[] = "../resources/line.png";
+char LINE_DRAWER_IMAGE_URL[] = "./resources/line.png";
 
 SDL_Rect SELECT_TOOL_RECT = {0,400,100,100};
-char SELECT_TOOL_IMAGE_URL[] = "../resources/select.png";
+char SELECT_TOOL_IMAGE_URL[] = "./resources/select.png";
 
 SDL_Rect POLYGON_TOOL_RECT = {50, 300, 50, 50 };
-char POLYGON_TOOL_IMAGE_URL[] = "../resources/polygon.png";
+char POLYGON_TOOL_IMAGE_URL[] = "./resources/polygon.png";
 
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;

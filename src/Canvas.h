@@ -40,7 +40,7 @@ private:
 
 public:    
     Canvas(int SW,int SH);
-
+    void save2PNG(const std::string& filename);
     void init(SDL_Renderer* renderer_); // Initializes the canvas with an SDL renderer
 
     void clear(SDL_Rect portion = CANVAS_RECT); // Clears the sent rectangular portion

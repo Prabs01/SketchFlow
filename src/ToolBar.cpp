@@ -39,7 +39,7 @@ void ToolBar::setToolCanvas(Canvas* canvas_){   //main -> toolbar -> tool (give 
 }
 
 void ToolBar::initColorBoxes() {
-    int boxSize = 50;
+    int boxSize = 45;
     int startX = 0;
     int startY = 500; // Adjust this value based on the position of the tools
     int padding = 5;
