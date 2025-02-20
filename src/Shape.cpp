@@ -230,6 +230,39 @@ void Polygon::setEndingPoint(int x, int y){
     generateVertices(x,y);
 }
 
+bool Polygon::isPointInside(int px, int py){
+    bool inside = false;
+
+    for (int i = 0, j = numVertices - 1; i < numVertices; j = i++) {
+        int xi = vertices[i].x, yi = vertices[i].y;
+        int xj = vertices[j].x, yj = vertices[j].y;
+
+        // Check if point is exactly on a horizontal edge
+        if ((yi == py && yj == py) && (px >= std::min(xi, xj) && px <= std::max(xi, xj))) {
+            return true;
+        }
+
+        // Ray-Casting Algorithm: Check if ray crosses an edge
+        bool intersect = ((yi > py) != (yj > py)) &&
+                         (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+}
+
+void Polygon::move(int dx, int dy){
+    clearBuffer();
+    p1.x += dx;
+    p1.y += dy;
+    for (int i = 0; i < numVertices; i++) {
+        vertices[i].x += dx;
+        vertices[i].y += dy;
+    }
+    drawBuffer();
+}
+
 /*############################### RECTANGLE ###############################*/
 
 void Rectangle::generateVertices(int x, int y) {
@@ -386,3 +419,4 @@ void Rectangle::setEndingPoint(int x, int y){   //for use from Tools.cpp
     generateVertices(x,y);
 }
 */
+

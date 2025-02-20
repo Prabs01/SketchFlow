@@ -92,9 +92,14 @@ void Canvas::setPixel(int x, int y, Color color){
 
 void Canvas::setPixelBuffer(int x, int y, Color color){
     if(x >= area.x && x<=area.w + area.x && y>=area.y && y<=area.h+area.y){
+        Color newColor;
+        if(color.a != 0)
+            newColor = {color.r, color.g, color.b, 135};
+        else
+            newColor = color;
         x = x-area.x;
         y = y-area.y;
-        bufferPixels[y*area.w + x] = color.toUint32();
+        bufferPixels[y*area.w + x] = newColor.toUint32();
     }
 }
 
@@ -431,14 +436,14 @@ void Canvas::pushCanvas(){
     memcpy(snapShot, pixels,area.w*area.h*sizeof(Uint32));
     undoStack.push(snapShot);
 
-    printf("\npushed");
-    fflush(stdout);
+    // printf("\npushed");
+    // fflush(stdout);
 }
 
 void Canvas::popCanvas() {
     if (undoStack.empty()) {  
-        printf("\nUndo stack is empty!");
-        fflush(stdout);
+        // printf("\nUndo stack is empty!");
+        // fflush(stdout);
         return;
     }
 
@@ -446,14 +451,14 @@ void Canvas::popCanvas() {
     undoStack.pop();
 
     if (!lastState) {  
-        printf("\nError: Last state is a nullptr!");
-        fflush(stdout);
+        // printf("\nError: Last state is a nullptr!");
+        // fflush(stdout);
         return;
     }
 
     if (!pixels) {  
-        printf("\nError: pixels is NULL! Cannot restore.");
-        fflush(stdout);
+        // printf("\nError: pixels is NULL! Cannot restore.");
+        // fflush(stdout);
         delete[] lastState;
         return;
     }
@@ -462,7 +467,7 @@ void Canvas::popCanvas() {
 
     delete[] lastState;
 
-    printf("\nUndo performed successfully.");
-    fflush(stdout);
+    // printf("\nUndo performed successfully.");
+    // fflush(stdout);
 }
 

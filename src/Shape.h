@@ -79,6 +79,10 @@ class Polygon:public Shape{
         void generateVertices(int x, int y);
         void setEndingPoint(int x, int y);
 
+        bool isPointInside(int x, int y);
+
+        void move(int dx, int dy);
+
 };
 
 class Rectangle:public Shape{
