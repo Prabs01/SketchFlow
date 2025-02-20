@@ -21,6 +21,12 @@ char SELECT_TOOL_IMAGE_URL[] = "../resources/select.png";
 SDL_Rect POLYGON_TOOL_RECT = {50, 300, 50, 50 };
 char POLYGON_TOOL_IMAGE_URL[] = "../resources/polygon.png";
 
+SDL_Rect RECTANGLE_TOOL_RECT = {0, 350, 50, 50 };
+char RECTANGLE_TOOL_IMAGE_URL[] = "../resources/rectangle.png";
+
+SDL_Rect ELLIPSE_TOOL_RECT = {50, 350, 50, 50 };
+// char ELLIPSE_TOOL_IMAGE_URL[] = "../resources/ellipse.png";
+
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;
 }
@@ -58,7 +64,7 @@ void Tools::setToolColor(Color color){
 
 
 /*############################### Pencil #############################*/
-
+#pragma region
 Pencil::Pencil(){
     pixelSize = 5;
     bound_box = PENCIL_RECT;
@@ -145,12 +151,9 @@ void Pencil::keyboardInput(SDL_Event& event){
     }
 }
 
-
-
 void Pencil::setPixelSize(int pixelSize_){
     pixelSize = pixelSize_;
 }
-
 
 void Pencil::drawCursor() {
     // int x, y;
@@ -168,11 +171,10 @@ void Pencil::drawCursor() {
 void Pencil::unSelect(){
 
 }
-
-
+#pragma endregion
 
 /*############################### Eraser #############################*/
-
+#pragma region  
 Eraser::Eraser(){
     eraserSize = 20;
     bound_box = ERASER_RECT;
@@ -285,10 +287,10 @@ void Eraser::setEraserSize(int eraserSize_){
 void Eraser::unSelect(){
     
 }
-
+#pragma endregion
 
 /*###############################Filler Tool #############################*/
-
+#pragma region
 Filler::Filler(){
     toolColor = red;
     current_color = white;
@@ -384,10 +386,10 @@ void Filler::unSelect(){
     
 }
 
-
+#pragma endregion
 
 /*###############################Select Tool #############################*/
-
+#pragma region
 SelectTool::SelectTool(){
     clipRect = {-1,-1,0,0};
     bool isSelected = false;
@@ -588,11 +590,10 @@ void SelectTool::unSelect(){
     fflush(stdout);
 }
 
-
-
+#pragma endregion
 
 /*###############################Line Drawing Tool #############################*/
-
+#pragma region 
 LineDrawer::LineDrawer(){
     startingPixel = {-100,-100};
     endingPixel = {-100,-100};
@@ -676,11 +677,10 @@ void LineDrawer::unSelect(){
     
 }
 
-
-
+#pragma endregion
 
 /*###############################Polygon Tool #############################*/
-
+#pragma region
 // Constructor
 PolygonTool::PolygonTool(int numVertices){
     center = {-100,-100};
@@ -753,21 +753,6 @@ void PolygonTool::onMouseUp(SDL_Event& event) {
 
 // Draw the cursor for the tool
 void PolygonTool::drawCursor() {
-//     int x, y;
-//     SDL_GetMouseState(&x, &y);
-//     if (canvas->isInside(x, y)) {
-//         SDL_ShowCursor(SDL_DISABLE);
-//         canvas->clearBuffer();
-//         // Draw a temporary line from the last point to the current mouse position
-//         if (!points.empty()) {
-//             Line tempLine(points.back(), {x, y}, 2, black);
-//             tempLine.setCanvas(canvas);
-//             tempLine.drawBuffer(); // Draw the temporary line in the buffer
-//         }
-//     } else {
-//         SDL_ShowCursor(SDL_ENABLE);
-//         canvas->clearBuffer();
-//     }
 }
 
 // Handle keyboard input (if needed)
@@ -786,3 +771,93 @@ void PolygonTool::unSelect() {
     // polygon.clear(); // Clear points
     // isDrawing = false; // Reset drawing state
 }
+
+#pragma endregion
+
+
+/*###############################Rectangle Tool #############################*/
+#pragma region
+// Constructor
+RectTool::RectTool(){
+    vertex1 = {-100,-100};
+    vertex2 = {-100,-100};
+    width = 3;
+    toolColor = black;
+    isDrawing = false;
+    bound_box = RECTANGLE_TOOL_RECT; // Set the bounding box for the tool icon
+}
+
+// Load the polygon icon
+void RectTool::makeTexture(SDL_Renderer* renderer_) {
+    renderer = renderer_;
+    imgTexture = IMG_LoadTexture(renderer, RECTANGLE_TOOL_IMAGE_URL);
+    if (!imgTexture) {
+        printf("Failed to load polygon image texture: %s\n", SDL_GetError());
+    }
+}
+
+// Render the tool icon
+void RectTool::render() {
+    SDL_RenderDrawRect(renderer, &bound_box);
+    SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
+}
+
+void RectTool::onMouseDown(SDL_Event& event) {
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    if(!isDrawing){
+        canvas->pushCanvas();
+        
+        vertex1.x = x;
+        vertex1.y  = y;
+        vertex2.x = x;
+        vertex2.y = y;
+        isDrawing = true;
+        rectangle = Rectangle( vertex1.x, vertex1.y, vertex2.x, vertex2.y, width, toolColor);
+        rectangle.setCanvas(canvas);
+    }
+}
+
+void RectTool::onMouseMove(SDL_Event& event) {  
+    int x = event.motion.x;
+    int y = event.motion.y;
+   
+    if(isDrawing){
+        rectangle.clearBuffer();
+        rectangle.setEndingPoint(x,y);
+        rectangle.drawBuffer();
+    }
+}
+
+// Handle mouse up event
+void RectTool::onMouseUp(SDL_Event& event) {
+    if (isDrawing) {
+        rectangle.draw(); // Draw the final polygon on the canvas
+        isDrawing = false; // Stop drawing
+        rectangle.clearBuffer(); // Clear points for the next polygon
+    }
+}
+
+// Draw the cursor for the tool
+void RectTool::drawCursor() {
+}
+
+// Handle keyboard input (if needed)
+void RectTool::keyboardInput(SDL_Event& event) {
+    if(event.key.keysym.sym == SDLK_EQUALS){
+        width += 1;
+    }else if(event.key.keysym.sym == SDLK_MINUS){
+        if(width >=2)
+        width -= 1;
+    }
+}
+
+// Reset the tool state
+void RectTool::unSelect() {
+    // canvas->clearBuffer(); // Clear the buffer
+    // polygon.clear(); // Clear points
+    // isDrawing = false; // Reset drawing state
+}
+
+#pragma endregion
