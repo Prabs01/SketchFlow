@@ -21,6 +21,12 @@ char SELECT_TOOL_IMAGE_URL[] = "./resources/select.png";
 SDL_Rect POLYGON_TOOL_RECT = {50, 300, 50, 50 };
 char POLYGON_TOOL_IMAGE_URL[] = "./resources/polygon.png";
 
+SDL_Rect RECTANGLE_TOOL_RECT = {0, 350, 50, 50 };
+char RECTANGLE_TOOL_IMAGE_URL[] = "../resources/rectangle.png";
+
+SDL_Rect ELLIPSE_TOOL_RECT = {50, 350, 50, 50 };
+char ELLIPSE_TOOL_IMAGE_URL[] = "../resources/ellipse.png";
+
 void Tools::setCanvas(Canvas* canvas_){
     canvas = canvas_;
 }
@@ -58,7 +64,7 @@ void Tools::setToolColor(Color color){
 
 
 /*############################### Pencil #############################*/
-
+#pragma region
 Pencil::Pencil(){
     pixelSize = 5;
     bound_box = PENCIL_RECT;
@@ -145,12 +151,9 @@ void Pencil::keyboardInput(SDL_Event& event){
     }
 }
 
-
-
 void Pencil::setPixelSize(int pixelSize_){
     pixelSize = pixelSize_;
 }
-
 
 void Pencil::drawCursor() {
     // int x, y;
@@ -168,11 +171,10 @@ void Pencil::drawCursor() {
 void Pencil::unSelect(){
 
 }
-
-
+#pragma endregion
 
 /*############################### Eraser #############################*/
-
+#pragma region  
 Eraser::Eraser(){
     eraserSize = 20;
     bound_box = ERASER_RECT;
@@ -285,10 +287,10 @@ void Eraser::setEraserSize(int eraserSize_){
 void Eraser::unSelect(){
     
 }
-
+#pragma endregion
 
 /*###############################Filler Tool #############################*/
-
+#pragma region
 Filler::Filler(){
     toolColor = red;
     current_color = white;
@@ -384,10 +386,10 @@ void Filler::unSelect(){
     
 }
 
-
+#pragma endregion
 
 /*###############################Select Tool #############################*/
-
+#pragma region
 SelectTool::SelectTool(){
     clipRect = {-1,-1,0,0};
     bool isSelected = false;
@@ -588,11 +590,10 @@ void SelectTool::unSelect(){
     fflush(stdout);
 }
 
-
-
+#pragma endregion
 
 /*###############################Line Drawing Tool #############################*/
-
+#pragma region 
 LineDrawer::LineDrawer(){
     startingPixel = {-100,-100};
     endingPixel = {-100,-100};
@@ -676,11 +677,10 @@ void LineDrawer::unSelect(){
     
 }
 
-
-
+#pragma endregion
 
 /*###############################Polygon Tool #############################*/
-
+#pragma region
 // Constructor
 PolygonTool::PolygonTool(int numVertices){
     center = {-100,-100};
@@ -690,6 +690,7 @@ PolygonTool::PolygonTool(int numVertices){
     toolColor = black;
     isDrawing = false;
     bound_box = POLYGON_TOOL_RECT; // Set the bounding box for the tool icon
+    polygon = Polygon(numVertices, -10,-10,-10,-10);
 }
 
 // Load the polygon icon
@@ -712,7 +713,7 @@ void PolygonTool::onMouseDown(SDL_Event& event) {
     int x = event.motion.x;
     int y = event.motion.y;
 
-    if(!isDrawing){
+    if(!isDrawing && !isMoving){
         canvas->pushCanvas();
 
         center.x = x;
@@ -722,7 +723,35 @@ void PolygonTool::onMouseDown(SDL_Event& event) {
         isDrawing = true;
         polygon = Polygon(noVertices, center.x, center.y, vertex.x, vertex.y, width, toolColor);
         polygon.setCanvas(canvas);
+
+        printf("\nstate 2");
+        fflush(stdout);
     }
+    if(!isDrawing && isMoving){
+        if(polygon.isPointInside(x,y)){
+            isMoving = true;
+            isDrawing = true;
+            prevX = x;
+            prevY = y;
+
+            printf("\nstate 4");
+            fflush(stdout);
+        }
+    }
+
+    if(isMoving){
+        if(!polygon.isPointInside(x,y)){
+            isMoving = false;
+            isDrawing = false;
+
+            polygon.clearBuffer();
+            polygon.draw();
+
+            printf("\nstate 1");
+            fflush(stdout);
+        }
+    }
+
 }
 
 // Handle mouse move event
@@ -731,43 +760,55 @@ void PolygonTool::onMouseMove(SDL_Event& event) {
     int y = event.motion.y;
 
     
-    if(isDrawing){
+    if(isDrawing && !isMoving){
         // canvas->clearLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
         polygon.clearBuffer();
         polygon.setEndingPoint(x,y);
-    //    printf("helloo3\n");
+    //    printf("\nhelloo3\n");
     //     fflush(stdout);
         polygon.drawBuffer();
     }
     
+    if(isDrawing && isMoving){
+        // Calculate movement offset
+        int dx = x - prevX;
+        int dy = y - prevY;
+
+        polygon.clearBuffer();
+        // Move the polygon
+        polygon.move(dx, dy);
+
+        polygon.drawBuffer();
+
+        // Update previous position
+        prevX = x;
+        prevY = y;
+    }
 }
 
 // Handle mouse up event
 void PolygonTool::onMouseUp(SDL_Event& event) {
-    if (isDrawing) {
-        polygon.draw(); // Draw the final polygon on the canvas
+    if (isDrawing && !isMoving) {
+
         isDrawing = false; // Stop drawing
-        polygon.clearBuffer(); // Clear points for the next polygon
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
+
+    }
+
+    if(isDrawing && isMoving){
+        isDrawing = false;
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
     }
 }
 
 // Draw the cursor for the tool
 void PolygonTool::drawCursor() {
-//     int x, y;
-//     SDL_GetMouseState(&x, &y);
-//     if (canvas->isInside(x, y)) {
-//         SDL_ShowCursor(SDL_DISABLE);
-//         canvas->clearBuffer();
-//         // Draw a temporary line from the last point to the current mouse position
-//         if (!points.empty()) {
-//             Line tempLine(points.back(), {x, y}, 2, black);
-//             tempLine.setCanvas(canvas);
-//             tempLine.drawBuffer(); // Draw the temporary line in the buffer
-//         }
-//     } else {
-//         SDL_ShowCursor(SDL_ENABLE);
-//         canvas->clearBuffer();
-//     }
 }
 
 // Handle keyboard input (if needed)
@@ -778,6 +819,26 @@ void PolygonTool::keyboardInput(SDL_Event& event) {
         if(width >=2)
         width -= 1;
     }
+
+    if(event.key.keysym.sym == SDLK_3){
+        noVertices = 3;
+    }else if(event.key.keysym.sym == SDLK_4){
+        noVertices = 4;
+    }else if(event.key.keysym.sym == SDLK_5){
+        noVertices = 5;
+    }else if(event.key.keysym.sym == SDLK_6){
+        noVertices = 6;
+    }else if(event.key.keysym.sym == SDLK_7){
+        noVertices = 7;
+    }else if(event.key.keysym.sym == SDLK_8){
+        noVertices = 8;
+    }else if(event.key.keysym.sym == SDLK_9){
+        noVertices = 9;
+    }else if(event.key.keysym.sym == SDLK_1){
+        noVertices+=1;
+    }else if(event.key.keysym.sym == SDLK_0){
+        noVertices -=1 ;
+    }
 }
 
 // Reset the tool state
@@ -786,3 +847,319 @@ void PolygonTool::unSelect() {
     // polygon.clear(); // Clear points
     // isDrawing = false; // Reset drawing state
 }
+
+#pragma endregion
+
+/*###############################Rectangle Tool #############################*/
+#pragma region
+// Constructor
+RectTool::RectTool(){
+    vertex1 = {-100,-100};
+    vertex2 = {-100,-100};
+    width = 3;
+    toolColor = black;
+    isDrawing = false;
+    isMoving = false;
+    bound_box = RECTANGLE_TOOL_RECT; // Set the bounding box for the tool icon
+    rectangle = Rectangle();
+}
+
+// Load the polygon icon
+void RectTool::makeTexture(SDL_Renderer* renderer_) {
+    renderer = renderer_;
+    imgTexture = IMG_LoadTexture(renderer, RECTANGLE_TOOL_IMAGE_URL);
+    if (!imgTexture) {
+        printf("Failed to load polygon image texture: %s\n", SDL_GetError());
+    }
+}
+
+// Render the tool icon
+void RectTool::render() {
+    SDL_RenderDrawRect(renderer, &bound_box);
+    SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
+}
+
+void RectTool::onMouseDown(SDL_Event& event) {
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    if(!isDrawing && !isMoving){
+        canvas->pushCanvas();
+        
+        vertex1.x = x;
+        vertex1.y  = y;
+        vertex2.x = x;
+        vertex2.y = y;
+        isDrawing = true;
+        rectangle = Rectangle( vertex1.x, vertex1.y, vertex2.x, vertex2.y, width, toolColor);
+        rectangle.setCanvas(canvas);
+    }
+
+    if(!isDrawing && isMoving){
+        if(rectangle.isPointInside(x,y)){
+            isMoving = true;
+            isDrawing = true;
+            prevX = x;
+            prevY = y;
+
+            printf("\nstate 4");
+            fflush(stdout);
+        }
+    }
+
+    if(isMoving){
+        if(!rectangle.isPointInside(x,y)){
+            isMoving = false;
+            isDrawing = false;
+
+            rectangle.clearBuffer();
+            rectangle.draw();
+
+            printf("\nstate 1");
+            fflush(stdout);
+        }
+    }
+}
+
+void RectTool::onMouseMove(SDL_Event& event) {  
+    int x = event.motion.x;
+    int y = event.motion.y;
+   
+    if(isDrawing && !isMoving){
+        // canvas->clearLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
+        rectangle.clearBuffer();
+        rectangle.setEndingPoint(x,y);
+    //    printf("\nhelloo3\n");
+    //     fflush(stdout);
+        rectangle.drawBuffer();
+    }
+    
+    if(isDrawing && isMoving){
+        // Calculate movement offset
+        int dx = x - prevX;
+        int dy = y - prevY;
+
+        rectangle.clearBuffer();
+        // Move the rectangle
+        rectangle.move(dx, dy);
+
+        rectangle.drawBuffer();
+
+        // Update previous position
+        prevX = x;
+        prevY = y;
+    }
+}
+
+// Handle mouse up event
+void RectTool::onMouseUp(SDL_Event& event) {
+    if (isDrawing && !isMoving) {
+
+        isDrawing = false; // Stop drawing
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
+
+    }
+
+    if(isDrawing && isMoving){
+        isDrawing = false;
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
+    }
+}
+
+// Draw the cursor for the tool
+void RectTool::drawCursor() {
+}
+
+// Handle keyboard input (if needed)
+void RectTool::keyboardInput(SDL_Event& event) {
+    if(event.key.keysym.sym == SDLK_EQUALS){
+        width += 1;
+    }else if(event.key.keysym.sym == SDLK_MINUS){
+        if(width >=2)
+        width -= 1;
+    }
+    if(event.key.keysym.sym == SDLK_r){
+        if(isDrawing || isMoving){
+            double angle = (M_PI / 180.0)*5;  // M_PI is a constant in <cmath>
+            rectangle.clearBuffer();
+            rectangle.rotate(angle);
+            rectangle.drawBuffer();
+        }
+    }
+    if(event.key.keysym.sym == SDLK_e){
+        if(isDrawing || isMoving){
+            double angle = -(M_PI / 180.0)*5;  // M_PI is a constant in <cmath>
+            rectangle.clearBuffer();
+            rectangle.rotate(angle);
+            rectangle.drawBuffer();
+        }
+    }
+}
+
+// Reset the tool state
+void RectTool::unSelect() {
+    // canvas->clearBuffer(); // Clear the buffer
+    // polygon.clear(); // Clear points
+    // isDrawing = false; // Reset drawing state
+}
+
+#pragma endregion
+
+
+/*###############################Ellipse Tool #############################*/
+#pragma region
+// Constructor
+EllipseTool::EllipseTool(){
+    vertex1 = {-100,-100};
+    vertex2 = {-100,-100};
+    width = 3;
+    toolColor = black;
+    isDrawing = false;
+    isMoving = false;
+    bound_box = ELLIPSE_TOOL_RECT; // Set the bounding box for the tool icon
+    ellipse = Ellipse();
+}
+
+// Load the polygon icon
+void EllipseTool::makeTexture(SDL_Renderer* renderer_) {
+    renderer = renderer_;
+    imgTexture = IMG_LoadTexture(renderer, ELLIPSE_TOOL_IMAGE_URL);
+    if (!imgTexture) {
+        printf("Failed to load polygon image texture: %s\n", SDL_GetError());
+    }
+}
+
+// Render the tool icon
+void EllipseTool::render() {
+    SDL_RenderDrawRect(renderer, &bound_box);
+    SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
+}
+
+void EllipseTool::onMouseDown(SDL_Event& event) {
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    if(!isDrawing && !isMoving){
+        canvas->pushCanvas();
+        
+        vertex1.x = x;
+        vertex1.y  = y;
+        vertex2.x = x;
+        vertex2.y = y;
+        isDrawing = true;
+        ellipse = Ellipse( vertex1.x, vertex1.y, vertex2.x, vertex2.y, width, toolColor);
+        ellipse.setCanvas(canvas);
+    }
+
+    if(!isDrawing && isMoving){
+        if(ellipse.isPointInside(x,y)){
+            isMoving = true;
+            isDrawing = true;
+            prevX = x;
+            prevY = y;
+        }
+    }
+
+    if(isMoving){
+        if(!ellipse.isPointInside(x,y)){
+            isMoving = false;
+            isDrawing = false;
+
+            ellipse.clearBuffer();
+            ellipse.draw();
+        }
+    }
+}
+
+void EllipseTool::onMouseMove(SDL_Event& event) {  
+    int x = event.motion.x;
+    int y = event.motion.y;
+   
+    if(isDrawing && !isMoving){
+        ellipse.clearBuffer();
+        ellipse.setEndingPoint(x,y);
+        ellipse.drawBuffer();
+    }
+    
+    if(isDrawing && isMoving){
+        // Calculate movement offset
+        int dx = x - prevX;
+        int dy = y - prevY;
+
+        ellipse.clearBuffer();
+        // Move the rectangle
+        ellipse.move(dx, dy);
+
+        ellipse.drawBuffer();
+
+        // Update previous position
+        prevX = x;
+        prevY = y;
+    }
+}
+
+// Handle mouse up event
+void EllipseTool::onMouseUp(SDL_Event& event) {
+    if (isDrawing && !isMoving) {
+
+        isDrawing = false; // Stop drawing
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
+
+    }
+
+    if(isDrawing && isMoving){
+        isDrawing = false;
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
+    }
+}
+
+// Draw the cursor for the tool
+void EllipseTool::drawCursor() {
+}
+
+// Handle keyboard input (if needed)
+void EllipseTool::keyboardInput(SDL_Event& event) {
+    if(event.key.keysym.sym == SDLK_EQUALS){
+        width += 1;
+    }else if(event.key.keysym.sym == SDLK_MINUS){
+        if(width >=2)
+        width -= 1;
+    }
+    if(event.key.keysym.sym == SDLK_r){
+        if(isDrawing || isMoving){
+            double angle = (M_PI / 180.0)*5;  // M_PI is a constant in <cmath>
+            ellipse.clearBuffer();
+            ellipse.rotate(angle);
+            ellipse.drawBuffer();
+        }
+    }
+    if(event.key.keysym.sym == SDLK_e){
+        if(isDrawing || isMoving){
+            double angle = -(M_PI / 180.0)*5;  // M_PI is a constant in <cmath>
+            ellipse.clearBuffer();
+            ellipse.rotate(angle);
+            ellipse.drawBuffer();
+        }
+    }
+}
+
+// Reset the tool state
+void EllipseTool::unSelect() {
+    // canvas->clearBuffer(); // Clear the buffer
+    // polygon.clear(); // Clear points
+    // isDrawing = false; // Reset drawing state
+}
+
+#pragma endregion

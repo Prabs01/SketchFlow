@@ -9,23 +9,22 @@
 
 #include "Canvas.h"
 #include <cmath>
+#include <vector>
 
 class Shape
 {
-protected:
-    Canvas* canvas;
-public:
-    Shape(/* args */);
+    protected:
+        Canvas* canvas;
+    public:
+        Shape(/* args */);
 
-    virtual void draw() = 0;
-    virtual void clear() = 0;
+        virtual void draw() = 0;
+        virtual void clear() = 0;
 
-    virtual void drawBuffer() = 0;
-    virtual void clearBuffer()=0;
+        virtual void drawBuffer() = 0;
+        virtual void clearBuffer()=0;
 
-    void setCanvas(Canvas* canvas);
-    
-    ~Shape();
+        void setCanvas(Canvas* canvas);
 };
 
 
@@ -80,19 +79,75 @@ class Polygon:public Shape{
         void generateVertices(int x, int y);
         void setEndingPoint(int x, int y);
 
+        bool isPointInside(int x, int y);
+
+        void setNoVertices(int noVertices);
+
+        void move(int dx, int dy);
+
 };
 
-// class Rectangle:public Shape{
-//     private:
-//         SDL_Point p1;
-//         SDL_Point p2;
+class Rectangle:public Shape{
+    private:
+        std::vector<SDL_Point> originalVertices;
+        std::vector<SDL_Point> vertices;   // Array of vertices (points)
+        SDL_Point p1;
+        SDL_Point p2;
+        int size;
+        Color rectColor;
+        double angle = 0.0;
 
-//     public:
-//         Rectangle();
-//         Rectangle(SDL_Point p1, SDL_Point p2);
-//         Rectangle(int x1, int y1, int x2, int y2);
+    public:
+        Rectangle();
+        Rectangle(int x1, int y1, int x2, int y2, int size, Color color);
+        
+        void drawRectangle(bool isBuffer, bool isClear);
 
-//         void draw() override;
-//         void clear() override;
-//         void move(int dx, int dy);
-// };
+        void draw() override;
+        void clear() override;
+        void drawBuffer() override;
+        void clearBuffer() override;
+
+        bool isPointInside(int x, int y);
+
+        void generateVertices(int x, int y);
+        void setEndingPoint(int x, int y);
+
+        void setRotation(double newAngle);
+        void rotate(double angleChange);
+
+        void move(int dx, int dy);
+};
+
+
+class Ellipse:public Shape{
+    private:
+        std::vector<SDL_Point> originalVertices;
+        std::vector<SDL_Point> vertices;   // Array of vertices (points)
+        SDL_Point p1;
+        SDL_Point p2;
+        int size;
+        Color ellipseColor;
+        double angle = 0.0;
+
+    public:
+        Ellipse();
+        Ellipse(int x1, int y1, int x2, int y2, int size, Color color);
+        
+        void drawEllipse(bool isBuffer, bool isClear);
+
+        void draw() override;
+        void clear() override;
+        void drawBuffer() override;
+        void clearBuffer() override;
+
+        bool isPointInside(int x, int y);
+
+        void generateVertices(int x, int y);
+        void setEndingPoint(int x, int y);
+
+        void setRotation(double newAngle);
+        void rotate(double angleChange);
+
+        void move(int dx, int dy);
+};

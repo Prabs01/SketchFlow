@@ -8,10 +8,7 @@ void Shape::setCanvas(Canvas* canvas_){
     canvas = canvas_;
 }
 
-Shape::~Shape(){
-    //free(canvas);
-}
-
+/*############################### LINE ###############################*/
 
 Line::Line(){
     p1 = {-100,-100};
@@ -124,12 +121,8 @@ void Line::setStartingPoint(SDL_Point p){
 }
 
 void Line::setEndingPoint(int x2, int y2){
-    // printf("helloo\n");
-    // fflush(stdout);
     p2.x = x2;
     p2.y = y2;
-    // printf("helloo2\n");
-    // fflush(stdout);
 }
 
 void Line::setEndingPoint(SDL_Point p){
@@ -137,6 +130,7 @@ void Line::setEndingPoint(SDL_Point p){
     p2.y = p.y;
 }
 
+/*############################### POLYGON ###############################*/
 
 Polygon::Polygon(){ //def constructor
     numVertices = 3;
@@ -171,7 +165,7 @@ void Polygon::generateVertices(int x, int y){
              vertices[i].y = tempy;
         }
 
-        //translate back to og position
+        //translate back to original position
         for (int i = 0; i < numVertices; i++) {
             vertices[i].x = vertices[i].x + cx;
             vertices[i].y = vertices[i].y + cy;
@@ -195,7 +189,6 @@ Polygon::Polygon(int Vertices_, int cx, int cy, int x, int y, int size_, Color c
     generateVertices(x,y);
 
 }
-
 
 void Polygon::drawPolygon(bool isBuffer, bool isClear) {
     
@@ -235,4 +228,302 @@ void Polygon::clearBuffer() {
 
 void Polygon::setEndingPoint(int x, int y){
     generateVertices(x,y);
+}
+
+bool Polygon::isPointInside(int px, int py){
+    bool inside = false;
+
+    for (int i = 0, j = numVertices - 1; i < numVertices; j = i++) {
+        int xi = vertices[i].x, yi = vertices[i].y;
+        int xj = vertices[j].x, yj = vertices[j].y;
+
+        // Check if point is exactly on a horizontal edge
+        if ((yi == py && yj == py) && (px >= std::min(xi, xj) && px <= std::max(xi, xj))) {
+            return true;
+        }
+
+        // Ray-Casting Algorithm: Check if ray crosses an edge
+        bool intersect = ((yi > py) != (yj > py)) &&
+                         (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+}
+
+void Polygon::setNoVertices(int noVertices){
+    numVertices = noVertices;
+}
+
+void Polygon::move(int dx, int dy){
+    p1.x += dx;
+    p1.y += dy;
+    for (int i = 0; i < numVertices; i++) {
+        vertices[i].x += dx;
+        vertices[i].y += dy;
+    }
+}
+
+/*############################### RECTANGLE ###############################*/
+
+void Rectangle::generateVertices(int x, int y) {
+    originalVertices.resize(4);
+    vertices.resize(4);
+
+    // Store unrotated diagonal point
+    p2 = {x, y};
+
+    // Compute axis-aligned rectangle
+    originalVertices[0] = {p1.x, p1.y};  // First corner
+    originalVertices[1] = {x, p1.y};     // Top-right
+    originalVertices[2] = {x, y};        // Bottom-right
+    originalVertices[3] = {p1.x, y};     // Bottom-left
+
+    // Copy to vertices before applying rotation
+    vertices = originalVertices;
+
+    // Apply initial rotation
+    rotate(0);
+}
+
+// Rotate around the center without modifying the original shape
+void Rectangle::rotate(double angleChange) {
+    angle += angleChange;  // Update rotation angle
+
+    // Compute the center of the rectangle
+    int cx = (originalVertices[0].x + originalVertices[2].x) / 2;
+    int cy = (originalVertices[0].y + originalVertices[2].y) / 2;
+
+    for (int i = 0; i < 4; i++) {
+        // Get the original vertex relative to the center
+        int relX = originalVertices[i].x - cx;
+        int relY = originalVertices[i].y - cy;
+
+        // Apply rotation matrix
+        int rotatedX = static_cast<int>(relX * cos(angle) - relY * sin(angle));
+        int rotatedY = static_cast<int>(relX * sin(angle) + relY * cos(angle));
+
+        // Set rotated coordinates
+        vertices[i].x = cx + rotatedX;
+        vertices[i].y = cy + rotatedY;
+    }
+}
+
+Rectangle::Rectangle(){ //def constructor
+    p1 = {-100,-100};
+    p2 = {-100, -100};
+    size = 3;
+}
+
+Rectangle::Rectangle(int x1, int y1, int x2, int y2, int size_ = 3, Color color_ = black){
+    p1.x = x1;
+    p1.y = y1;
+    p2.x = x2;
+    p2.y = y2;
+    size = size_;
+    rectColor = color_;
+
+    generateVertices(x2,y2);
+}
+        
+void Rectangle::drawRectangle(bool isBuffer, bool isClear){
+
+    Color colorToUse = isClear ? transparent : rectColor;
+    if(!isBuffer){
+        colorToUse = isClear ? canvas->getBackgroundColor() : rectColor;
+    }
+
+    for (int i = 0; i < 4; ++i) {
+        int nextIndex = (i + 1) % 4; // Wrap around to the first vertex
+        Line line(vertices[i].x, vertices[i].y, vertices[nextIndex].x, vertices[nextIndex].y, size, colorToUse);
+        line.setCanvas(canvas);
+
+        if (isBuffer) {
+            line.drawBuffer(); // Draw to buffer
+        } else {
+            line.draw(); // Draw to canvas
+        }
+    }
+
+}
+
+void Rectangle::draw() {
+    drawRectangle(false, false);
+}
+void Rectangle::clear() {
+    drawRectangle(false, true);
+}
+void Rectangle::drawBuffer() {
+    drawRectangle(true, false);
+}
+void Rectangle::clearBuffer() {
+    drawRectangle(true, true);
+}
+
+void Rectangle::setEndingPoint(int x, int y){   //for use from Tools.cpp
+    generateVertices(x,y);
+}
+
+bool Rectangle::isPointInside(int px, int py){
+    bool inside = false;
+
+    for (int i = 0, j = 4 - 1; i < 4; j = i++) {
+        int xi = vertices[i].x, yi = vertices[i].y;
+        int xj = vertices[j].x, yj = vertices[j].y;
+
+        // Check if point is exactly on a horizontal edge
+        if ((yi == py && yj == py) && (px >= std::min(xi, xj) && px <= std::max(xi, xj))) {
+            return true;
+        }
+
+        // Ray-Casting Algorithm: Check if ray crosses an edge
+        bool intersect = ((yi > py) != (yj > py)) &&
+                         (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+}
+
+void Rectangle::move(int dx, int dy){
+    for (int i = 0; i < 4; i++) {
+        originalVertices[i].x +=dx;
+        originalVertices[i].y += dy;
+        vertices[i].x += dx;
+        vertices[i].y += dy;
+    }
+}
+
+
+/*############################### ELLIPSE ###############################*/
+
+void Ellipse::generateVertices(int x, int y) {
+    originalVertices.resize(4);
+    vertices.resize(4);
+
+    // Store unrotated diagonal point
+    p2 = {x, y};
+
+    // Compute axis-aligned rectangle
+    originalVertices[0] = {p1.x, p1.y};  // First corner
+    originalVertices[1] = {x, p1.y};     // Top-right
+    originalVertices[2] = {x, y};        // Bottom-right
+    originalVertices[3] = {p1.x, y};     // Bottom-left
+
+    // Copy to vertices before applying rotation
+    vertices = originalVertices;
+
+    // Apply initial rotation
+    rotate(0);
+}
+
+// Rotate around the center without modifying the original shape
+void Ellipse::rotate(double angleChange) {
+    angle += angleChange;  // Update rotation angle
+
+    // Compute the center of the rectangle
+    int cx = (originalVertices[0].x + originalVertices[2].x) / 2;
+    int cy = (originalVertices[0].y + originalVertices[2].y) / 2;
+
+    for (int i = 0; i < 4; i++) {
+        // Get the original vertex relative to the center
+        int relX = originalVertices[i].x - cx;
+        int relY = originalVertices[i].y - cy;
+
+        // Apply rotation matrix
+        int rotatedX = static_cast<int>(relX * cos(angle) - relY * sin(angle));
+        int rotatedY = static_cast<int>(relX * sin(angle) + relY * cos(angle));
+
+        // Set rotated coordinates
+        vertices[i].x = cx + rotatedX;
+        vertices[i].y = cy + rotatedY;
+    }
+}
+
+Ellipse::Ellipse(){ //def constructor
+    p1 = {-100,-100};
+    p2 = {-100, -100};
+    size = 3;
+}
+
+Ellipse::Ellipse(int x1, int y1, int x2, int y2, int size_ = 3, Color color_ = black){
+    p1.x = x1;
+    p1.y = y1;
+    p2.x = x2;
+    p2.y = y2;
+    size = size_;
+    ellipseColor = color_;
+
+    generateVertices(x2,y2);
+}
+        
+void Ellipse::drawEllipse(bool isBuffer, bool isClear){
+
+    Color colorToUse = isClear ? transparent : ellipseColor;
+    if(!isBuffer){
+        colorToUse = isClear ? canvas->getBackgroundColor() : ellipseColor;
+    }
+
+    for (int i = 0; i < 4; ++i) {
+        int nextIndex = (i + 1) % 4; // Wrap around to the first vertex
+        Line line(vertices[i].x, vertices[i].y, vertices[nextIndex].x, vertices[nextIndex].y, size, colorToUse);
+        line.setCanvas(canvas);
+
+        if (isBuffer) {
+            line.drawBuffer(); // Draw to buffer
+        } else {
+            line.draw(); // Draw to canvas
+        }
+    }
+
+}
+
+void Ellipse::draw() {
+    drawEllipse(false, false);
+}
+void Ellipse::clear() {
+    drawEllipse(false, true);
+}
+void Ellipse::drawBuffer() {
+    drawEllipse(true, false);
+}
+void Ellipse::clearBuffer() {
+    drawEllipse(true, true);
+}
+
+void Ellipse::setEndingPoint(int x, int y){   //for use from Tools.cpp
+    generateVertices(x,y);
+}
+
+bool Ellipse::isPointInside(int px, int py){
+    bool inside = false;
+
+    for (int i = 0, j = 4 - 1; i < 4; j = i++) {
+        int xi = vertices[i].x, yi = vertices[i].y;
+        int xj = vertices[j].x, yj = vertices[j].y;
+
+        // Check if point is exactly on a horizontal edge
+        if ((yi == py && yj == py) && (px >= std::min(xi, xj) && px <= std::max(xi, xj))) {
+            return true;
+        }
+
+        // Ray-Casting Algorithm: Check if ray crosses an edge
+        bool intersect = ((yi > py) != (yj > py)) &&
+                         (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+}
+
+void Ellipse::move(int dx, int dy){
+    for (int i = 0; i < 4; i++) {
+        originalVertices[i].x +=dx;
+        originalVertices[i].y += dy;
+        vertices[i].x += dx;
+        vertices[i].y += dy;
+    }
 }
