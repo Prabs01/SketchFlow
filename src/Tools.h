@@ -211,7 +211,8 @@ class RectTool : public Tools {
         int width;
         bool isDrawing; // Track if the user is currently drawing
         Rectangle rectangle; // Polygon object for drawing
-    
+        bool isMoving = false;
+        int prevX,prevY;
     
     public:
         RectTool();

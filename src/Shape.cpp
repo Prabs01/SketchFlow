@@ -253,58 +253,58 @@ bool Polygon::isPointInside(int px, int py){
 }
 
 void Polygon::move(int dx, int dy){
-    clearBuffer();
     p1.x += dx;
     p1.y += dy;
     for (int i = 0; i < numVertices; i++) {
         vertices[i].x += dx;
         vertices[i].y += dy;
     }
-    drawBuffer();
 }
 
 /*############################### RECTANGLE ###############################*/
 
 void Rectangle::generateVertices(int x, int y) {
-    vertices.resize(4);  // Use vector's resize() instead of malloc
+    originalVertices.resize(4);
+    vertices.resize(4);
 
-    // Diagonal points are p1 (p1.x, p1.y) and (x, y)
-    int x1 = p1.x, y1 = p1.y;
-    int x2 = x, y2 = y;
+    // Store unrotated diagonal point
+    p2 = {x, y};
 
-    // Center of rectangle
-    int centerX = (x1 + x2) / 2;
-    int centerY = (y1 + y2) / 2;
+    // Compute axis-aligned rectangle
+    originalVertices[0] = {p1.x, p1.y};  // First corner
+    originalVertices[1] = {x, p1.y};     // Top-right
+    originalVertices[2] = {x, y};        // Bottom-right
+    originalVertices[3] = {p1.x, y};     // Bottom-left
 
-    // Simplified width/height calculation
-    float width = std::abs(x2 - x1);
-    float height = std::abs(y2 - y1);
+    // Copy to vertices before applying rotation
+    vertices = originalVertices;
 
-    // Rotation angle
-    double angle = atan2(y2 - y1, x2 - x1);
-
-    // Half dimensions
-    float halfWidth = width / 2.0f;
-    float halfHeight = height / 2.0f;
-
-    // Generate rotated vertices
-    for (int i = 0; i < 4; i++) {
-        float signX = (i % 2 == 0) ? -1 : 1;
-        float signY = (i < 2) ? -1 : 1;
-
-        // Relative positions
-        float relX = signX * halfWidth;
-        float relY = signY * halfHeight;
-
-        // Rotated coordinates
-        float rotatedX = centerX + relX * cos(angle) - relY * sin(angle);
-        float rotatedY = centerY + relX * sin(angle) + relY * cos(angle);
-
-        // Assign to vector
-        vertices[i] = {static_cast<int>(rotatedX), static_cast<int>(rotatedY)};
-    }
+    // Apply initial rotation
+    rotate(0);
 }
 
+// Rotate around the center without modifying the original shape
+void Rectangle::rotate(double angleChange) {
+    angle += angleChange;  // Update rotation angle
+
+    // Compute the center of the rectangle
+    int cx = (originalVertices[0].x + originalVertices[2].x) / 2;
+    int cy = (originalVertices[0].y + originalVertices[2].y) / 2;
+
+    for (int i = 0; i < 4; i++) {
+        // Get the original vertex relative to the center
+        int relX = originalVertices[i].x - cx;
+        int relY = originalVertices[i].y - cy;
+
+        // Apply rotation matrix
+        int rotatedX = static_cast<int>(relX * cos(angle) - relY * sin(angle));
+        int rotatedY = static_cast<int>(relX * sin(angle) + relY * cos(angle));
+
+        // Set rotated coordinates
+        vertices[i].x = cx + rotatedX;
+        vertices[i].y = cy + rotatedY;
+    }
+}
 
 Rectangle::Rectangle(){ //def constructor
     p1 = {-100,-100};
@@ -361,6 +361,36 @@ void Rectangle::setEndingPoint(int x, int y){   //for use from Tools.cpp
     generateVertices(x,y);
 }
 
+bool Rectangle::isPointInside(int px, int py){
+    bool inside = false;
+
+    for (int i = 0, j = 4 - 1; i < 4; j = i++) {
+        int xi = vertices[i].x, yi = vertices[i].y;
+        int xj = vertices[j].x, yj = vertices[j].y;
+
+        // Check if point is exactly on a horizontal edge
+        if ((yi == py && yj == py) && (px >= std::min(xi, xj) && px <= std::max(xi, xj))) {
+            return true;
+        }
+
+        // Ray-Casting Algorithm: Check if ray crosses an edge
+        bool intersect = ((yi > py) != (yj > py)) &&
+                         (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+}
+
+void Rectangle::move(int dx, int dy){
+    for (int i = 0; i < 4; i++) {
+        originalVertices[i].x +=dx;
+        originalVertices[i].y += dy;
+        vertices[i].x += dx;
+        vertices[i].y += dy;
+    }
+}
 
 
 /*

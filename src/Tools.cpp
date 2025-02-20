@@ -774,8 +774,11 @@ void PolygonTool::onMouseMove(SDL_Event& event) {
         int dx = x - prevX;
         int dy = y - prevY;
 
+        polygon.clearBuffer();
         // Move the polygon
         polygon.move(dx, dy);
+
+        polygon.drawBuffer();
 
         // Update previous position
         prevX = x;
@@ -837,7 +840,9 @@ RectTool::RectTool(){
     width = 3;
     toolColor = black;
     isDrawing = false;
+    isMoving = false;
     bound_box = RECTANGLE_TOOL_RECT; // Set the bounding box for the tool icon
+    rectangle = Rectangle();
 }
 
 // Load the polygon icon
@@ -859,7 +864,7 @@ void RectTool::onMouseDown(SDL_Event& event) {
     int x = event.motion.x;
     int y = event.motion.y;
 
-    if(!isDrawing){
+    if(!isDrawing && !isMoving){
         canvas->pushCanvas();
         
         vertex1.x = x;
@@ -870,25 +875,81 @@ void RectTool::onMouseDown(SDL_Event& event) {
         rectangle = Rectangle( vertex1.x, vertex1.y, vertex2.x, vertex2.y, width, toolColor);
         rectangle.setCanvas(canvas);
     }
+
+    if(!isDrawing && isMoving){
+        if(rectangle.isPointInside(x,y)){
+            isMoving = true;
+            isDrawing = true;
+            prevX = x;
+            prevY = y;
+
+            printf("\nstate 4");
+            fflush(stdout);
+        }
+    }
+
+    if(isMoving){
+        if(!rectangle.isPointInside(x,y)){
+            isMoving = false;
+            isDrawing = false;
+
+            rectangle.clearBuffer();
+            rectangle.draw();
+
+            printf("\nstate 1");
+            fflush(stdout);
+        }
+    }
 }
 
 void RectTool::onMouseMove(SDL_Event& event) {  
     int x = event.motion.x;
     int y = event.motion.y;
    
-    if(isDrawing){
+    if(isDrawing && !isMoving){
+        // canvas->clearLineBuffer(startingPixel.x, startingPixel.y, endingPixel.x,endingPixel.y);
         rectangle.clearBuffer();
         rectangle.setEndingPoint(x,y);
+    //    printf("\nhelloo3\n");
+    //     fflush(stdout);
         rectangle.drawBuffer();
+    }
+    
+    if(isDrawing && isMoving){
+        // Calculate movement offset
+        int dx = x - prevX;
+        int dy = y - prevY;
+
+        rectangle.clearBuffer();
+        // Move the rectangle
+        rectangle.move(dx, dy);
+
+        rectangle.drawBuffer();
+
+        // Update previous position
+        prevX = x;
+        prevY = y;
     }
 }
 
 // Handle mouse up event
 void RectTool::onMouseUp(SDL_Event& event) {
-    if (isDrawing) {
-        rectangle.draw(); // Draw the final polygon on the canvas
+    if (isDrawing && !isMoving) {
+
         isDrawing = false; // Stop drawing
-        rectangle.clearBuffer(); // Clear points for the next polygon
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
+
+    }
+
+    if(isDrawing && isMoving){
+        isDrawing = false;
+        isMoving = true;
+
+        printf("state 3");
+        fflush(stdout);
     }
 }
 
@@ -903,6 +964,22 @@ void RectTool::keyboardInput(SDL_Event& event) {
     }else if(event.key.keysym.sym == SDLK_MINUS){
         if(width >=2)
         width -= 1;
+    }
+    if(event.key.keysym.sym == SDLK_r){
+        if(isDrawing || isMoving){
+            double angle = (M_PI / 180.0)*5;  // M_PI is a constant in <cmath>
+            rectangle.clearBuffer();
+            rectangle.rotate(angle);
+            rectangle.drawBuffer();
+        }
+    }
+    if(event.key.keysym.sym == SDLK_e){
+        if(isDrawing || isMoving){
+            double angle = -(M_PI / 180.0)*5;  // M_PI is a constant in <cmath>
+            rectangle.clearBuffer();
+            rectangle.rotate(angle);
+            rectangle.drawBuffer();
+        }
     }
 }
 
