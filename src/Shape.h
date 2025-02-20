@@ -81,6 +81,8 @@ class Polygon:public Shape{
 
         bool isPointInside(int x, int y);
 
+        void setNoVertices(int noVertices);
+
         void move(int dx, int dy);
 
 };

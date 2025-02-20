@@ -252,6 +252,10 @@ bool Polygon::isPointInside(int px, int py){
     return inside;
 }
 
+void Polygon::setNoVertices(int noVertices){
+    numVertices = noVertices;
+}
+
 void Polygon::move(int dx, int dy){
     p1.x += dx;
     p1.y += dy;

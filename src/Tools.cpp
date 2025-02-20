@@ -819,6 +819,26 @@ void PolygonTool::keyboardInput(SDL_Event& event) {
         if(width >=2)
         width -= 1;
     }
+
+    if(event.key.keysym.sym == SDLK_3){
+        noVertices = 3;
+    }else if(event.key.keysym.sym == SDLK_4){
+        noVertices = 4;
+    }else if(event.key.keysym.sym == SDLK_5){
+        noVertices = 5;
+    }else if(event.key.keysym.sym == SDLK_6){
+        noVertices = 6;
+    }else if(event.key.keysym.sym == SDLK_7){
+        noVertices = 7;
+    }else if(event.key.keysym.sym == SDLK_8){
+        noVertices = 8;
+    }else if(event.key.keysym.sym == SDLK_9){
+        noVertices = 9;
+    }else if(event.key.keysym.sym == SDLK_1){
+        noVertices+=1;
+    }else if(event.key.keysym.sym == SDLK_0){
+        noVertices -=1 ;
+    }
 }
 
 // Reset the tool state
