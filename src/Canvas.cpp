@@ -1,4 +1,6 @@
 #include"Canvas.h"
+#include <SDL_image.h>
+
 
 SDL_Rect CANVAS_RECT = {0,0,0,0};
 bool horizontalToolbar = false;
@@ -471,3 +473,32 @@ void Canvas::popCanvas() {
     // fflush(stdout);
 }
 
+void Canvas::save2PNG(const std::string& filename) {
+    // Read the pixels from the canvas texture into a buffer
+    int width, height;
+    SDL_QueryTexture(canvasTexture, NULL, NULL, &width, &height);
+    
+    // Create a surface from the pixels
+    SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);
+    if (surface == NULL) {
+        std::cerr << "Error creating surface: " << SDL_GetError() << std::endl;
+        return;
+    }
+
+    // Read the pixels from the texture into the surface
+    if (SDL_RenderReadPixels(renderer, &CANVAS_RECT, SDL_PIXELFORMAT_RGBA32, surface->pixels, surface->pitch) != 0) {
+        std::cerr << "Error reading pixels: " << SDL_GetError() << std::endl;
+        SDL_FreeSurface(surface);
+        return;
+    }
+
+    // Save the surface to a PNG file
+    if (IMG_SavePNG(surface, filename.c_str()) != 0) {
+        std::cerr << "Error saving PNG: " << IMG_GetError() << std::endl;
+    } else {
+        std::cout << "Canvas saved as " << filename << std::endl;
+    }
+
+    // Clean up the surface
+    SDL_FreeSurface(surface);
+}

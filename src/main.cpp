@@ -10,13 +10,15 @@
 #endif
 
 #include <iostream>
+#include <ctime>
+#include <sstream>
 
 #include "Canvas.h"
 #include "ToolBar.h"
 #include "Shape.h"
 
 using namespace std;
-
+std::string getCurrentTimeString();
 int main(int argc, char* argv[]){
     // Mode of operation .i.e video mode
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -42,7 +44,9 @@ int main(int argc, char* argv[]){
     int SCREEN_WIDTH = displayMode.w;
     int SCREEN_HEIGHT = displayMode.h;
    
-    SDL_Window* window = SDL_CreateWindow("Art_And_Colors", 0, 25, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+
+    SDL_Window* window = SDL_CreateWindow("SketchFlow", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 700, SDL_WINDOW_RESIZABLE);
+
     if (!window) {
         std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
@@ -103,8 +107,10 @@ int main(int argc, char* argv[]){
                     canvas.pushCanvas();
                 }
 
-                // if(event.key.keysym.sym == SDLK_p)
-                //     P1.draw();      
+                if(event.key.keysym.sym == SDLK_p)
+                //     P1.draw();
+                    {string name = getCurrentTimeString() ;
+                        canvas.save2PNG("saves/"+name+".png");}      
 
                 if(event.key.keysym.sym == SDLK_z){
                     canvas.popCanvas();
@@ -152,3 +158,23 @@ int main(int argc, char* argv[]){
     return 0;
 }
 
+std::string getCurrentTimeString() {
+    // Get current time
+    std::time_t now = std::time(0);
+
+    // Convert it to tm struct
+    std::tm* timeInfo = std::localtime(&now);
+
+    // Create a string stream to format the time
+    std::stringstream ss;
+
+    // Format the time as "YYYY-MM-DD HH:MM:SS"
+    ss << (1900 + timeInfo->tm_year) << "_"
+       << (1 + timeInfo->tm_mon) << "_"
+       << timeInfo->tm_mday << ""
+       << timeInfo->tm_hour << "_"
+       << timeInfo->tm_min << "_"
+       << timeInfo->tm_sec;
+
+    return ss.str();
+}
