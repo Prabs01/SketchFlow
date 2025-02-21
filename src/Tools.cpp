@@ -12,57 +12,57 @@ int horizontal = horizontalToolbar;
 
 // Tool 1
 SDL_Rect PENCIL_RECT = {
-    (padding + ((0 % 2 == 0) ? 0 : nextGap)) * vertical + padding * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
-    (padding + (0 / 2) * nextGap) * vertical + padding * horizontal,  // y position (rows after each two tools)
+    (padding + ((0 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (0 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (0 / 2) * nextGap) * vertical + (padding + ((0 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
     boxSize, boxSize
 };
 
 // Tool 2
 SDL_Rect ERASER_RECT = {
-    (padding + ((1 % 2 == 0) ? 0 : nextGap)) * vertical + padding * horizontal,  // x position (horizontal columns using % 2, 62 for 1, 3, 5)
-    (padding + (1 / 2) * nextGap) * vertical + padding * horizontal,  // y position (rows after each two tools)
+    (padding + ((1 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (1 / 2) * nextGap) * horizontal,  // x position (horizontal columns using % 2, 62 for 1, 3, 5)
+    (padding + (1 / 2) * nextGap) * vertical + (padding + ((1 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
     boxSize, boxSize
 };
 
 // Tool 3
 SDL_Rect FILLER_RECT = {
-    (padding + ((2 % 2 == 0) ? 0 : nextGap)) * vertical + padding * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
-    (padding + (2 / 2) * nextGap) * vertical + padding * horizontal,  // y position (rows after each two tools)
+    (padding + ((2 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (2 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (2 / 2) * nextGap) * vertical + (padding + ((2 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
     boxSize, boxSize
 };
 
 // Tool 4
 SDL_Rect LINE_DRAWER_RECT = {
-    (padding + ((3 % 2 == 0) ? 0 : nextGap)) * vertical + padding * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
-    (padding + (3 / 2) * nextGap) * vertical + padding * horizontal,  // y position (rows after each two tools)
+    (padding + ((3 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (3 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (3 / 2) * nextGap) * vertical + (padding + ((3 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
     boxSize, boxSize
 };
 
 // Tool 5
 SDL_Rect SELECT_TOOL_RECT = {
-    (padding + ((4 % 2 == 0) ? 0 : nextGap)) * vertical + padding * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
-    (padding + (4 / 2) * nextGap) * vertical + padding * horizontal,  // y position (rows after each two tools)
+    (padding + ((4 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (4 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (4 / 2) * nextGap) * vertical + (padding + ((4 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
     boxSize, boxSize
 };
 
 // Tool 6
 SDL_Rect POLYGON_TOOL_RECT = {
-    (padding + ((5 % 2 == 0) ? 0 : nextGap)) * vertical + padding * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
-    (padding + (5 / 2) * nextGap) * vertical + padding * horizontal,  // y position (rows after each two tools)
+    (padding + ((5 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (5 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (5 / 2) * nextGap) * vertical + (padding + ((5 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
     boxSize, boxSize
 };
 
 // Tool 7
 SDL_Rect RECTANGLE_TOOL_RECT = {
-    (padding + ((6 % 2 == 0) ? 0 : nextGap)) * vertical + padding * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
-    (padding + (6 / 2) * nextGap) * vertical + padding * horizontal,  // y position (rows after each two tools)
+    (padding + ((6 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (6 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (6 / 2) * nextGap) * vertical + (padding + ((6 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
     boxSize, boxSize
 };
 
 // Tool 8
 SDL_Rect ELLIPSE_TOOL_RECT = {
-    (padding + ((7 % 2 == 0) ? 0 : nextGap)) * vertical + padding * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
-    (padding + (7 / 2) * nextGap) * vertical + padding * horizontal,  // y position (rows after each two tools)
+    (padding + ((7 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (7 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (7 / 2) * nextGap) * vertical + (padding + ((7 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
     boxSize, boxSize
 };
 
