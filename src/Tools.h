@@ -21,20 +21,32 @@
 using namespace std;
 
 // Define bounding boxes and image paths for tools
+
+extern int nextGap; // Padding between boxes
+extern int boxSize; // Size of each tool box
+extern int padding; // Padding between tools in the grid
+//3 (+55) + 4 (+55) +3
+extern int vertical;
+extern int horizontal;
+
 extern SDL_Rect PENCIL_RECT;
-extern char PENCIL_IMAGE_URL[];
-
 extern SDL_Rect ERASER_RECT;
-extern char ERASER_IMAGE_URL[];
-
 extern SDL_Rect FILLER_RECT;
-extern char FILLER_IMAGE_URL[];
-
 extern SDL_Rect LINE_DRAWER_RECT;
-extern char LINE_DRAWER_IMAGE_URL[];
-
 extern SDL_Rect SELECT_TOOL_RECT;
+extern SDL_Rect POLYGON_TOOL_RECT;
+extern SDL_Rect RECTANGLE_TOOL_RECT;
+extern SDL_Rect ELLIPSE_TOOL_RECT;
+
+
+extern char PENCIL_IMAGE_URL[];
+extern char ERASER_IMAGE_URL[];
+extern char FILLER_IMAGE_URL[];
+extern char LINE_DRAWER_IMAGE_URL[];
 extern char SELECT_TOOL_IMAGE_URL[];
+extern char POLYGON_TOOL_IMAGE_URL[];
+extern char RECTANGLE_TOOL_IMAGE_URL[];
+extern char ELLIPSE_TOOL_IMAGE_URL[];
 
 /*
  * Base class for all tools.

@@ -1,14 +1,70 @@
 #include "Tools.h"
 
 //the bound box and images of the tool icons in the tool bar
-SDL_Rect PENCIL_RECT = {0,0, 100,100};
-SDL_Rect ERASER_RECT = {0,100, 100,100};
-SDL_Rect FILLER_RECT = {0,200,100,100};
-SDL_Rect LINE_DRAWER_RECT = {0,300,50,50};
-SDL_Rect SELECT_TOOL_RECT = {0,400,100,100};
-SDL_Rect POLYGON_TOOL_RECT = {50, 300, 50, 50 };
-SDL_Rect RECTANGLE_TOOL_RECT = {0, 350, 50, 50 };
-SDL_Rect ELLIPSE_TOOL_RECT = {50, 350, 50, 50 };
+int nextGap = 58; // Padding between boxes
+int boxSize = 55; // Size of each tool box
+int padding = 4; // Padding between tools in the grid
+//3 (+55) + 4 (+55) +3
+int vertical = !horizontalToolbar;
+int horizontal = horizontalToolbar;
+
+// Define the tool rectangles (calculate the x and y positions for each tool)
+
+// Tool 1
+SDL_Rect PENCIL_RECT = {
+    (padding + ((0 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (0 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (0 / 2) * nextGap) * vertical + (padding + ((0 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
+    boxSize, boxSize
+};
+
+// Tool 2
+SDL_Rect ERASER_RECT = {
+    (padding + ((1 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (1 / 2) * nextGap) * horizontal,  // x position (horizontal columns using % 2, 62 for 1, 3, 5)
+    (padding + (1 / 2) * nextGap) * vertical + (padding + ((1 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
+    boxSize, boxSize
+};
+
+// Tool 3
+SDL_Rect FILLER_RECT = {
+    (padding + ((2 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (2 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (2 / 2) * nextGap) * vertical + (padding + ((2 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
+    boxSize, boxSize
+};
+
+// Tool 4
+SDL_Rect LINE_DRAWER_RECT = {
+    (padding + ((3 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (3 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (3 / 2) * nextGap) * vertical + (padding + ((3 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
+    boxSize, boxSize
+};
+
+// Tool 5
+SDL_Rect SELECT_TOOL_RECT = {
+    (padding + ((4 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (4 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (4 / 2) * nextGap) * vertical + (padding + ((4 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
+    boxSize, boxSize
+};
+
+// Tool 6
+SDL_Rect POLYGON_TOOL_RECT = {
+    (padding + ((5 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (5 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (5 / 2) * nextGap) * vertical + (padding + ((5 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
+    boxSize, boxSize
+};
+
+// Tool 7
+SDL_Rect RECTANGLE_TOOL_RECT = {
+    (padding + ((6 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (6 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (6 / 2) * nextGap) * vertical + (padding + ((6 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
+    boxSize, boxSize
+};
+
+// Tool 8
+SDL_Rect ELLIPSE_TOOL_RECT = {
+    (padding + ((7 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (7 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (7 / 2) * nextGap) * vertical + (padding + ((7 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
+    boxSize, boxSize
+};
 
 #ifdef _WIN32
     char PENCIL_IMAGE_URL[] = "./resources/pencil.png";
@@ -86,10 +142,8 @@ void Pencil::makeTexture(SDL_Renderer* renderer_){
 }   
 
 void Pencil::render(){
+    SDL_RenderDrawRect(renderer, &bound_box);
     SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
-    // SDL_SetRenderDrawColor(renderer, 0, 255,255,0);
-    // SDL_RenderFillRect(renderer,&bound_box);
-    // SDL_SetRenderDrawColor(renderer, 0, 0,0,0);
 }
 
 void Pencil::onMouseDown(SDL_Event& event){
