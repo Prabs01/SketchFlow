@@ -399,48 +399,8 @@ void Rectangle::move(int dx, int dy){
 
 /*############################### ELLIPSE ###############################*/
 
-void Ellipse::generateVertices(int x, int y) {
-    originalVertices.resize(4);
-    vertices.resize(4);
-
-    // Store unrotated diagonal point
-    p2 = {x, y};
-
-    // Compute axis-aligned rectangle
-    originalVertices[0] = {p1.x, p1.y};  // First corner
-    originalVertices[1] = {x, p1.y};     // Top-right
-    originalVertices[2] = {x, y};        // Bottom-right
-    originalVertices[3] = {p1.x, y};     // Bottom-left
-
-    // Copy to vertices before applying rotation
-    vertices = originalVertices;
-
-    // Apply initial rotation
-    rotate(0);
-}
 
 // Rotate around the center without modifying the original shape
-void Ellipse::rotate(double angleChange) {
-    angle += angleChange;  // Update rotation angle
-
-    // Compute the center of the rectangle
-    int cx = (originalVertices[0].x + originalVertices[2].x) / 2;
-    int cy = (originalVertices[0].y + originalVertices[2].y) / 2;
-
-    for (int i = 0; i < 4; i++) {
-        // Get the original vertex relative to the center
-        int relX = originalVertices[i].x - cx;
-        int relY = originalVertices[i].y - cy;
-
-        // Apply rotation matrix
-        int rotatedX = static_cast<int>(relX * cos(angle) - relY * sin(angle));
-        int rotatedY = static_cast<int>(relX * sin(angle) + relY * cos(angle));
-
-        // Set rotated coordinates
-        vertices[i].x = cx + rotatedX;
-        vertices[i].y = cy + rotatedY;
-    }
-}
 
 Ellipse::Ellipse(){ //def constructor
     p1 = {-100,-100};
@@ -456,29 +416,82 @@ Ellipse::Ellipse(int x1, int y1, int x2, int y2, int size_ = 3, Color color_ = b
     size = size_;
     ellipseColor = color_;
 
-    generateVertices(x2,y2);
+    //generateVertices(x2,y2);
 }
         
-void Ellipse::drawEllipse(bool isBuffer, bool isClear){
-
+void Ellipse::drawEllipse(bool isBuffer, bool isClear) {
     Color colorToUse = isClear ? transparent : ellipseColor;
-    if(!isBuffer){
+    if (!isBuffer) {
         colorToUse = isClear ? canvas->getBackgroundColor() : ellipseColor;
     }
 
-    for (int i = 0; i < 4; ++i) {
-        int nextIndex = (i + 1) % 4; // Wrap around to the first vertex
-        Line line(vertices[i].x, vertices[i].y, vertices[nextIndex].x, vertices[nextIndex].y, size, colorToUse);
-        line.setCanvas(canvas);
+    // Step 1: Calculate center and radii
+    int cx = (p1.x + p2.x) / 2;
+    int cy = (p1.y + p2.y) / 2;
+    int rx = abs(p2.x - p1.x) / 2;
+    int ry = abs(p2.y - p1.y) / 2;
 
-        if (isBuffer) {
-            line.drawBuffer(); // Draw to buffer
+    int x = 0, y = ry;
+    long long rxSq = (long long)rx * rx;
+    long long rySq = (long long)ry * ry;
+    long long twoRxSq = 2 * rxSq;
+    long long twoRySq = 2 * rySq;
+    long long p;
+    long long px = 0, py = twoRxSq * y;
+
+    // **Region 1**
+    p = round(rySq - (rxSq * ry) + (0.25 * rxSq));
+    while (px < py) {
+        plotEllipsePoints(cx, cy, x, y, isBuffer, colorToUse);
+        x++;
+        px += twoRySq;
+        if (p < 0) {
+            p += rySq + px;
         } else {
-            line.draw(); // Draw to canvas
+            y--;
+            py -= twoRxSq;
+            p += rySq + px - py;
         }
     }
 
+    // **Region 2**
+    p = round(rySq * (x + 0.5) * (x + 0.5) + rxSq * (y - 1) * (y - 1) - rxSq * rySq);
+    while (y >= 0) {
+        plotEllipsePoints(cx, cy, x, y, isBuffer, colorToUse);
+        y--;
+        py -= twoRxSq;
+        if (p > 0) {
+            p += rxSq - py;
+        } else {
+            x++;
+            px += twoRySq;
+            p += rxSq - py + px;
+        }
+    }
 }
+
+
+// **Helper Function to Plot Points in 4 Quadrants**
+void Ellipse::plotEllipsePoints(int cx, int cy, int x, int y, bool isBuffer, Color color) {
+    for(int i = x ; i< x+size ;i++){
+        for(int j = y ;j<y+size;j++){
+            if (isBuffer) {
+                canvas->setPixelBuffer(cx +i, cy +j, color);
+                canvas->setPixelBuffer(cx -i, cy +j, color);
+                canvas->setPixelBuffer(cx +i, cy -j, color);
+                canvas->setPixelBuffer(cx -i, cy -j, color);
+            } else {
+                canvas->setPixel(cx +i, cy +j, color);
+                canvas->setPixel(cx -i, cy +j, color);
+                canvas->setPixel(cx +i, cy -j, color);
+                canvas->setPixel(cx -i, cy -j, color);
+            }
+        }
+    }
+    
+}
+
+
 
 void Ellipse::draw() {
     drawEllipse(false, false);
@@ -494,36 +507,57 @@ void Ellipse::clearBuffer() {
 }
 
 void Ellipse::setEndingPoint(int x, int y){   //for use from Tools.cpp
-    generateVertices(x,y);
+    p2.x = x;
+    p2.y = y;
 }
 
-bool Ellipse::isPointInside(int px, int py){
-    bool inside = false;
+bool Ellipse::isPointInside(int px, int py) {
+    // Compute center of the ellipse
+    int cx = (p1.x + p2.x) / 2;
+    int cy = (p1.y + p2.y) / 2;
 
-    for (int i = 0, j = 4 - 1; i < 4; j = i++) {
-        int xi = vertices[i].x, yi = vertices[i].y;
-        int xj = vertices[j].x, yj = vertices[j].y;
+    // Compute semi-major (rx) and semi-minor (ry) axes
+    int rx = abs(p2.x - p1.x) / 2;
+    int ry = abs(p2.y - p1.y) / 2;
 
-        // Check if point is exactly on a horizontal edge
-        if ((yi == py && yj == py) && (px >= std::min(xi, xj) && px <= std::max(xi, xj))) {
-            return true;
-        }
+    // Avoid division by zero (in case of degenerate ellipse)
+    if (rx == 0 || ry == 0) return false;
 
-        // Ray-Casting Algorithm: Check if ray crosses an edge
-        bool intersect = ((yi > py) != (yj > py)) &&
-                         (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+    // Apply ellipse equation
+    double equation = (pow(px - cx, 2) / pow(rx, 2)) + (pow(py - cy, 2) / pow(ry, 2));
 
-        if (intersect) inside = !inside;
-    }
-
-    return inside;
+    // Check if point is inside or on the ellipse
+    return equation <= 1.0;
 }
+
 
 void Ellipse::move(int dx, int dy){
-    for (int i = 0; i < 4; i++) {
-        originalVertices[i].x +=dx;
-        originalVertices[i].y += dy;
-        vertices[i].x += dx;
-        vertices[i].y += dy;
-    }
+    p1.x +=dx;
+    p2.x+=dx;
+    p1.y+=dy;
+    p2.y+=dy;
 }
+
+void Ellipse::rotate(double angleChange){
+   
+
+
+    double radians = angleChange * M_PI / 180.0;
+
+    // Compute center of the ellipse
+    int cx = (p1.x + p2.x) / 2;
+    int cy = (p1.y + p2.y) / 2;
+
+    // Function to rotate a point around the center
+    auto rotatePoint = [&](SDL_Point &p) {
+        int xNew = cx + (p.x - cx) * cos(radians) - (p.y - cy) * sin(radians);
+        int yNew = cy + (p.x - cx) * sin(radians) + (p.y - cy) * cos(radians);
+        p.x = xNew;
+        p.y = yNew;
+    };
+
+    // Rotate both diagonal points
+    rotatePoint(p1);
+    rotatePoint(p2);
+}
+

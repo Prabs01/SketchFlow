@@ -122,8 +122,6 @@ class Rectangle:public Shape{
 
 class Ellipse:public Shape{
     private:
-        std::vector<SDL_Point> originalVertices;
-        std::vector<SDL_Point> vertices;   // Array of vertices (points)
         SDL_Point p1;
         SDL_Point p2;
         int size;
@@ -143,8 +141,9 @@ class Ellipse:public Shape{
 
         bool isPointInside(int x, int y);
 
-        void generateVertices(int x, int y);
         void setEndingPoint(int x, int y);
+
+        void plotEllipsePoints(int cx, int cy, int x, int y, bool isBuffer, Color color);
 
         void setRotation(double newAngle);
         void rotate(double angleChange);

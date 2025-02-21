@@ -892,9 +892,11 @@ void PolygonTool::keyboardInput(SDL_Event& event) {
     }else if(event.key.keysym.sym == SDLK_9){
         noVertices = 9;
     }else if(event.key.keysym.sym == SDLK_1){
-        noVertices+=1;
+        noVertices-=1;
     }else if(event.key.keysym.sym == SDLK_0){
-        noVertices -=1 ;
+        noVertices = 500;
+    }else if(event.key.keysym.sym == SDLK_2){
+        noVertices +=1;
     }
 }
 
