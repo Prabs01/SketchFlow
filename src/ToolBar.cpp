@@ -25,6 +25,7 @@ ToolBar::ToolBar(int SW, int SH){
     tools.push_back(new PolygonTool(3));
     tools.push_back(new RectTool);
     tools.push_back(new PolygonTool(polygon_vertices));
+    tools.push_back(new EllipseTool);
     initColorBoxes();
 }
 
