@@ -3,5 +3,6 @@ test/
 .vscode/
 
 CMakeLists.txt
+saves/
 
 

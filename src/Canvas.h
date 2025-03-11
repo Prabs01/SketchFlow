@@ -32,11 +32,11 @@ class Canvas
 private:
     SDL_Renderer* renderer = nullptr;
     Uint32* pixels = nullptr; // Pixel array representing the canvas (ARGB format)
+    Uint32* bufferPixels = nullptr; // Pixel array for buffer (used for temporary drawings like cursor or shape previews)
+    bool showBuffer;
     SDL_Rect area;
     SDL_Texture* canvasTexture = nullptr;
     SDL_Texture* bufferTexture = nullptr;
-    Uint32* bufferPixels = nullptr; // Pixel array for buffer (used for temporary drawings like cursor or shape previews)
-    bool showBuffer;
     Color bgColor;
     Color currentColor; // Current drawing color
     stack<Uint32*> undoStack;

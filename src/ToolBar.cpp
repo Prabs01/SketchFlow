@@ -26,6 +26,7 @@ ToolBar::ToolBar(int SW, int SH){
     tools.push_back(new RectTool);
     tools.push_back(new PolygonTool(polygon_vertices));
     tools.push_back(new EllipseTool);
+    tools.push_back(new SplineTool);
     initColorBoxes();
 }
 
@@ -46,7 +47,7 @@ void ToolBar::setToolCanvas(Canvas* canvas_){   //main -> toolbar -> tool (give 
 void ToolBar::initColorBoxes() {
     int boxSize = 45;
     int startX = 13; // Updated x position
-    int startY = 245; // Updated y position
+    int startY = 300; // Updated y position
     int padding = 5;
 
     // Define 15 solid colors
@@ -115,7 +116,7 @@ bool ToolBar::mouseClicked(SDL_Event& event){
 
     for (auto& colorBox : colorBoxes) {
         if (mouseX >= colorBox.rect.x && mouseX <= colorBox.rect.x + colorBox.rect.w &&
-            mouseY >= colorBox.rect.y && mouseY <= colorBox.rect.y + colorBox.rect.h) {
+            mouseY >= colorBox.rect.y && mouseY <= colorBox.rect.y + colorBox.rect.h && activeTool) {
             currentColor = colorBox.color;
             activeTool->setToolColor(currentColor);
             return true;

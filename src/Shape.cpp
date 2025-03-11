@@ -561,3 +561,83 @@ void Ellipse::rotate(double angleChange){
     rotatePoint(p2);
 }
 
+
+
+//SPline curve
+
+Spline::Spline(){
+    startPoint = {-100,-100};
+    endPoint ={-100,-100};
+    controlPoint = {-100,-100};
+    slope = 0;
+}
+
+Spline::Spline(SDL_Point start, SDL_Point end, SDL_Point control,float slope_, int size_=3, Color color_ = black){
+    startPoint = start;
+    endPoint = end;
+    controlPoint = control;
+    slope = slope_;
+    size = size_;
+    splineColor = color_;
+}
+
+void Spline::drawSpline(bool isBuffer, bool isClear){
+    Color colorToUse = isClear ? transparent : splineColor;
+    if (!isBuffer) {
+        colorToUse = isClear ? canvas->getBackgroundColor() : splineColor;
+    }
+
+    int numSegments = 1000; // Number of segments to approximate the curve
+    float t;
+    SDL_Point prev = startPoint;
+    
+    // Compute tangent vectors
+    SDL_Point tangent1 = {controlPoint.x - startPoint.x, controlPoint.y - startPoint.y};
+    SDL_Point tangent2 = {static_cast<int>(slope * (endPoint.x - controlPoint.x)), endPoint.y - controlPoint.y};
+    
+    for (int i = 1; i <= numSegments; i++) {
+        t = static_cast<float>(i) / numSegments;
+        float t2 = t * t;
+        float t3 = t2 * t;
+        
+        // Hermite basis functions
+        float h1 = 2 * t3 - 3 * t2 + 1;
+        float h2 = -2 * t3 + 3 * t2;
+        float h3 = t3 - 2 * t2 + t;
+        float h4 = t3 - t2;
+        
+        // Compute interpolated point
+        SDL_Point cur = {
+            static_cast<int>(h1 * startPoint.x + h2 * endPoint.x + h3 * tangent1.x + h4 * tangent2.x),
+            static_cast<int>(h1 * startPoint.y + h2 * endPoint.y + h3 * tangent1.y + h4 * tangent2.y)
+        };
+        
+        // Draw line segment between previous and current point
+        Line segment(prev, cur,size, colorToUse);
+        segment.setCanvas(canvas);
+        segment.drawLine(isBuffer, isClear);
+        prev = cur;
+    }
+}
+
+
+void Spline::draw() {
+    drawSpline(false, false);
+}
+void Spline::clear() {
+    drawSpline(false, true);
+}
+void Spline::drawBuffer() {
+    drawSpline(true, false);
+}
+void Spline::clearBuffer() {
+    drawSpline(true, true);
+}
+
+void Spline::setControlPoint(SDL_Point control){
+    controlPoint = control;
+}
+
+void Spline::setEndingPoint(SDL_Point p){
+    endPoint = p;
+}

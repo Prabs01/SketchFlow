@@ -66,6 +66,13 @@ SDL_Rect ELLIPSE_TOOL_RECT = {
     boxSize, boxSize
 };
 
+//tool 9
+SDL_Rect SPLINE_TOOL_RECT = {
+    (padding + ((8 % 2 == 0) ? 0 : nextGap)) * vertical + (padding + (8 / 2) * nextGap) * horizontal,  // x position (alternate columns using % 2, 62 for 1, 3, 5)
+    (padding + (8 / 2) * nextGap) * vertical + (padding + ((8 % 2 == 0) ? 0 : nextGap)) * horizontal,  // y position (rows after each two tools)
+    boxSize, boxSize
+};
+
 #ifdef _WIN32
     char PENCIL_IMAGE_URL[] = "./resources/pencil.png";
     char ERASER_IMAGE_URL[] = "./resources/eraser.png";
@@ -75,6 +82,7 @@ SDL_Rect ELLIPSE_TOOL_RECT = {
     char POLYGON_TOOL_IMAGE_URL[] = "./resources/polygon.png";
     char RECTANGLE_TOOL_IMAGE_URL[] = "./resources/rectangle.png";
     char ELLIPSE_TOOL_IMAGE_URL[] = "./resources/ellipse.png";
+    char SPLINE_TOOL_IMAGE_URL[] = "./resources/ellipse.png"
 #else
     char PENCIL_IMAGE_URL[] = "../resources/pencil.png";
     char ERASER_IMAGE_URL[] = "../resources/eraser.png";
@@ -84,6 +92,7 @@ SDL_Rect ELLIPSE_TOOL_RECT = {
     char POLYGON_TOOL_IMAGE_URL[] = "../resources/polygon.png";
     char RECTANGLE_TOOL_IMAGE_URL[] = "../resources/rectangle.png";
     char ELLIPSE_TOOL_IMAGE_URL[] = "../resources/ellipse.png";
+    char SPLINE_TOOL_IMAGE_URL[] = "../resources/ellipse.png";
 #endif
 
 void Tools::setCanvas(Canvas* canvas_){
@@ -422,10 +431,10 @@ void Filler::fill(int EP1, int EP2){
         xp.push_back(x + 1);yp.push_back(y);
         xp.push_back(x);yp.push_back(y-1);
         xp.push_back(x );yp.push_back(y+1);
-        xp.push_back(x - 1);yp.push_back(y-1);
-        xp.push_back(x + 1);yp.push_back(y+1);
-        xp.push_back(x+1);yp.push_back(y-1);
-        xp.push_back(x-1);yp.push_back(y+1);
+        //xp.push_back(x - 1);yp.push_back(y-1);
+        //xp.push_back(x + 1);yp.push_back(y+1);
+        //xp.push_back(x+1);yp.push_back(y-1);
+        //xp.push_back(x-1);yp.push_back(y+1);
 
     }
     
@@ -1219,6 +1228,113 @@ void EllipseTool::unSelect() {
     // canvas->clearBuffer(); // Clear the buffer
     // polygon.clear(); // Clear points
     // isDrawing = false; // Reset drawing state
+}
+
+//spline tool
+SplineTool::SplineTool(){
+    bound_box = SPLINE_TOOL_RECT;
+    isSelectingPoints = false;
+    isShaping = false;
+    width = 2;
+    toolColor = black;
+    slope = 0.5;
+}
+void SplineTool::makeTexture(SDL_Renderer* renderer_){
+    renderer = renderer_;
+    imgTexture = IMG_LoadTexture(renderer, SPLINE_TOOL_IMAGE_URL);
+    if (!imgTexture) {
+        printf("Failed to load polygon image texture: %s\n", SDL_GetError());
+    }
+}
+
+void SplineTool::render(){
+    SDL_RenderDrawRect(renderer, &bound_box);
+    SDL_RenderCopy(renderer, imgTexture, NULL, &bound_box);
+}
+
+void SplineTool::onMouseDown(SDL_Event& event){
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    if(!isSelectingPoints && !isShaping){
+        canvas->pushCanvas();
+        
+        startPoint.x = x;
+        startPoint.y  = y;
+        endPoint.x = x;
+        endPoint.y = y;
+        controlPoint.x = (startPoint.x +endPoint.x)/2;
+
+        isSelectingPoints = true;
+        spline = Spline(startPoint,endPoint,controlPoint,slope, width, toolColor);
+        spline.setCanvas(canvas);
+    }
+
+    if(isSelectingPoints && !isShaping){
+        // isSelectingPoints = false; // Stop drawing
+        // isShaping = true;
+    }
+
+    if(isShaping){
+        isSelectingPoints = false;
+        isShaping=false;
+        spline.clearBuffer();
+        spline.draw();
+    }
+}
+
+void SplineTool::onMouseUp(SDL_Event& event){
+    if (isSelectingPoints && !isShaping) {
+
+        isSelectingPoints = false; // Stop drawing
+        isShaping = true;
+
+        // printf("state 3");
+        // fflush(stdout);
+
+    }
+
+    if(isSelectingPoints && isShaping){
+        isSelectingPoints = false;
+        isShaping = true;
+
+        printf("state 3");
+        fflush(stdout);
+    }
+}
+
+void SplineTool::onMouseMove(SDL_Event& event){
+     int x = event.motion.x;
+    int y = event.motion.y;
+   
+    if(isSelectingPoints && !isShaping){
+        spline.clearBuffer();
+        spline.setEndingPoint({x,y});
+        spline.drawBuffer();
+    }
+    
+    if(!isSelectingPoints && isShaping){
+       spline.clearBuffer();
+       spline.setControlPoint({x,y});
+       spline.drawBuffer();
+    }
+}
+
+void SplineTool::drawCursor(){
+
+}
+
+void SplineTool::keyboardInput(SDL_Event& event){
+    if(event.key.keysym.sym == SDLK_EQUALS){
+        slope += 0.001;
+    }
+    else if(event.key.keysym.sym == SDLK_MINUS){
+        slope -= 0.001;
+    }
+}
+
+void SplineTool::unSelect(){
+
 }
 
 #pragma endregion

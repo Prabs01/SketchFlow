@@ -37,7 +37,7 @@ extern SDL_Rect SELECT_TOOL_RECT;
 extern SDL_Rect POLYGON_TOOL_RECT;
 extern SDL_Rect RECTANGLE_TOOL_RECT;
 extern SDL_Rect ELLIPSE_TOOL_RECT;
-
+extern SDL_Rect SPLINE_TOOL_RECT;
 
 extern char PENCIL_IMAGE_URL[];
 extern char ERASER_IMAGE_URL[];
@@ -47,6 +47,8 @@ extern char SELECT_TOOL_IMAGE_URL[];
 extern char POLYGON_TOOL_IMAGE_URL[];
 extern char RECTANGLE_TOOL_IMAGE_URL[];
 extern char ELLIPSE_TOOL_IMAGE_URL[];
+extern char SPLINE_TOOL_IMAGE_URL[];
+
 
 /*
  * Base class for all tools.
@@ -260,3 +262,27 @@ class EllipseTool : public Tools {
         void keyboardInput(SDL_Event& event) override;
         void unSelect() override;
     };
+
+
+class SplineTool :public Tools{
+    private:
+        SDL_Point startPoint;
+        SDL_Point endPoint;
+        SDL_Point controlPoint;
+        float slope;
+        bool isSelectingPoints;
+        bool isShaping;
+        Spline spline;
+        int width;
+        
+    public:
+        SplineTool();
+        void makeTexture(SDL_Renderer* renderer_) override;
+        void render() override;
+        void onMouseDown(SDL_Event& event) override;
+        void onMouseUp(SDL_Event& event) override;
+        void onMouseMove(SDL_Event& event) override;
+        void drawCursor() override;
+        void keyboardInput(SDL_Event& event) override;
+        void unSelect() override;
+};

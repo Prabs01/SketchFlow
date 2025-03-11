@@ -110,7 +110,7 @@ int main(int argc, char* argv[]){
                 if(event.key.keysym.sym == SDLK_p)
                 //     P1.draw();
                     {string name = getCurrentTimeString() ;
-                        canvas.save2PNG("saves/"+name+".png");}      
+                        canvas.save2PNG("../saves/"+name+".png");}      
 
                 if(event.key.keysym.sym == SDLK_z){
                     canvas.popCanvas();
