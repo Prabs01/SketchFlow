@@ -153,16 +153,18 @@ class Ellipse:public Shape{
 
 class Spline:public Shape{
     private:
-        SDL_Point startPoint;
-        SDL_Point endPoint;
-        SDL_Point controlPoint;
-        float slope;
+        SDL_Point p0;
+        SDL_Point p1;
+        SDL_Point p2;
+        SDL_Point p3;
         int size;
         Color splineColor;
+        bool hasSecondControlPoint;
 
     public:
         Spline();
-        Spline(SDL_Point start, SDL_Point end, SDL_Point control,float slope, int size, Color color);
+        Spline(SDL_Point p0, SDL_Point p1, SDL_Point p2,SDL_Point p3, int size, Color color);
+        Spline(SDL_Point p0, SDL_Point p1,SDL_Point p3, int size, Color color);
         
         void drawSpline(bool isBuffer, bool isClear);
 
@@ -171,6 +173,5 @@ class Spline:public Shape{
         void drawBuffer() override;
         void clearBuffer() override;
 
-        void setControlPoint(SDL_Point control);
-        void setEndingPoint(SDL_Point p);
+        void changeControlPoints(SDL_Point p0_,SDL_Point p1_, SDL_Point p2_, SDL_Point p3_, bool useSecondPoint);
 };

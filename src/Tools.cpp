@@ -82,7 +82,7 @@ SDL_Rect SPLINE_TOOL_RECT = {
     char POLYGON_TOOL_IMAGE_URL[] = "./resources/polygon.png";
     char RECTANGLE_TOOL_IMAGE_URL[] = "./resources/rectangle.png";
     char ELLIPSE_TOOL_IMAGE_URL[] = "./resources/ellipse.png";
-    char SPLINE_TOOL_IMAGE_URL[] = "./resources/ellipse.png"
+    char SPLINE_TOOL_IMAGE_URL[] = "./resources/spline.png";
 #else
     char PENCIL_IMAGE_URL[] = "../resources/pencil.png";
     char ERASER_IMAGE_URL[] = "../resources/eraser.png";
@@ -92,7 +92,7 @@ SDL_Rect SPLINE_TOOL_RECT = {
     char POLYGON_TOOL_IMAGE_URL[] = "../resources/polygon.png";
     char RECTANGLE_TOOL_IMAGE_URL[] = "../resources/rectangle.png";
     char ELLIPSE_TOOL_IMAGE_URL[] = "../resources/ellipse.png";
-    char SPLINE_TOOL_IMAGE_URL[] = "../resources/ellipse.png";
+    char SPLINE_TOOL_IMAGE_URL[] = "../resources/spline.png";
 #endif
 
 void Tools::setCanvas(Canvas* canvas_){
@@ -1233,8 +1233,9 @@ void EllipseTool::unSelect() {
 //spline tool
 SplineTool::SplineTool(){
     bound_box = SPLINE_TOOL_RECT;
-    isSelectingPoints = false;
-    isShaping = false;
+    selectingEndPoints = false;
+    selectingP1 = false;
+    selectingP2 = false;
     width = 2;
     toolColor = black;
     slope = 0.5;
@@ -1256,67 +1257,82 @@ void SplineTool::onMouseDown(SDL_Event& event){
     int x = event.motion.x;
     int y = event.motion.y;
 
-    if(!isSelectingPoints && !isShaping){
+    if(!selectingEndPoints && !selectingP1 && !selectingP2){
         canvas->pushCanvas();
         
-        startPoint.x = x;
-        startPoint.y  = y;
-        endPoint.x = x;
-        endPoint.y = y;
-        controlPoint.x = (startPoint.x +endPoint.x)/2;
+        p0.x = x;
+        p0.y  = y;
+        p3.x = x;
+        p3.y = y;
+        p1.x = x;
+        p1.y = y;
+        p2.x = x;
+        p2.y = y;
 
-        isSelectingPoints = true;
-        spline = Spline(startPoint,endPoint,controlPoint,slope, width, toolColor);
+
+        selectingEndPoints = true;
+        spline = Spline(p0,p1,p3, width, toolColor);
         spline.setCanvas(canvas);
     }
 
-    if(isSelectingPoints && !isShaping){
-        // isSelectingPoints = false; // Stop drawing
-        // isShaping = true;
+    if(selectingEndPoints && selectingP1 && !selectingP2){
+        selectingEndPoints = false;
     }
 
-    if(isShaping){
-        isSelectingPoints = false;
-        isShaping=false;
-        spline.clearBuffer();
-        spline.draw();
+    if(!selectingEndPoints && selectingP1 && selectingP2){
+        selectingP1 = false; //second buffer state
     }
+
 }
 
 void SplineTool::onMouseUp(SDL_Event& event){
-    if (isSelectingPoints && !isShaping) {
+    if (selectingEndPoints && !selectingP1 && !selectingP2) {
 
-        isSelectingPoints = false; // Stop drawing
-        isShaping = true;
-
-        // printf("state 3");
-        // fflush(stdout);
+        selectingP1 = true; //first buffer state
 
     }
 
-    if(isSelectingPoints && isShaping){
-        isSelectingPoints = false;
-        isShaping = true;
-
-        printf("state 3");
-        fflush(stdout);
+    if(!selectingEndPoints && selectingP1 && !selectingP2){
+        selectingP2 = true; //second buffer state
     }
+
+    if(!selectingEndPoints && !selectingP1 && selectingP2){
+        selectingP2 = false;
+        spline.clearBuffer();
+        spline.draw();
+    }
+
 }
 
 void SplineTool::onMouseMove(SDL_Event& event){
      int x = event.motion.x;
     int y = event.motion.y;
    
-    if(isSelectingPoints && !isShaping){
+    if(selectingEndPoints && !selectingP1 && !selectingP2){
         spline.clearBuffer();
-        spline.setEndingPoint({x,y});
+        p3 = {x,y};
+        spline.changeControlPoints(p0,p1,p2,p3, false);
         spline.drawBuffer();
+        // printf("drawing1");
+        // fflush(stdout);
     }
     
-    if(!isSelectingPoints && isShaping){
-       spline.clearBuffer();
-       spline.setControlPoint({x,y});
-       spline.drawBuffer();
+    if(!selectingEndPoints && selectingP1 && !selectingP2){
+        spline.clearBuffer();
+        p1 = {x,y};
+        spline.changeControlPoints(p0,p1,p2,p3,false);
+        spline.drawBuffer();
+        // printf("drawing2");
+        // fflush(stdout);
+    }
+
+    if(!selectingEndPoints && !selectingP1 && selectingP2){
+        spline.clearBuffer();
+        p2 = {x,y};
+        spline.changeControlPoints(p0,p1,p2,p3, true);
+        spline.drawBuffer();
+        // printf("drawing3");
+        // fflush(stdout);
     }
 }
 
@@ -1326,10 +1342,11 @@ void SplineTool::drawCursor(){
 
 void SplineTool::keyboardInput(SDL_Event& event){
     if(event.key.keysym.sym == SDLK_EQUALS){
-        slope += 0.001;
+        width += 1;
     }
     else if(event.key.keysym.sym == SDLK_MINUS){
-        slope -= 0.001;
+       if(width >=2)
+        width -= 1;
     }
 }
 

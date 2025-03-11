@@ -566,19 +566,29 @@ void Ellipse::rotate(double angleChange){
 //SPline curve
 
 Spline::Spline(){
-    startPoint = {-100,-100};
-    endPoint ={-100,-100};
-    controlPoint = {-100,-100};
-    slope = 0;
+    p0 = {-100,-100};
+    p1 ={-100,-100};
+    p2 = {-100,-100};
+    p3 = {-100, -100};
 }
 
-Spline::Spline(SDL_Point start, SDL_Point end, SDL_Point control,float slope_, int size_=3, Color color_ = black){
-    startPoint = start;
-    endPoint = end;
-    controlPoint = control;
-    slope = slope_;
+Spline::Spline(SDL_Point p0_, SDL_Point p1_, SDL_Point p2_,SDL_Point p3_, int size_=3, Color color_ = black){
+    p1 = p1_;
+    p2 = p2_;
+    p3 = p3_;
+    p0 = p0_;
     size = size_;
     splineColor = color_;
+    hasSecondControlPoint = true;
+}
+
+Spline::Spline(SDL_Point p0_, SDL_Point p1_, SDL_Point p3_, int size_=3, Color color_ = black){
+    p1 = p1_;
+    p3 = p3_;
+    p0 = p0_;
+    size = size_;
+    splineColor = color_;
+    hasSecondControlPoint = false;
 }
 
 void Spline::drawSpline(bool isBuffer, bool isClear){
@@ -587,38 +597,43 @@ void Spline::drawSpline(bool isBuffer, bool isClear){
         colorToUse = isClear ? canvas->getBackgroundColor() : splineColor;
     }
 
-    int numSegments = 1000; // Number of segments to approximate the curve
-    float t;
-    SDL_Point prev = startPoint;
-    
-    // Compute tangent vectors
-    SDL_Point tangent1 = {controlPoint.x - startPoint.x, controlPoint.y - startPoint.y};
-    SDL_Point tangent2 = {static_cast<int>(slope * (endPoint.x - controlPoint.x)), endPoint.y - controlPoint.y};
-    
-    for (int i = 1; i <= numSegments; i++) {
-        t = static_cast<float>(i) / numSegments;
-        float t2 = t * t;
-        float t3 = t2 * t;
-        
-        // Hermite basis functions
-        float h1 = 2 * t3 - 3 * t2 + 1;
-        float h2 = -2 * t3 + 3 * t2;
-        float h3 = t3 - 2 * t2 + t;
-        float h4 = t3 - t2;
-        
-        // Compute interpolated point
-        SDL_Point cur = {
-            static_cast<int>(h1 * startPoint.x + h2 * endPoint.x + h3 * tangent1.x + h4 * tangent2.x),
-            static_cast<int>(h1 * startPoint.y + h2 * endPoint.y + h3 * tangent1.y + h4 * tangent2.y)
-        };
-        
-        // Draw line segment between previous and current point
-        Line segment(prev, cur,size, colorToUse);
-        segment.setCanvas(canvas);
-        segment.drawLine(isBuffer, isClear);
-        prev = cur;
+    int numSegments = 100; // Number of segments to approximate the curve
+    float steps = 1.0f / (float)numSegments;
+    SDL_Point prev = p0;
+    SDL_Point next;
+
+    if (hasSecondControlPoint) {  // Use cubic Bézier if the second control point exists
+        for (float i = 0; i <= 1; i += steps) {
+            float bez0 = pow((1 - i), 3);
+            float bez1 = 3 * i * pow((1 - i), 2);
+            float bez2 = 3 * i * i * (1 - i);
+            float bez3 = pow(i, 3);
+
+            next.x = abs(p0.x * bez0 + p1.x * bez1 + p2.x * bez2 + p3.x * bez3);
+            next.y = abs(p0.y * bez0 + p1.y * bez1 + p2.y * bez2 + p3.y * bez3);
+
+            Line segment(prev, next, size, colorToUse);
+            segment.setCanvas(canvas);
+            segment.drawLine(isBuffer, isClear);
+            prev = next;
+        }
+    } else {  // Use quadratic Bézier if only one control point exists
+        for (float i = 0; i <= 1; i += steps) {
+            float bez0 = (1 - i) * (1 - i);
+            float bez1 = 2 * (1 - i) * i;
+            float bez2 = i * i;
+
+            next.x = abs(p0.x * bez0 + p1.x * bez1 + p3.x * bez2);
+            next.y = abs(p0.y * bez0 + p1.y * bez1 + p3.y * bez2);
+
+            Line segment(prev, next, size, colorToUse);
+            segment.setCanvas(canvas);
+            segment.drawLine(isBuffer, isClear);
+            prev = next;
+        }
     }
 }
+
 
 
 void Spline::draw() {
@@ -634,10 +649,10 @@ void Spline::clearBuffer() {
     drawSpline(true, true);
 }
 
-void Spline::setControlPoint(SDL_Point control){
-    controlPoint = control;
-}
-
-void Spline::setEndingPoint(SDL_Point p){
-    endPoint = p;
+void Spline::changeControlPoints(SDL_Point p0_,SDL_Point p1_, SDL_Point p2_, SDL_Point p3_,bool useSecondPoint = false){
+    p1 = p1_;
+    p2 = p2_;
+    p0 = p0_;
+    p3 = p3_;
+    hasSecondControlPoint = useSecondPoint;
 }

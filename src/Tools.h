@@ -266,12 +266,14 @@ class EllipseTool : public Tools {
 
 class SplineTool :public Tools{
     private:
-        SDL_Point startPoint;
-        SDL_Point endPoint;
-        SDL_Point controlPoint;
+        SDL_Point p0;
+        SDL_Point p1;
+        SDL_Point p2;
+        SDL_Point p3;
         float slope;
-        bool isSelectingPoints;
-        bool isShaping;
+        bool selectingEndPoints;
+        bool selectingP1;
+        bool selectingP2;
         Spline spline;
         int width;
         
